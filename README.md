@@ -28,8 +28,8 @@ Activate the environment you just created.
 conda activate udefarp
 ```
 ## Before You Start
-### Step 1: Dowload the UDef-ARP Folder
-Download the folder to your local directory.
+### Step 1: Clone or Download the UDef-ARP Folder
+Clone the repository or download the folder to your local directory.
 
 ### Step 2: Open the GUI
 #### 1. Use your Python IDE to Open 
