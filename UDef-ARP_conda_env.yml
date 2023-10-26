@@ -1,4 +1,4 @@
-name: automation
+name: udefarp
 channels:
   - anaconda
   - conda-forge
