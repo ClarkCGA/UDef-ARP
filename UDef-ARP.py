@@ -53,12 +53,17 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.MCT_button2.clicked.connect(self.gotomct2)
         self.select_folder_button.clicked.connect(self.select_working_directory)
+        self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
+        self.mask_button.clicked.connect(self.select_mask)
         self.fd_button.clicked.connect(self.select_fd)
+        self.calculate_button2.clicked.connect(self.process_data2_nrt)
         self.ok_button2.clicked.connect(self.process_data2)
         self.vulnerability_map = VulnerabilityMap()
         self.vulnerability_map.progress_updated.connect(self.update_progress)
         self.directory = None
         self.in_fn = None
+        self.deforestation_hrp = None
+        self.mask = None
         self.NRT = None
         self.n_classes = None
         self.out_fn = None
@@ -93,6 +98,53 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         if file_path:
             self.in_fn = file_path
             self.in_fn_entry.setText(file_path.split('/')[-1])
+
+    def select_deforestation_hrp(self):
+        file_path3, _ = QFileDialog.getOpenFileName(self, "Map of Deforestation in the CAL")
+        if file_path3:
+            self.deforestation_hrp = file_path3
+            self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
+
+    def select_mask(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path:
+            self.mask = file_path
+            self.mask_entry.setText(file_path.split('/')[-1])
+
+    def process_data2_nrt(self):
+        if not self.directory or not self.in_fn or not self.deforestation_hrp or not self.mask:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
+        # Show "Processing" message
+        processing_message = "Calculating NRT..."
+        self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
+
+        # Change the font size
+        font = QFont()
+        font.setPointSize(9)
+        self.progressDialog.setFont(font)
+
+        self.progressDialog.setWindowTitle("Calculating")
+        self.progressDialog.setWindowModality(Qt.WindowModal)
+        self.progressDialog.setMinimumDuration(0)
+        self.progressDialog.resize(400, 300)
+        self.progressDialog.show()
+        QApplication.processEvents()
+
+        try:
+            data_folder = self.vulnerability_map.set_working_directory(self.directory)
+            NRT = self.vulnerability_map.nrt_calculation(self.in_fn, self.deforestation_hrp, self.mask)
+
+            QMessageBox.information(self, "Processing Completed", f"Processing completed!\nNRT is: {NRT}")
+
+            self.nrt_entry.setText(str(NRT))
+
+            self.progressDialog.close()
+
+        except Exception as e:
+            self.progressDialog.close()
+            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
 
     def process_data2(self):
         if not self.directory or not self.in_fn:

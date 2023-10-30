@@ -44,7 +44,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>image_fitcal.jpg</pixmap>
+     <pixmap>../../UDef-ARP - Copy/data/image_fitcal.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -54,7 +54,7 @@
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>550</y>
+      <y>540</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -68,7 +68,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1670</x>
-      <y>550</y>
+      <y>540</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -84,7 +84,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>550</y>
+      <y>540</y>
       <width>361</width>
       <height>31</height>
      </rect>
@@ -110,7 +110,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>640</y>
+      <y>630</y>
       <width>531</width>
       <height>31</height>
      </rect>
@@ -126,7 +126,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>680</y>
+      <y>800</y>
       <width>531</width>
       <height>31</height>
      </rect>
@@ -142,7 +142,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>790</y>
+      <y>880</y>
       <width>531</width>
       <height>31</height>
      </rect>
@@ -158,7 +158,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>640</y>
+      <y>630</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -172,7 +172,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>680</y>
+      <y>800</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -185,7 +185,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>790</y>
+      <y>880</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -198,7 +198,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1670</x>
-      <y>640</y>
+      <y>630</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -213,9 +213,9 @@ font: 9pt;</string>
    <widget class="QPushButton" name="ok_button2">
     <property name="geometry">
      <rect>
-      <x>1640</x>
-      <y>800</y>
-      <width>121</width>
+      <x>1630</x>
+      <y>870</y>
+      <width>131</width>
       <height>41</height>
      </rect>
     </property>
@@ -229,9 +229,9 @@ font: 9pt;</string>
    <widget class="QPushButton" name="help_button_2">
     <property name="geometry">
      <rect>
-      <x>1640</x>
-      <y>750</y>
-      <width>121</width>
+      <x>1630</x>
+      <y>820</y>
+      <width>131</width>
       <height>41</height>
      </rect>
     </property>
@@ -246,7 +246,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>520</y>
+      <y>510</y>
       <width>1281</width>
       <height>81</height>
      </rect>
@@ -279,9 +279,9 @@ color: rgb(125, 169, 172);
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>610</y>
+      <y>600</y>
       <width>1281</width>
-      <height>131</height>
+      <height>161</height>
      </rect>
     </property>
     <property name="font">
@@ -302,7 +302,7 @@ color: rgb(125, 169, 172);
 </string>
     </property>
     <property name="title">
-     <string>Input Parameters</string>
+     <string>Input Parameters for NRT Calculation</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -312,9 +312,9 @@ color: rgb(125, 169, 172);
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>750</y>
+      <y>860</y>
       <width>1131</width>
-      <height>91</height>
+      <height>71</height>
      </rect>
     </property>
     <property name="font">
@@ -462,6 +462,144 @@ border-radius:20px;
      <string>2: Allocated Risk Mapping</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>670</y>
+      <width>531</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Map of Deforestation in the HRP (binary map)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="deforestation_hrp_button">
+    <property name="geometry">
+     <rect>
+      <x>1670</x>
+      <y>670</y>
+      <width>41</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
+    </property>
+    <property name="text">
+     <string>...</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="deforestation_hrp_entry">
+    <property name="geometry">
+     <rect>
+      <x>1040</x>
+      <y>670</y>
+      <width>541</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="calculate_button2">
+    <property name="geometry">
+     <rect>
+      <x>1630</x>
+      <y>770</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 9pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Calculate</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_4">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>770</y>
+      <width>1131</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>6</pointsize>
+      <weight>75</weight>
+      <italic>true</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;
+border: 1px solid white;
+color: rgb(125, 169, 172);
+
+</string>
+    </property>
+    <property name="title">
+     <string>Input Parameters for Vulnerability Mapping</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>710</y>
+      <width>531</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Mask of the Jurisdiction (binary map)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="mask_button">
+    <property name="geometry">
+     <rect>
+      <x>1670</x>
+      <y>710</y>
+      <width>41</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
+    </property>
+    <property name="text">
+     <string>...</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="mask_entry">
+    <property name="geometry">
+     <rect>
+      <x>1040</x>
+      <y>710</y>
+      <width>541</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: 9pt;</string>
+    </property>
+   </widget>
    <zorder>label</zorder>
    <zorder>folder_entry</zorder>
    <zorder>label_2</zorder>
@@ -482,6 +620,14 @@ border-radius:20px;
    <zorder>RMT_button2</zorder>
    <zorder>MCT_button2</zorder>
    <zorder>AT_button2</zorder>
+   <zorder>label_5</zorder>
+   <zorder>deforestation_hrp_button</zorder>
+   <zorder>deforestation_hrp_entry</zorder>
+   <zorder>calculate_button2</zorder>
+   <zorder>groupBox_4</zorder>
+   <zorder>label_6</zorder>
+   <zorder>mask_button</zorder>
+   <zorder>mask_entry</zorder>
   </widget>
  </widget>
  <resources/>

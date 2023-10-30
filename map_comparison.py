@@ -87,14 +87,14 @@ class MapComparison(QObject):
         # Convert the 'coords' column to a numpy array
         coords = np.array(pointInPolys['coords'].tolist())
 
-        ## Create boundry sample points:
+        ## Create boundary sample points:
         # Choose the largest polygon (study area) in mask_df
         polygon = mask_df.geometry[len(mask_df) - 1]
         self.progress_updated.emit(30)
         # Create a large rectangle surrounding it
         bound = polygon.buffer(2000).envelope.boundary
         self.progress_updated.emit(60)
-        # Create boundry sample points(one every 100 m) along the rectangle boundary
+        # Create boundary sample points(one every 100 m) along the rectangle boundary
         boundarypoints = [bound.interpolate(distance=d) for d in range(0, np.ceil(bound.length).astype(int), 100)]
         boundarycoords = np.array([[p.x, p.y] for p in boundarypoints])
         self.progress_updated.emit(70)
