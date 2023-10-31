@@ -205,6 +205,11 @@ class AllocationTool(QObject):
         # Read Relative Frequency csv file
         merged_df=pd.read_csv(csv)
 
+        # Insert index=0 row into first row of merged_df DataFrame
+        new_row = pd.DataFrame({'ID': [0], 'Total Deforestation(pixel)': [0], 'Area of the Bin(pixel)': [0],
+                                'Average Deforestation(pixel)': [0]})
+        merged_df = pd.concat([new_row, merged_df]).reset_index(drop=True)
+
         # Using numpy.searchsorted() to assign values to 'id'
         df_sorted = merged_df.sort_values('ID')
         sorted_indices = df_sorted['ID'].searchsorted(tabulation_bin_id_VP_masked)
