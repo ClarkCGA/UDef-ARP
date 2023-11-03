@@ -133,16 +133,22 @@ class MapComparison(QObject):
         '''
         ##Actual Deforestiona(ha)
         # Compute the zonal statistics
-        stats = zonal_stats('thiessen_polygon.shp', deforestation, stats="sum", nodata=-999)
+        stats = zonal_stats('thiessen_polygon.shp', deforestation, stats="sum", nodata=0)
 
         # Create 'Actual' column
         clipped_gdf = gpd.read_file('thiessen_polygon.shp')
-        clipped_gdf['Actual Deforestiona(ha)'] = [item['sum'] * 0.09 for item in stats]
+
+        # Calculate areal_resolution_of_map_pixels
+        in_ds4 = gdal.Open(density)
+        P = in_ds4.GetGeoTransform()[1]
+        areal_resolution_of_map_pixels = P * P / 10000
+
+        clipped_gdf['Actual Deforestiona(ha)'] = [(item['sum'] if item['sum'] is not None else 0) * areal_resolution_of_map_pixels for item in stats]
 
         ## Predicted Deforestiona(ha)
         # Compute the zonal statistics
-        stats1 = zonal_stats('thiessen_polygon.shp', density, stats="sum", nodata=-999)
-        clipped_gdf['Predicted Deforestiona(ha)'] = [item['sum'] for item in stats1]
+        stats1 = zonal_stats('thiessen_polygon.shp', density, stats="sum", nodata=0)
+        clipped_gdf['Predicted Deforestiona(ha)'] = [(item['sum'] if item['sum'] is not None else 0) * areal_resolution_of_map_pixels for item in stats1]
 
         ## ID
         clipped_gdf['ID'] = range(1, len(clipped_gdf) + 1)
@@ -167,11 +173,11 @@ class MapComparison(QObject):
         X = np.array(clipped_gdf['Actual Deforestiona(ha)'], dtype=np.float64)
         Y = np.array(clipped_gdf['Predicted Deforestiona(ha)'], dtype=np.float64)
 
-        # ## Perform linear regression
-        # slope, intercept = np.polyfit(X, Y, 1)
-        # equation = f'Y = {slope:.2f} * X + {intercept:.2f}'
-        # # Calculate the trend line
-        # trend_line = slope * X + intercept
+        ## Perform linear regression
+        slope, intercept = np.polyfit(X, Y, 1)
+        equation = f'Y = {slope:.2f} * X + {intercept:.2f}'
+        # Calculate the trend line
+        trend_line = slope * X + intercept
 
         # ## Calculate R square
         # # Get the correlation coefficient
