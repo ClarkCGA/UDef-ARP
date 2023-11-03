@@ -111,8 +111,37 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             self.mask = file_path
             self.mask_entry.setText(file_path.split('/')[-1])
 
+    def get_image_resolution(self,image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        P = in_ds.GetGeoTransform()[1]
+        # Create Numpy Array1
+        return P
+
+    def get_image_dimensions(self, image):
+        dataset = gdal.Open(image)
+        cols = dataset.RasterXSize
+        rows = dataset.RasterYSize
+        return rows, cols
+
     def process_data2_nrt(self):
-        if not self.directory or not self.in_fn or not self.deforestation_hrp or not self.mask:
+        images = [self.in_fn, self.deforestation_hrp, self.mask]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
+
+        if not self.in_fn or not self.deforestation_hrp or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
@@ -147,8 +176,8 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
 
     def process_data2(self):
-        if not self.directory or not self.in_fn:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+        if not self.in_fn:
+            QMessageBox.critical(self, "Error", "Please select  the input file!")
             return
 
         NRT = self.nrt_entry.text()
@@ -287,8 +316,37 @@ class AT_FIT_CAL_Screen(QDialog):
             self.deforestation_hrp = file_path3
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
 
+    def get_image_resolution(self, image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        P = in_ds.GetGeoTransform()[1]
+        # Create Numpy Array1
+        return P
+
+    def get_image_dimensions(self, image):
+        dataset = gdal.Open(image)
+        cols = dataset.RasterXSize
+        rows = dataset.RasterYSize
+        return rows, cols
+
     def process_data3(self):
-        if not self.directory or not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
+        images = [self.risk30_hrp, self.municipality, self.deforestation_hrp]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
+
+        if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
@@ -338,6 +396,7 @@ class AT_FIT_CAL_Screen(QDialog):
         # Update QProgressDialog with the new value
         if self.progressDialog is not None:
             self.progressDialog.setValue(value)
+
 
 class MCT_FIT_CAL_Screen(QDialog):
     def __init__(self):
@@ -405,7 +464,36 @@ class MCT_FIT_CAL_Screen(QDialog):
             self.density = file_path
             self.density_entry.setText(file_path.split('/')[-1])
 
+    def get_image_resolution(self, image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        P = in_ds.GetGeoTransform()[1]
+        # Create Numpy Array1
+        return P
+
+    def get_image_dimensions(self, image):
+        dataset = gdal.Open(image)
+        cols = dataset.RasterXSize
+        rows = dataset.RasterYSize
+        return rows, cols
+
     def process_data4(self):
+        images = [self.mask, self.deforestation_hrp, self.density]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
+
         if not self.mask or not self.deforestation_hrp or not self.density :
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
@@ -458,6 +546,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         except Exception as e:
              self.progressDialog.close()
              QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
@@ -517,8 +606,8 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             self.in_fn_entry.setText(file_path.split('/')[-1])
 
     def process_data2(self):
-        if not self.directory or not self.in_fn:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+        if not self.in_fn:
+            QMessageBox.critical(self, "Error", "Please select the input file!")
             return
 
         NRT = self.nrt_entry.text()
@@ -660,8 +749,36 @@ class AT_PRE_CNF_Screen(QDialog):
         if file_path3:
             self.deforestation_cnf = file_path3
             self.deforestation_cnf_entry.setText(file_path3.split('/')[-1])
+    def get_image_resolution(self, image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        P = in_ds.GetGeoTransform()[1]
+        # Create Numpy Array1
+        return P
+
+    def get_image_dimensions(self, image):
+        dataset = gdal.Open(image)
+        cols = dataset.RasterXSize
+        rows = dataset.RasterYSize
+        return rows, cols
 
     def process_data3(self):
+        images = [self.municipality, self.deforestation_cnf, self.risk30_vp]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
+
         if not self.municipality or not self.csv or not self.deforestation_cnf or not self.risk30_vp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
@@ -787,7 +904,36 @@ class MCT_PRE_CNF_Screen(QDialog):
             self.density = file_path
             self.density_entry.setText(file_path.split('/')[-1])
 
+    def get_image_resolution(self, image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        P = in_ds.GetGeoTransform()[1]
+        # Create Numpy Array1
+        return P
+
+    def get_image_dimensions(self, image):
+        dataset = gdal.Open(image)
+        cols = dataset.RasterXSize
+        rows = dataset.RasterYSize
+        return rows, cols
+
     def process_data4(self):
+        images = [self.mask, self.deforestation_hrp, self.density]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
+
         if not self.mask or not self.deforestation_hrp or not self.density :
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
@@ -891,8 +1037,8 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             self.in_fn_entry.setText(file_path.split('/')[-1])
 
     def process_data2(self):
-        if not self.directory or not self.in_fn:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+        if not self.in_fn:
+            QMessageBox.critical(self, "Error", "Please select the input file!")
             return
 
         NRT = self.nrt_entry.text()
@@ -1021,8 +1167,36 @@ class AT_FIT_HRP_Screen(QDialog):
             self.deforestation_hrp = file_path3
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
 
+    def get_image_resolution(self, image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        P = in_ds.GetGeoTransform()[1]
+        # Create Numpy Array1
+        return P
+
+    def get_image_dimensions(self, image):
+        dataset = gdal.Open(image)
+        cols = dataset.RasterXSize
+        rows = dataset.RasterYSize
+        return rows, cols
+
     def process_data3(self):
-        if not self.directory or not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
+        images = [self.risk30_hrp, self.municipality, self.deforestation_hrp]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
+        if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
@@ -1119,8 +1293,8 @@ class RMT_PRE_VP_SCREEN(QDialog):
             self.in_fn_entry.setText(file_path.split('/')[-1])
 
     def process_data2(self):
-        if not self.directory or not self.in_fn:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+        if not self.in_fn:
+            QMessageBox.critical(self, "Error", "Please select the input file!")
             return
 
         NRT = self.nrt_entry.text()
@@ -1253,7 +1427,35 @@ class AT_PRE_VP_Screen(QDialog):
             self.risk30_vp = file_path2
             self.risk30_vp_entry.setText(file_path2.split('/')[-1])
 
+    def get_image_resolution(self, image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        P = in_ds.GetGeoTransform()[1]
+        # Create Numpy Array1
+        return P
+
+    def get_image_dimensions(self, image):
+        dataset = gdal.Open(image)
+        cols = dataset.RasterXSize
+        rows = dataset.RasterYSize
+        return rows, cols
+
     def process_data3(self):
+        images = [self.municipality, self.risk30_vp]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
         if not self.csv or not self.municipality or not self.risk30_vp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
