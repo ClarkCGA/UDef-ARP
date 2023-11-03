@@ -91,22 +91,14 @@ class MapComparison(QObject):
         # Choose the largest polygon (study area) in mask_df
         polygon = mask_df.geometry[len(mask_df) - 1]
         self.progress_updated.emit(30)
-        # Create a large rectangle surrounding it
-        bound = polygon.buffer(2000).envelope.boundary
-        self.progress_updated.emit(60)
-        # Create boundary sample points(one every 100 m) along the rectangle boundary
-        boundarypoints = [bound.interpolate(distance=d) for d in range(0, np.ceil(bound.length).astype(int), 100)]
-        boundarycoords = np.array([[p.x, p.y] for p in boundarypoints])
-        self.progress_updated.emit(70)
-        ## Combine two array of all points
-        all_coords = np.concatenate((boundarycoords, coords))
 
         ##Create Thiessen Polygon
-        vor = Voronoi(points=all_coords)
-
+        vor = Voronoi(points=coords)
+        self.progress_updated.emit(50)
         # Polygonize the line ridge is not infinity
         lines = [shapely.geometry.LineString(vor.vertices[line]) for line in
                  vor.ridge_vertices if -1 not in line]
+        self.progress_updated.emit(60)
         polys = shapely.ops.polygonize(lines)
 
         # Convert Voronoi polygons (polys) into a GeoDataFrame.
@@ -114,7 +106,7 @@ class MapComparison(QObject):
 
         # Convert the study area to GeoDataFrame.
         polydf = gpd.GeoDataFrame(geometry=[polygon], crs=mask_df.crs)
-
+        self.progress_updated.emit(70)
         # Only preserved Thiessen Polygon within mask by intersection
         thiessen_gdf = gpd.overlay(df1=voronois, df2=polydf, how="intersection", keep_geom_type=False)
         # Extract polygons and multipolygons from the entire thiessen_gdf (including GeometryCollections)
