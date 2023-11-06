@@ -67,7 +67,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         self.NRT = None
         self.n_classes = None
         self.out_fn = None
-        self.out_fn_entry.setPlaceholderText('e.g., Acre_vulerbility_CAL.tif')
+        self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_CAL.tif')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat2(self):
@@ -573,7 +573,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.NRT = None
         self.n_classes = None
         self.out_fn = None
-        self.out_fn_entry.setPlaceholderText('e.g., Acre_vulerbility_CNF.tif')
+        self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_CNF.tif')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat2(self):
@@ -1010,7 +1010,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         self.NRT = None
         self.n_classes = None
         self.out_fn = None
-        self.out_fn_entry.setPlaceholderText('e.g., Acre_vulerbility_HRP.tif')
+        self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_HRP.tif')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat2(self):
@@ -1266,7 +1266,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         self.NRT = None
         self.n_classes = None
         self.out_fn = None
-        self.out_fn_entry.setPlaceholderText('e.g., Acre_vulerbility_VP.tif')
+        self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_VP.tif')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat2(self):
