@@ -44,7 +44,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../UDef-ARP - Copy/data/image_fitcal.jpg</pixmap>
+     <pixmap>image_fitcal.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -269,7 +269,7 @@ color: rgb(125, 169, 172);
 </string>
     </property>
     <property name="title">
-     <string>Fitting Stage for the CAL : Vulnerability Mapping</string>
+     <string>Testing Stage : Fitting Phase for the Calibration Period (CAL)</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

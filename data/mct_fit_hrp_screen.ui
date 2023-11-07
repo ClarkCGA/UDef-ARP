@@ -44,7 +44,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>image_mctfithrp.jpg</pixmap>
+     <pixmap>image_fithrp.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -356,7 +356,7 @@ color: rgb(125, 169, 172);
 </string>
     </property>
     <property name="title">
-     <string>Fitting Stage for the HRP : Comparative Model Assessment</string>
+     <string>Application Stage: Fitting Phase for the Historical Reference Period (HRP)</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -601,8 +601,6 @@ border-radius:20px;
    <zorder>AT_button4</zorder>
   </widget>
  </widget>
- <resources>
-  <include location="forest_image.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

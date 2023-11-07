@@ -518,7 +518,7 @@ color: rgb(125, 169, 172);
 </string>
     </property>
     <property name="title">
-     <string>Prediction Stage for the CNF : Allocated Risk Mapping</string>
+     <string>Testing Stage : Prediction Phase for the Confirmation Period (CNF)</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -681,8 +681,6 @@ color: rgb(125, 169, 172);
    <zorder>deforestation_cnf_button</zorder>
   </widget>
  </widget>
- <resources>
-  <include location="forest_image.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -350,7 +350,7 @@ color: rgb(125, 169, 172);
 </string>
     </property>
     <property name="title">
-     <string>prediction Stage for the VP : Comparative Model Assessment</string>
+     <string>Application Stage : Prediction Phase for the Validity Period (VP)</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -595,8 +595,6 @@ border-radius:20px;
    <zorder>AT_button4</zorder>
   </widget>
  </widget>
- <resources>
-  <include location="forest_image.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

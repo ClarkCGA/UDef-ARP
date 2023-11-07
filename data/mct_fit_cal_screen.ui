@@ -353,7 +353,7 @@ color: rgb(125, 169, 172);
 </string>
     </property>
     <property name="title">
-     <string>Testing Stage: Fitting Phase for the Calibration Period (CAL)</string>
+     <string>Testing Stage : Fitting Phase for the Calibration Period (CAL)</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

@@ -253,7 +253,7 @@ color: rgb(125, 169, 172);
 </string>
     </property>
     <property name="title">
-     <string>Prediction Stage for the VP : Vulnerability Mapping</string>
+     <string>Application Stage : Prediction Phase for the Validity Period (VP)</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
