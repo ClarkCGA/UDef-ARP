@@ -211,6 +211,12 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in CAL!")
             return
 
+        # Check if the out_fn has the correct file extension
+        if not (out_fn.endswith('.tif') or out_fn.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Vulnerability Map in CAL!")
+            return
+
         # Show "Processing" message
         processing_message = "Processing data..."
         self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
@@ -355,14 +361,29 @@ class AT_FIT_CAL_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the name for Modeling Region Map in CAL!")
             return
 
-        out_fn2 = self.image2_entry.text()
-        if not out_fn2:
-            QMessageBox.critical(self, "Error", "Please enter the name for Fitted Density Map in the CAL!")
+        if not (out_fn1.endswith('.tif') or out_fn1.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name for Modeling Region Map in CAL!")
             return
 
         csv_name = self.csv_entry.text()
         if not csv_name:
             QMessageBox.critical(self, "Error", "Please enter the name for the Relative Frequency Table!")
+            return
+
+        if not (csv_name.endswith('.csv')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .csv extension in the name of Relative Frequency Table!")
+            return
+
+        out_fn2 = self.image2_entry.text()
+        if not out_fn2:
+            QMessageBox.critical(self, "Error", "Please enter the name for Fitted Density Map in the CAL!")
+            return
+
+        if not (out_fn2.endswith('.tif') or out_fn2.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name for Fitted Density Map in the CAL!")
             return
 
         # Show "Processing" message
@@ -641,6 +662,11 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in CNF!")
             return
 
+        if not (out_fn.endswith('.tif') or out_fn.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Vulnerability Map in CNF!")
+            return
+
         # Show "Processing" message
         processing_message = "Processing data..."
         self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
@@ -749,6 +775,7 @@ class AT_PRE_CNF_Screen(QDialog):
         if file_path3:
             self.deforestation_cnf = file_path3
             self.deforestation_cnf_entry.setText(file_path3.split('/')[-1])
+
     def get_image_resolution(self, image):
         # Set up a GDAL dataset
         in_ds = gdal.Open(image)
@@ -788,9 +815,19 @@ class AT_PRE_CNF_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the name of Prediction Modeling Region Map in CNF!")
             return
 
+        if not (out_fn1.endswith('.tif') or out_fn1.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Prediction Modeling Region Map in CNF!")
+            return
+
         out_fn2 = self.image2_entry.text()
         if not out_fn2:
             QMessageBox.critical(self, "Error", "Please enter the name of Adjusted Prediction Density Map in CNF!")
+            return
+
+        if not (out_fn2.endswith('.tif') or out_fn2.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Adjusted Prediction Density Map in CNF!")
             return
 
         max_iterations = self.iteration_entry.text()
@@ -1072,6 +1109,11 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in HRP!")
             return
 
+        if not (out_fn.endswith('.tif') or out_fn.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Vulnerability Map in HRP!")
+            return
+
         # Show "Processing" message
         processing_message = "Processing data..."
         self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
@@ -1205,14 +1247,29 @@ class AT_FIT_HRP_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the name for Modeling Region Map in HRP!")
             return
 
-        out_fn2 = self.image2_entry.text()
-        if not out_fn2:
-            QMessageBox.critical(self, "Error", "Please enter the name for Fitted Density Map in the HRP!")
+        if not (out_fn1.endswith('.tif') or out_fn1.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name for Modeling Region Map in HRP!")
             return
 
         csv_name = self.csv_entry.text()
         if not csv_name:
             QMessageBox.critical(self, "Error", "Please enter the name for the Relative Frequency Table!")
+            return
+
+        if not (csv_name.endswith('.csv')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .csv extension in the name of Relative Frequency Table!")
+            return
+
+        out_fn2 = self.image2_entry.text()
+        if not out_fn2:
+            QMessageBox.critical(self, "Error", "Please enter the name for Fitted Density Map in the HRP!")
+            return
+
+        if not (out_fn2.endswith('.tif') or out_fn2.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Fitted Density Map in the HRP!")
             return
 
         # Show "Processing" message
@@ -1326,6 +1383,11 @@ class RMT_PRE_VP_SCREEN(QDialog):
         out_fn = self.out_fn_entry.text()
         if not out_fn:
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in VP!")
+            return
+
+        if not (out_fn.endswith('.tif') or out_fn.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Vulnerability Map in VP!")
             return
 
         # Show "Processing" message
@@ -1478,9 +1540,19 @@ class AT_PRE_VP_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the name of Prediction Modeling Region Map in VP!")
             return
 
+        if not (out_fn1.endswith('.tif') or out_fn1.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Prediction Modeling Region Map in VP!")
+            return
+
         out_fn2 = self.image2_entry.text()
         if not out_fn2:
             QMessageBox.critical(self, "Error", "Please enter the name of Adjusted Prediction Density Map in VP!")
+            return
+
+        if not (out_fn2.endswith('.tif') or out_fn2.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Adjusted Prediction Density Map in VP!")
             return
 
         max_iterations = self.iteration_entry.text()
