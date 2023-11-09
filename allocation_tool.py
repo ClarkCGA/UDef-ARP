@@ -29,19 +29,18 @@ class AllocationTool(QObject):
         arr = in_band.ReadAsArray()
         return arr
 
-    def array_to_image(self, risk30_hrp, out_fn, data, data_type, nodata=None):
+    def array_to_image(self, in_fn, out_fn, data, data_type, nodata=None):
         '''
           Create tabulation bin image of CAL/HRP
-         :param risk30_hrp: The 30-class vulnerability map for the CAL/HRP
-         :param in_ds:datasource to copy projection and geotransform from
+         :param in_fn: datasource to copy projection and geotransform from
          :param out_fn:path to the file to create
          :param data:the NumPy array
          :param data_type:output data type
          :param nodata:optional NoData value
          :return:out_ds:result image
         '''
-        in_ds = gdal.Open(risk30_hrp)
-        output_format = risk30_hrp.split('.')[-1].upper()
+        in_ds = gdal.Open(in_fn)
+        output_format = out_fn.split('.')[-1].upper()
         if (output_format == 'TIF'):
             output_format = 'GTIFF'
         elif (output_format == 'RST'):
@@ -53,11 +52,11 @@ class AllocationTool(QObject):
         out_ds.SetProjection(in_ds.GetProjection())
         if nodata is not None:
             out_band.SetNoDataValue(nodata)
-            out_band.WriteArray(data)
-            out_band.FlushCache()
-            out_band.ComputeStatistics(False)
-            return out_ds
-        del in_ds, out_ds
+        out_band.WriteArray(data)
+        out_band.FlushCache()
+        out_band.ComputeStatistics(False)
+        return out_ds
+
         
     def tabulation_bin_id_HRP(self, risk30_hrp, municipality, out_fn1):
         """
@@ -266,33 +265,6 @@ class AllocationTool(QObject):
         # AR = ED / MD
         AR = expected_deforestation / MD
         return AR
-
-    def array_to_density_map(self, risk30_vp, in_ds, out_fn, data, data_type, nodata=None):
-        """Convert array to density map
-        :param risk30_vp: vulernbility image in CNF/VP
-        :param in_ds - datasource to copy projection and geotransform from
-        :param out_fn - path to the file to create
-        :param data:the NumPy array
-        :param data_type - output data type
-        :param nodata - optional NoData value
-        """
-        output_format = risk30_vp.split('.')[-1].upper()
-        if (output_format == 'TIF'):
-            output_format = 'GTIFF'
-        elif (output_format == 'RST'):
-            output_format = 'rst'
-        driver = gdal.GetDriverByName(output_format)
-        out_ds = driver.Create(out_fn, in_ds.RasterXSize, in_ds.RasterYSize, 1, data_type, options=["BigTIFF=YES"])
-        out_band = out_ds.GetRasterBand(1)
-        out_ds.SetGeoTransform(in_ds.GetGeoTransform())
-        out_ds.SetProjection(in_ds.GetProjection())
-        if nodata is not None:
-            out_band.SetNoDataValue(nodata)
-            out_band.WriteArray(data)
-            out_band.FlushCache()
-            out_band.ComputeStatistics(False)
-            return out_ds
-        del in_ds, out_ds
         
     def adjusted_prediction_density_map (self, prediction_density_arr, risk30_vp, AR, out_fn2):
         '''
@@ -317,7 +289,7 @@ class AllocationTool(QObject):
         adjusted_prediction_density_arr = np.where(adjusted_prediction_density_arr > maximum_density, maximum_density, adjusted_prediction_density_arr)
 
         # Create imagery
-        out_ds_vp = self.array_to_density_map(risk30_vp, in_ds4, out_fn2, adjusted_prediction_density_arr, gdal.GDT_Float32, -99)
+        out_ds_vp = self.array_to_image(risk30_vp, out_fn2, adjusted_prediction_density_arr, gdal.GDT_Float32, -99)
 
         return out_ds_vp
 
@@ -347,7 +319,7 @@ class AllocationTool(QObject):
         adjusted_prediction_density_arr_annual=adjusted_prediction_density_arr/time
 
         # Create imagery
-        out_ds_vp = self.array_to_density_map(risk30_vp, in_ds4, out_fn2, adjusted_prediction_density_arr_annual, gdal.GDT_Float32, -99)
+        out_ds_vp = self.array_to_image(risk30_vp, out_fn2, adjusted_prediction_density_arr_annual, gdal.GDT_Float32, -99)
 
         return out_ds_vp
 
