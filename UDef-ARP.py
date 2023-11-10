@@ -555,7 +555,7 @@ class MCT_FIT_CAL_Screen(QDialog):
 
         try:
             data_folder = self.map_comparison.set_working_directory(self.directory)
-            Polygonized_Mask=self.map_comparison.create_mask_polygon(self.mask)
+            self.map_comparison.create_mask_polygon(self.mask)
             self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask)
             clipped_gdf, csv = self.map_comparison.calculate_zonal_stats(self.density, self.deforestation_hrp)
             self.map_comparison.create_plot(clipped_gdf, title)
@@ -1011,7 +1011,7 @@ class MCT_PRE_CNF_Screen(QDialog):
 
         try:
             data_folder = self.map_comparison.set_working_directory(self.directory)
-            Polygonized_Mask=self.map_comparison.create_mask_polygon(self.mask)
+            self.map_comparison.create_mask_polygon(self.mask)
             self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask)
             clipped_gdf, csv = self.map_comparison.calculate_zonal_stats(self.density, self.deforestation_hrp)
             self.map_comparison.create_plot(clipped_gdf, title)

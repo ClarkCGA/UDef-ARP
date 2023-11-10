@@ -27,7 +27,8 @@ class MapComparison(QObject):
         self.data_folder = directory
         os.chdir(self.data_folder)
 
-    def create_mask_polygon (self, mask):
+
+    def create_mask_polygon(self, mask):
         '''
         Create municipality mask polygon
         :param mask: mask of the jurisdiction (binary map)
@@ -38,23 +39,50 @@ class MapComparison(QObject):
 
         # Set up osr spatial reference
         projection = in_ds1.GetProjection()
+        self.progress_updated.emit(10)
         spatial_ref = osr.SpatialReference()
         spatial_ref.ImportFromWkt(projection)
 
-        #Create shapefile
-        dst_layername = "POLYGONIZED_MASK"
+        # Create a temporary shapefile to store all polygons
+        temp_layername = "TEMP_POLYGONIZED"
         driver = ogr.GetDriverByName("ESRI Shapefile")
-        dst_ds = driver.CreateDataSource(dst_layername + ".shp")
-        dst_layer = dst_ds.CreateLayer(dst_layername, srs=spatial_ref)
-        self.progress_updated.emit(10)
-        Polygonized_Mask=gdal.Polygonize(in_band1, in_band1, dst_layer, -1, [], callback=None)
-        dst_ds.Destroy()
-        return Polygonized_Mask
+        temp_ds = driver.CreateDataSource(temp_layername + ".shp")
+        temp_layer = temp_ds.CreateLayer(temp_layername, srs=spatial_ref)
+        gdal.Polygonize(in_band1, in_band1, temp_layer, -1, [], callback=None)
+        self.progress_updated.emit(20)
+
+        features = [(feature.GetGeometryRef().GetArea(), feature) for feature in temp_layer]
+        largest_polygon = max(features, key=lambda item: item[0])[1]
+
+        # Fetch the geometry of the largest feature
+        largest_polygon_geom = largest_polygon.GetGeometryRef().Clone()
+
+        # Close the temporary data source
+        temp_ds.Destroy()
+
+        # Create the final shapefile to store the largest polygon
+        final_layername = "POLYGONIZED_MASK"
+        final_ds = driver.CreateDataSource(final_layername + ".shp")
+        final_layer = final_ds.CreateLayer(final_layername, srs=spatial_ref, geom_type=ogr.wkbPolygon)
+
+        # Create a new feature
+        feature_defn = final_layer.GetLayerDefn()
+        out_feature = ogr.Feature(feature_defn)
+        out_feature.SetGeometry(largest_polygon_geom)
+
+        # Add the feature to the final layer
+        final_layer.CreateFeature(out_feature)
+
+        # Cleanup
+        out_feature = None
+        final_ds.Destroy()
+
+        return
 
     def create_thiessen_polygon (self, grid_area, mask):
         '''
           Create thiessen polygon
-         :param grid_area: The 30-class vulnerability map for the HRP
+         :param grid_area: assessment grid cell area or 100,000 (ha)
          :param mask: mask of the jurisdiction (binary map)
          :return
         '''
@@ -62,53 +90,72 @@ class MapComparison(QObject):
         # Open the Polygonized_Mask shapefile
         mask_df = gpd.GeoDataFrame.from_file('POLYGONIZED_MASK.shp')
 
-        # Calculate grid size
+        # Calculate the bounding box coordinate
+        # minx, easting of the top-left corner (minimum x)
         in_ds = gdal.Open(mask)
-        grid_size = int(np.sqrt(grid_area * 10000)) // int(in_ds.GetGeoTransform()[1])
+        minx =in_ds.GetGeoTransform()[0]
+        # maxx
+        maxx = in_ds.GetGeoTransform()[0] + in_ds.GetGeoTransform()[1] * in_ds.RasterXSize
+        # miny
+        miny =in_ds.GetGeoTransform()[3]+in_ds.GetGeoTransform()[5]*in_ds.RasterYSize
+        # maxy, easting of the top-left corner (max y)
+        maxy =in_ds.GetGeoTransform()[3]
+
+        # Calculate grid size, sqrt(median REDD project size)
+        spacing = int(np.sqrt(grid_area * 10000))
+
+        #Calculate numbers of centroids
+        n_centroidsX = int(((maxx - minx) //spacing) + 1)
+        n_centroidsY = int(((maxy - miny) //spacing) + 1)
+
+        # Calculate the start X and Y coordinates
+        startX = minx + spacing//2
+        startY = miny + spacing//2
 
         # Systematic Sampling
         sample_points = []
-        for y in range(-2 * grid_size, in_ds.RasterYSize + 2 * grid_size, grid_size):
-            for x in range(-2 * grid_size, in_ds.RasterXSize + 2 * grid_size, grid_size):
-                # Convert raster coordinates to geographic coordinates
-                geo_x = in_ds.GetGeoTransform()[0] + x * in_ds.GetGeoTransform()[1]
-                geo_y = in_ds.GetGeoTransform()[3] + y * in_ds.GetGeoTransform()[5]
+        for i in range(-1, n_centroidsY+1):
+            for j in range(-1, n_centroidsX+1):
+                geo_x = startX + (i * spacing)
+                geo_y = startY + (j * spacing)
                 sample_points.append((geo_x, geo_y))
-        self.progress_updated.emit(20)
+
         # Convert sample_points list to DataFrame
         df = pd.DataFrame(sample_points, columns=['geo_x', 'geo_y'])
         df['coords'] = list(zip(df['geo_x'], df['geo_y']))
-        df['coords_Point'] = df['coords'].apply(Point)
-        points_df = gpd.GeoDataFrame(df, geometry='coords_Point', crs=mask_df.crs)
+        df['coords_P'] = df['coords'].apply(Point)
+        points_df = gpd.GeoDataFrame(df, geometry='coords_P', crs=mask_df.crs)
 
-        # Intersection the samples in mask
-        pointInPolys = gpd.overlay(points_df, mask_df, how='intersection')
+        # # Remove the 'coords' column which contains tuples to export shapefile
+        # points_df_export = points_df.drop('coords', axis=1)
+
+        # # Export sample point to shapefile
+        # points_df_export.to_file('Sample_Points.shp')
 
         # Convert the 'coords' column to a numpy array
-        coords = np.array(pointInPolys['coords'].tolist())
-
-        ## Create boundary sample points:
-        # Choose the largest polygon (study area) in mask_df
-        polygon = mask_df.geometry[len(mask_df) - 1]
-        self.progress_updated.emit(30)
+        coords = np.array(points_df['coords'].tolist())
 
         ##Create Thiessen Polygon
+        polygon = mask_df.geometry.unary_union
+
         vor = Voronoi(points=coords)
-        self.progress_updated.emit(50)
+
         # Polygonize the line ridge is not infinity
         lines = [shapely.geometry.LineString(vor.vertices[line]) for line in
                  vor.ridge_vertices if -1 not in line]
-        self.progress_updated.emit(60)
+
         polys = shapely.ops.polygonize(lines)
 
         # Convert Voronoi polygons (polys) into a GeoDataFrame.
         voronois = gpd.GeoDataFrame(geometry=gpd.GeoSeries(polys), crs=mask_df.crs)
+        self.progress_updated.emit(30)
 
         # Convert the study area to GeoDataFrame.
         polydf = gpd.GeoDataFrame(geometry=[polygon], crs=mask_df.crs)
-        self.progress_updated.emit(70)
+
         # Only preserved Thiessen Polygon within mask by intersection
         thiessen_gdf = gpd.overlay(df1=voronois, df2=polydf, how="intersection", keep_geom_type=False)
+        self.progress_updated.emit(40)
         # Extract polygons and multipolygons from the entire thiessen_gdf (including GeometryCollections)
         extracted_gdf = thiessen_gdf['geometry'].apply(
             lambda geom: [g for g in geom.geoms if
@@ -116,12 +163,22 @@ class MapComparison(QObject):
                 geom]
         ).explode().reset_index(drop=True)
 
+
         extracted_gdf = gpd.GeoDataFrame({'geometry': extracted_gdf}, crs=thiessen_gdf.crs)
+
+        # Calculate area in hectares
+        extracted_gdf['area_ha'] = extracted_gdf['geometry'].area / 10000
+
+        # Find the maximum value of the 'area_ha' column
+        max_area = extracted_gdf['area_ha'].max()
+
+        # Filter to keep only rows where 'area_ha' is equal to the maximum value
+        filtered_gdf = extracted_gdf[extracted_gdf['area_ha'] == max_area]
 
         ## Save to shapefile
         thiessen_polygon_name = 'thiessen_polygon.shp'
-        extracted_gdf.to_file(thiessen_polygon_name)
-        self.progress_updated.emit(80)
+        filtered_gdf.to_file(thiessen_polygon_name)
+        self.progress_updated.emit(50)
         return
 
     def calculate_zonal_stats(self, density, deforestation):
@@ -134,6 +191,7 @@ class MapComparison(QObject):
         ##Actual Deforestiona(ha)
         # Compute the zonal statistics
         stats = zonal_stats('thiessen_polygon.shp', deforestation, stats="sum", nodata=0)
+        self.progress_updated.emit(60)
 
         # Create 'Actual' column
         clipped_gdf = gpd.read_file('thiessen_polygon.shp')
@@ -144,11 +202,15 @@ class MapComparison(QObject):
         areal_resolution_of_map_pixels = P * P / 10000
 
         clipped_gdf['Actual Deforestiona(ha)'] = [(item['sum'] if item['sum'] is not None else 0) * areal_resolution_of_map_pixels for item in stats]
+        self.progress_updated.emit(70)
 
         ## Predicted Deforestiona(ha)
         # Compute the zonal statistics
         stats1 = zonal_stats('thiessen_polygon.shp', density, stats="sum", nodata=0)
-        clipped_gdf['Predicted Deforestiona(ha)'] = [(item['sum'] if item['sum'] is not None else 0) * areal_resolution_of_map_pixels for item in stats1]
+        self.progress_updated.emit(80)
+
+        clipped_gdf['Predicted Deforestiona(ha)'] = [(item['sum'] if item['sum'] is not None else 0) for item in stats1]
+        self.progress_updated.emit(90)
 
         ## ID
         clipped_gdf['ID'] = range(1, len(clipped_gdf) + 1)
@@ -156,7 +218,6 @@ class MapComparison(QObject):
         ##Export to csv
         csv=clipped_gdf.drop('geometry', axis=1).to_csv('Performance_Chart.csv', columns=['ID', 'Actual Deforestiona(ha)', 'Predicted Deforestiona(ha)'],
                                                     index=False)
-        self.progress_updated.emit(90)
         return clipped_gdf, csv
 
     def create_plot(self, clipped_gdf,title):
@@ -203,8 +264,8 @@ class MapComparison(QObject):
         plt.ylabel('Predicted Deforestiona(ha)', color='dimgrey')
         plt.title(title, color='firebrick', fontsize=20, pad=20)
 
-        # # Plot the trend line
-        # plt.plot(X, trend_line, color='mediumseagreen', linestyle='--', label='Trend Line')
+        # Plot the trend line
+        plt.plot(X, trend_line, color='mediumseagreen', linestyle='--', label='Trend Line')
 
         # Plot a 1-to-1 line
         plt.plot([0, max(clipped_gdf['Actual Deforestiona(ha)'])], [0, max(clipped_gdf['Actual Deforestiona(ha)'])], color='crimson', linestyle='--',
@@ -243,7 +304,7 @@ class MapComparison(QObject):
     def remove_temp_files(self):
         # Files to check for and delete
         mask_file = 'mask'
-        shapefiles_to_delete = ["POLYGONIZED_MASK"]
+        shapefiles_to_delete = ["TEMP_POLYGONIZED","POLYGONIZED_MASK","thiessen_polygon"]
 
         # Shapefile associated extensions
         mask_file_extensions =[".tif",".rst",".rdc",".RST",".RST.aux.xml",".ref"]
