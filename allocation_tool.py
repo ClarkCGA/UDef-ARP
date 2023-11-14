@@ -54,7 +54,11 @@ class AllocationTool(QObject):
             out_band.SetNoDataValue(nodata)
         out_band.WriteArray(data)
         out_band.FlushCache()
+<<<<<<< HEAD
         out_ds.FlushCache()
+=======
+        out_ds.SyncToDisk()
+>>>>>>> 2f4cefe36ade78513b9aa176fde4b84264f79b38
         out_band.ComputeStatistics(False)
         return out_ds
 
