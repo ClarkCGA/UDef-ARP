@@ -54,15 +54,11 @@ class AllocationTool(QObject):
             out_band.SetNoDataValue(nodata)
         out_band.WriteArray(data)
         out_band.FlushCache()
-<<<<<<< HEAD
         out_ds.FlushCache()
-=======
-        out_ds.SyncToDisk()
->>>>>>> 2f4cefe36ade78513b9aa176fde4b84264f79b38
         out_band.ComputeStatistics(False)
         return out_ds
 
-        
+
     def tabulation_bin_id_HRP(self, risk30_hrp, municipality, out_fn1):
         """
         This function is to create fitting modeling region array(tabulation_bin_id_masked)
@@ -270,7 +266,7 @@ class AllocationTool(QObject):
         # AR = ED / MD
         AR = expected_deforestation / MD
         return AR
-        
+
     def adjusted_prediction_density_map (self, prediction_density_arr, risk30_vp, AR, out_fn2):
         '''
         Create adjusted prediction density map for CNF
