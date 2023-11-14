@@ -79,14 +79,17 @@ class MapComparison(QObject):
 
         return
 
-    def create_thiessen_polygon (self, grid_area, mask):
+    def create_thiessen_polygon (self, grid_area, mask, density, deforestation):
         '''
           Create thiessen polygon
          :param grid_area: assessment grid cell area or 100,000 (ha)
          :param mask: mask of the jurisdiction (binary map)
-         :return
+         :param density: adjusted prediction density map
+         :param deforestation:Deforestation Map during the HRP
+         :return  clipped_gdf: thiessen polygon dataframe
+                  csv: performance chart
         '''
-        ## Create inside polygon sample points:
+        ## Create sample points:
         # Open the Polygonized_Mask shapefile
         mask_df = gpd.GeoDataFrame.from_file('POLYGONIZED_MASK.shp')
 
@@ -104,7 +107,7 @@ class MapComparison(QObject):
         # Calculate grid size, sqrt(median REDD project size)
         spacing = int(np.sqrt(grid_area * 10000))
 
-        #Calculate numbers of centroids
+        # Calculate numbers of centroids
         n_centroidsX = int(((maxx - minx) //spacing) + 1)
         n_centroidsY = int(((maxy - miny) //spacing) + 1)
 
@@ -126,16 +129,10 @@ class MapComparison(QObject):
         df['coords_P'] = df['coords'].apply(Point)
         points_df = gpd.GeoDataFrame(df, geometry='coords_P', crs=mask_df.crs)
 
-        # # Remove the 'coords' column which contains tuples to export shapefile
-        # points_df_export = points_df.drop('coords', axis=1)
-
-        # # Export sample point to shapefile
-        # points_df_export.to_file('Sample_Points.shp')
-
         # Convert the 'coords' column to a numpy array
         coords = np.array(points_df['coords'].tolist())
 
-        ##Create Thiessen Polygon
+        ## Create thiessen polygon
         polygon = mask_df.geometry.unary_union
 
         vor = Voronoi(points=coords)
@@ -163,61 +160,52 @@ class MapComparison(QObject):
                 geom]
         ).explode().reset_index(drop=True)
 
-
         extracted_gdf = gpd.GeoDataFrame({'geometry': extracted_gdf}, crs=thiessen_gdf.crs)
 
         # Calculate area in hectares
-        extracted_gdf['area_ha'] = extracted_gdf['geometry'].area / 10000
+        extracted_gdf['Area_ha'] = extracted_gdf['geometry'].area / 10000
 
         # Find the maximum value of the 'area_ha' column
-        max_area = extracted_gdf['area_ha'].max()
+        max_area = extracted_gdf['Area_ha'].max()
 
         # Filter to keep only rows where 'area_ha' is equal to the maximum value
-        filtered_gdf = extracted_gdf[extracted_gdf['area_ha'] == max_area]
-
-        ## Save to shapefile
-        thiessen_polygon_name = 'thiessen_polygon.shp'
-        filtered_gdf.to_file(thiessen_polygon_name)
+        clipped_gdf = extracted_gdf[extracted_gdf['Area_ha'] == max_area]
         self.progress_updated.emit(50)
-        return
 
-    def calculate_zonal_stats(self, density, deforestation):
-        '''
-          Calculate zonal stats
-         :param density: adjusted prediction density map
-         :param deforestation:Deforestation Map during the HRP
-         :return:out_ds:result image
-        '''
-        ##Actual Deforestiona(ha)
-        # Compute the zonal statistics
-        stats = zonal_stats('thiessen_polygon.shp', deforestation, stats="sum", nodata=0)
+        ## Calculate zonal statistics
+        # Actual Deforestiona(ha)
+        stats = zonal_stats(clipped_gdf.geometry, deforestation, stats="sum", nodata=0)
         self.progress_updated.emit(60)
-
-        # Create 'Actual' column
-        clipped_gdf = gpd.read_file('thiessen_polygon.shp')
 
         # Calculate areal_resolution_of_map_pixels
         in_ds4 = gdal.Open(density)
         P = in_ds4.GetGeoTransform()[1]
         areal_resolution_of_map_pixels = P * P / 10000
 
-        clipped_gdf['Actual Deforestiona(ha)'] = [(item['sum'] if item['sum'] is not None else 0) * areal_resolution_of_map_pixels for item in stats]
+        # Add the results back to the GeoDataFrame
+        clipped_gdf['Actual Deforestion(ha)'] = [(item['sum'] if item['sum'] is not None else 0) * areal_resolution_of_map_pixels for item in stats]
         self.progress_updated.emit(70)
 
-        ## Predicted Deforestiona(ha)
-        # Compute the zonal statistics
-        stats1 = zonal_stats('thiessen_polygon.shp', density, stats="sum", nodata=0)
+        # Predicted Deforestiona(ha)
+        stats1 = zonal_stats(clipped_gdf.geometry, density, stats="sum", nodata=0)
         self.progress_updated.emit(80)
 
-        clipped_gdf['Predicted Deforestiona(ha)'] = [(item['sum'] if item['sum'] is not None else 0) for item in stats1]
+        clipped_gdf['Predicted Deforestion(ha)'] = [(item['sum'] if item['sum'] is not None else 0) for item in stats1]
         self.progress_updated.emit(90)
 
-        ## ID
+        # ID
         clipped_gdf['ID'] = range(1, len(clipped_gdf) + 1)
 
-        ##Export to csv
-        csv=clipped_gdf.drop('geometry', axis=1).to_csv('Performance_Chart.csv', columns=['ID', 'Actual Deforestiona(ha)', 'Predicted Deforestiona(ha)'],
+        # Export to csv
+        csv=clipped_gdf.drop('geometry', axis=1).to_csv('Performance_Chart.csv', columns=['ID', 'Actual Deforestion(ha)', 'Predicted Deforestion(ha)'],
                                                     index=False)
+        # Rename columns title for shapefile
+        clipped_gdf = clipped_gdf.rename(columns={'Predicted Deforestion(ha)': 'PredDef',
+                                                  'Actual Deforestion(ha)': 'ActualDef'})
+
+        # Save the updated GeoDataFrame back to a shapefile
+        clipped_gdf.to_file('thiessen_polygon.shp')
+
         return clipped_gdf, csv
 
     def create_plot(self, clipped_gdf,title):
@@ -231,8 +219,8 @@ class MapComparison(QObject):
         sns.set()
 
         # prepare the X/Y data
-        X = np.array(clipped_gdf['Actual Deforestiona(ha)'], dtype=np.float64)
-        Y = np.array(clipped_gdf['Predicted Deforestiona(ha)'], dtype=np.float64)
+        X = np.array(clipped_gdf['ActualDef'], dtype=np.float64)
+        Y = np.array(clipped_gdf['PredDef'], dtype=np.float64)
 
         ## Perform linear regression
         slope, intercept = np.polyfit(X, Y, 1)
@@ -257,18 +245,18 @@ class MapComparison(QObject):
         plt.figure(figsize=(8, 6))
 
         # Create a scatter plot
-        plt.scatter(clipped_gdf['Actual Deforestiona(ha)'], clipped_gdf['Predicted Deforestiona(ha)'], color='steelblue', label='Data Points')
+        plt.scatter(clipped_gdf['ActualDef'], clipped_gdf['PredDef'], color='steelblue', label='Data Points')
 
         # Add labels and title
-        plt.xlabel('Actual Deforestiona(ha)', color='dimgrey')
-        plt.ylabel('Predicted Deforestiona(ha)', color='dimgrey')
+        plt.xlabel('Actual Deforestion(ha)', color='dimgrey')
+        plt.ylabel('Predicted Deforestion(ha)', color='dimgrey')
         plt.title(title, color='firebrick', fontsize=20, pad=20)
 
         # Plot the trend line
         plt.plot(X, trend_line, color='mediumseagreen', linestyle='--', label='Trend Line')
 
         # Plot a 1-to-1 line
-        plt.plot([0, max(clipped_gdf['Actual Deforestiona(ha)'])], [0, max(clipped_gdf['Actual Deforestiona(ha)'])], color='crimson', linestyle='--',
+        plt.plot([0, max(clipped_gdf['ActualDef'])], [0, max(clipped_gdf['ActualDef'])], color='crimson', linestyle='--',
                  label='1-to-1 Line')
 
         # Set max value of xlim abd ylim
@@ -284,12 +272,6 @@ class MapComparison(QObject):
         # Set gap between texts to 3% of the maximum value
         text_y_gap = max_value * 0.05
 
-        # Adjust plt texts with the new calculated positions
-        # plt.text(text_x_pos, text_y_start_pos, equation, fontsize=11, color='black')
-        # plt.text(text_x_pos, text_y_start_pos - text_y_gap, f'Samples = {len(X):.2f}', fontsize=11, color='black')
-        # # plt.text(text_x_pos, text_y_start_pos - 2 * text_y_gap, f'R^2 = {r_squared:.2f}', fontsize=11, color='black')
-        # plt.text(text_x_pos, text_y_start_pos - 3 * text_y_gap, f'MedAE = {MedAE:.2f}', fontsize=11, color='black')
-
         plt.text(text_x_pos, text_y_start_pos, f'Samples = {len(X):.2f}', fontsize=11, color='black')
         plt.text(text_x_pos, text_y_start_pos - text_y_gap, f'MedAE = {MedAE:.2f}', fontsize=11, color='black')
 
@@ -304,7 +286,7 @@ class MapComparison(QObject):
     def remove_temp_files(self):
         # Files to check for and delete
         mask_file = 'mask'
-        shapefiles_to_delete = ["TEMP_POLYGONIZED","POLYGONIZED_MASK","thiessen_polygon"]
+        shapefiles_to_delete = ["TEMP_POLYGONIZED","POLYGONIZED_MASK","thiessen_polygon_temp"]
 
         # Shapefile associated extensions
         mask_file_extensions =[".tif",".rst",".rdc",".RST",".RST.aux.xml",".ref"]

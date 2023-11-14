@@ -556,8 +556,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         try:
             data_folder = self.map_comparison.set_working_directory(self.directory)
             self.map_comparison.create_mask_polygon(self.mask)
-            self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask)
-            clipped_gdf, csv = self.map_comparison.calculate_zonal_stats(self.density, self.deforestation_hrp)
+            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp)
             self.map_comparison.create_plot(clipped_gdf, title)
             self.map_comparison.remove_temp_files()
 
@@ -1012,8 +1011,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         try:
             data_folder = self.map_comparison.set_working_directory(self.directory)
             self.map_comparison.create_mask_polygon(self.mask)
-            self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask)
-            clipped_gdf, csv = self.map_comparison.calculate_zonal_stats(self.density, self.deforestation_hrp)
+            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp)
             self.map_comparison.create_plot(clipped_gdf, title)
             self.map_comparison.remove_temp_files()
 
@@ -1614,14 +1612,6 @@ class AT_PRE_VP_Screen(QDialog):
 app = QApplication(sys.argv)
 # Load custom fonts
 font_id=QFontDatabase.addApplicationFont("font\AvenirNextLTPro-DemiCn.otf")
-
-##Check if font loaded successfully
-# if font_id == -1:
-#     print("Failed to load font.")
-# else:
-#     print("Font loaded successfully.")
-# font_families = QFontDatabase().families()
-# print(font_families)
 
 intro = IntroScreen()
 widget = QtWidgets.QStackedWidget()
