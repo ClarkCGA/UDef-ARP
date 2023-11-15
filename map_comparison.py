@@ -208,7 +208,7 @@ class MapComparison(QObject):
 
         return clipped_gdf, csv
 
-    def create_plot(self, clipped_gdf,title):
+    def create_plot(self, clipped_gdf, title, out_fn):
         '''
         Create plot and save to local directory
         :param clipped_gdf: thiessen_polygon geo-dataframe
@@ -279,8 +279,8 @@ class MapComparison(QObject):
         plt.yticks(fontsize=10, color='dimgrey')
         plt.xticks(fontsize=10, color='dimgrey')
 
-        # Display the plot
-        plt.savefig('Plot.png')
+        # Save the plot
+        plt.savefig(out_fn)
         return
 
     def remove_temp_files(self):

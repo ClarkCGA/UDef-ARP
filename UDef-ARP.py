@@ -442,6 +442,8 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.grid_area = None
         self.grid_area_entry.setPlaceholderText('Type default 100000 or other number')
         self.title = None
+        self.out_fn = None
+        self.out_fn_entry.setPlaceholderText('e.g., Map_Comparison_CAL_Plot.png')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat4(self):
@@ -537,6 +539,17 @@ class MCT_FIT_CAL_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the title of plot!")
             return
 
+        out_fn = self.out_fn_entry.text()
+        if not out_fn:
+            QMessageBox.critical(self, "Error", "Please enter the name of plot!")
+            return
+
+        # Check if the out_fn has the correct file extension
+        if not (out_fn.endswith('.png') or out_fn.endswith('.jpg')or out_fn.endswith('.pdf')or out_fn.endswith('.svg')or out_fn.endswith('.eps')or out_fn.endswith('.ps')or out_fn.endswith('.tif')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter extension in the name of plot!")
+            return
+
         # Show "Processing" message
         processing_message = "Processing data..."
         self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
@@ -557,7 +570,7 @@ class MCT_FIT_CAL_Screen(QDialog):
             data_folder = self.map_comparison.set_working_directory(self.directory)
             self.map_comparison.create_mask_polygon(self.mask)
             clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp)
-            self.map_comparison.create_plot(clipped_gdf, title)
+            self.map_comparison.create_plot(clipped_gdf, title,out_fn)
             self.map_comparison.remove_temp_files()
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
@@ -897,6 +910,8 @@ class MCT_PRE_CNF_Screen(QDialog):
         self.grid_area = None
         self.grid_area_entry.setPlaceholderText('Type default 100000 or other number')
         self.title = None
+        self.out_fn = None
+        self.out_fn_entry.setPlaceholderText('e.g., Map_Comparison_CNF_Plot.png')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat4(self):
@@ -992,6 +1007,18 @@ class MCT_PRE_CNF_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the title of plot!")
             return
 
+        out_fn = self.out_fn_entry.text()
+        if not out_fn:
+            QMessageBox.critical(self, "Error", "Please enter the name of plot!")
+            return
+
+        # Check if the out_fn has the correct file extension
+        if not (out_fn.endswith('.png') or out_fn.endswith('.jpg') or out_fn.endswith('.pdf') or out_fn.endswith(
+                '.svg') or out_fn.endswith('.eps') or out_fn.endswith('.ps') or out_fn.endswith('.tif')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter extension in the name of plot!")
+            return
+
         # Show "Processing" message
         processing_message = "Processing data..."
         self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
@@ -1012,7 +1039,7 @@ class MCT_PRE_CNF_Screen(QDialog):
             data_folder = self.map_comparison.set_working_directory(self.directory)
             self.map_comparison.create_mask_polygon(self.mask)
             clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp)
-            self.map_comparison.create_plot(clipped_gdf, title)
+            self.map_comparison.create_plot(clipped_gdf, title, out_fn)
             self.map_comparison.remove_temp_files()
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")

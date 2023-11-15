@@ -398,7 +398,7 @@ color: rgb(125, 169, 172);
       <x>480</x>
       <y>820</y>
       <width>1131</width>
-      <height>91</height>
+      <height>131</height>
      </rect>
     </property>
     <property name="font">
@@ -546,6 +546,35 @@ border-radius:20px;
      <string>2: Allocated Risk Mapping</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>890</y>
+      <width>521</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Name for the Plot</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="out_fn_entry">
+    <property name="geometry">
+     <rect>
+      <x>1040</x>
+      <y>890</y>
+      <width>541</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+    </property>
+   </widget>
    <zorder>label</zorder>
    <zorder>folder_entry</zorder>
    <zorder>label_2</zorder>
@@ -572,6 +601,8 @@ border-radius:20px;
    <zorder>RMT_button4</zorder>
    <zorder>MCT_button4</zorder>
    <zorder>AT_button4</zorder>
+   <zorder>label_9</zorder>
+   <zorder>out_fn_entry</zorder>
   </widget>
  </widget>
  <resources/>
