@@ -49,6 +49,8 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r'data\rmt_fit_cal_screen.ui', self)
+        if central_data_store.data_folder is not None and self.folder_entry is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.MCT_button2.clicked.connect(self.gotomct2)
@@ -65,6 +67,8 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         self.deforestation_hrp = None
         self.mask = None
         self.NRT = None
+        if central_data_store.NRT is not None:
+            self.nrt_entry.setText(str(central_data_store.NRT))
         self.n_classes = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_CAL.tif')
@@ -92,6 +96,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
+        central_data_store.data_folder = data_folder
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CAL')
@@ -164,6 +169,8 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         try:
             data_folder = self.vulnerability_map.set_working_directory(self.directory)
             NRT = self.vulnerability_map.nrt_calculation(self.in_fn, self.deforestation_hrp, self.mask)
+            # Update the central data store
+            central_data_store.NRT = NRT
 
             QMessageBox.information(self, "Processing Completed", f"Processing completed!\nNRT is: {NRT}")
 
@@ -234,14 +241,12 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(self.directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -99)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
             self.progressDialog.close()
-
 
         except Exception as e:
             self.progressDialog.close()
@@ -257,6 +262,8 @@ class AT_FIT_CAL_Screen(QDialog):
         super(AT_FIT_CAL_Screen, self).__init__()
         self.initial_directory = os.getcwd()
         loadUi(r"data\at_fit_cal_screen.ui", self)
+        if central_data_store.data_folder is not None and self.folder_entry is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
         self.MCT_button3.clicked.connect(self.gotomct3)
@@ -278,7 +285,6 @@ class AT_FIT_CAL_Screen(QDialog):
         self.image1_entry.setPlaceholderText('e.g., Acre_Modeling_Region_CAL.tif')
         self.csv_entry.setPlaceholderText('e.g., Relative_Frequency_Table_CAL.csv')
         self.image2_entry.setPlaceholderText('e.g., Acre_Fitted_Density_Map_CAL.tif')
-
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotormt3(self):
@@ -303,6 +309,7 @@ class AT_FIT_CAL_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
+        central_data_store.data_folder = data_folder
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -425,6 +432,8 @@ class MCT_FIT_CAL_Screen(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r"data\mct_fit_cal_screen.ui", self)
+        if central_data_store.data_folder is not None and self.folder_entry is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.AT_button4.clicked.connect(self.gotoat4)
         self.Intro_button4.clicked.connect(self.gotointro4)
         self.RMT_button4.clicked.connect(self.gotormt4)
@@ -468,6 +477,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
+        central_data_store.data_folder = data_folder
 
     def select_mask(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
@@ -593,10 +603,14 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r"data\rmt_pre_cnf_screen.ui", self)
+        if central_data_store.data_folder is not None and self.folder_entry is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.MCT_button2.clicked.connect(self.gotomct2)
         self.select_folder_button.clicked.connect(self.select_working_directory)
+        if central_data_store.data_folder is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.fd_button.clicked.connect(self.select_fd)
         self.ok_button2.clicked.connect(self.process_data2)
         self.vulnerability_map = VulnerabilityMap()
@@ -604,6 +618,9 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.directory = None
         self.in_fn = None
         self.NRT = None
+        # Use NRT from the data store
+        if central_data_store.NRT is not None:
+            self.nrt_entry.setText(str(central_data_store.NRT))
         self.n_classes = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_CNF.tif')
@@ -631,6 +648,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
+        central_data_store.data_folder = data_folder
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CNF')
@@ -717,6 +735,8 @@ class AT_PRE_CNF_Screen(QDialog):
         super(AT_PRE_CNF_Screen, self).__init__()
         self.initial_directory = os.getcwd()
         loadUi(r"data\at_pre_cnf_screen.ui", self)
+        if central_data_store.data_folder is not None and self.folder_entry is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
         self.MCT_button3.clicked.connect(self.gotomct3)
@@ -763,6 +783,7 @@ class AT_PRE_CNF_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
+        central_data_store.data_folder = data_folder
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -893,6 +914,8 @@ class MCT_PRE_CNF_Screen(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r"data\mct_pre_cnf_screen.ui", self)
+        if central_data_store.data_folder is not None and self.folder_entry is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.AT_button4.clicked.connect(self.gotoat4)
         self.Intro_button4.clicked.connect(self.gotointro4)
         self.RMT_button4.clicked.connect(self.gotormt4)
@@ -936,6 +959,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
+        central_data_store.data_folder = data_folder
 
     def select_mask(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
@@ -1060,9 +1084,13 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r"data\rmt_fit_hrp_screen.ui", self)
+        if central_data_store.data_folder is not None and self.folder_entry is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.select_folder_button.clicked.connect(self.select_working_directory)
+        if central_data_store.data_folder is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.fd_button.clicked.connect(self.select_fd)
         self.ok_button2.clicked.connect(self.process_data2)
         self.vulnerability_map = VulnerabilityMap()
@@ -1070,6 +1098,8 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         self.directory = None
         self.in_fn = None
         self.NRT = None
+        if central_data_store.NRT is not None:
+            self.nrt_entry.setText(str(central_data_store.NRT))
         self.n_classes = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_HRP.tif')
@@ -1091,6 +1121,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
+        central_data_store.data_folder = data_folder
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in HRP')
@@ -1177,6 +1208,8 @@ class AT_FIT_HRP_Screen(QDialog):
         super(AT_FIT_HRP_Screen, self).__init__()
         self.initial_directory = os.getcwd()
         loadUi(r"data\at_fit_hrp_screen.ui", self)
+        if central_data_store.data_folder is not None and self.folder_entry is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
         self.select_folder_button.clicked.connect(self.select_working_directory)
@@ -1215,6 +1248,7 @@ class AT_FIT_HRP_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
+        central_data_store.data_folder = data_folder
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -1336,6 +1370,8 @@ class RMT_PRE_VP_SCREEN(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r"data\rmt_pre_vp_screen.ui", self)
+        if central_data_store.data_folder is not None and self.folder_entry is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.select_folder_button.clicked.connect(self.select_working_directory)
@@ -1346,6 +1382,8 @@ class RMT_PRE_VP_SCREEN(QDialog):
         self.directory = None
         self.in_fn = None
         self.NRT = None
+        if central_data_store.NRT is not None:
+            self.nrt_entry.setText(str(central_data_store.NRT))
         self.n_classes = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_VP.tif')
@@ -1367,6 +1405,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
+        central_data_store.data_folder = data_folder
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in VP')
@@ -1454,6 +1493,8 @@ class AT_PRE_VP_Screen(QDialog):
         super(AT_PRE_VP_Screen, self).__init__()
         self.initial_directory = os.getcwd()
         loadUi(r"data\at_pre_vp_screen.ui", self)
+        if central_data_store.data_folder is not None and self.folder_entry is not None:
+            self.folder_entry.setText(str(central_data_store.data_folder))
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
         self.select_folder_button.clicked.connect(self.select_working_directory)
@@ -1495,6 +1536,7 @@ class AT_PRE_VP_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
+        central_data_store.data_folder = data_folder
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -1635,12 +1677,20 @@ class AT_PRE_VP_Screen(QDialog):
         # Update QProgressDialog with the new value
         if self.progressDialog is not None:
             self.progressDialog.setValue(value)
+
+class CentralDataStore:
+    def __init__(self):
+        self.NRT = None
+        self.data_folder = None
+
 # main
 app = QApplication(sys.argv)
 # Load custom fonts
 font_id=QFontDatabase.addApplicationFont("font\AvenirNextLTPro-DemiCn.otf")
 
 intro = IntroScreen()
+# Create a global instance of this store
+central_data_store = CentralDataStore()
 widget = QtWidgets.QStackedWidget()
 widget.addWidget(intro)
 widget.setFixedHeight(1000)
