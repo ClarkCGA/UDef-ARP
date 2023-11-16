@@ -34,11 +34,11 @@ class MapComparison(QObject):
         :param mask: mask of the jurisdiction (binary map)
         :return:Polygonized_Mask: municipality mask polygon
         '''
-        in_ds1 = gdal.Open(mask)
-        in_band1 = in_ds1.GetRasterBand(1)
+        in_ds = gdal.Open(mask)
+        in_band = in_ds.GetRasterBand(1)
 
         # Set up osr spatial reference
-        projection = in_ds1.GetProjection()
+        projection = in_ds.GetProjection()
         self.progress_updated.emit(10)
         spatial_ref = osr.SpatialReference()
         spatial_ref.ImportFromWkt(projection)
@@ -48,7 +48,7 @@ class MapComparison(QObject):
         driver = ogr.GetDriverByName("ESRI Shapefile")
         temp_ds = driver.CreateDataSource(temp_layername + ".shp")
         temp_layer = temp_ds.CreateLayer(temp_layername, srs=spatial_ref)
-        gdal.Polygonize(in_band1, in_band1, temp_layer, -1, [], callback=None)
+        gdal.Polygonize(in_band, in_band, temp_layer, -1, [], callback=None)
         self.progress_updated.emit(20)
 
         features = [(feature.GetGeometryRef().GetArea(), feature) for feature in temp_layer]
@@ -93,34 +93,17 @@ class MapComparison(QObject):
         # Open the Polygonized_Mask shapefile
         mask_df = gpd.GeoDataFrame.from_file('POLYGONIZED_MASK.shp')
 
-        # Calculate the bounding box coordinate
-        # minx, easting of the top-left corner (minimum x)
+        # Calculate grid size
         in_ds = gdal.Open(mask)
-        minx =in_ds.GetGeoTransform()[0]
-        # maxx
-        maxx = in_ds.GetGeoTransform()[0] + in_ds.GetGeoTransform()[1] * in_ds.RasterXSize
-        # miny
-        miny =in_ds.GetGeoTransform()[3]+in_ds.GetGeoTransform()[5]*in_ds.RasterYSize
-        # maxy, easting of the top-left corner (max y)
-        maxy =in_ds.GetGeoTransform()[3]
-
-        # Calculate grid size, sqrt(median REDD project size)
-        spacing = int(np.sqrt(grid_area * 10000))
-
-        # Calculate numbers of centroids
-        n_centroidsX = int(((maxx - minx) //spacing) + 1)
-        n_centroidsY = int(((maxy - miny) //spacing) + 1)
-
-        # Calculate the start X and Y coordinates
-        startX = minx + spacing//2
-        startY = miny + spacing//2
+        grid_size = int(np.sqrt(grid_area * 10000)) // int(in_ds.GetGeoTransform()[1])
 
         # Systematic Sampling
         sample_points = []
-        for i in range(-1, n_centroidsY+1):
-            for j in range(-1, n_centroidsX+1):
-                geo_x = startX + (i * spacing)
-                geo_y = startY + (j * spacing)
+        for y in range(-1 * grid_size, in_ds.RasterYSize + 1 * grid_size, grid_size):
+            for x in range(-1 * grid_size, in_ds.RasterXSize + 1 * grid_size, grid_size):
+                # Convert raster coordinates to geographic coordinates
+                geo_x = in_ds.GetGeoTransform()[0] + x * in_ds.GetGeoTransform()[1]
+                geo_y = in_ds.GetGeoTransform()[3] + y * in_ds.GetGeoTransform()[5]
                 sample_points.append((geo_x, geo_y))
 
         # Convert sample_points list to DataFrame
@@ -153,6 +136,7 @@ class MapComparison(QObject):
         # Only preserved Thiessen Polygon within mask by intersection
         thiessen_gdf = gpd.overlay(df1=voronois, df2=polydf, how="intersection", keep_geom_type=False)
         self.progress_updated.emit(40)
+
         # Extract polygons and multipolygons from the entire thiessen_gdf (including GeometryCollections)
         extracted_gdf = thiessen_gdf['geometry'].apply(
             lambda geom: [g for g in geom.geoms if
