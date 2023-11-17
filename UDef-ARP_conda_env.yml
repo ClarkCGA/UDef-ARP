@@ -253,4 +253,3 @@ dependencies:
       - seaborn==0.12.2
       - smmap==5.0.0
       - wrapt==1.15.0
-prefix: C:\Users\yyao\AppData\Local\anaconda3\envs\automation
