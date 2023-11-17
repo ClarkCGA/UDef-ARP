@@ -49,8 +49,9 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r'data\rmt_fit_cal_screen.ui', self)
-        if central_data_store.data_folder is not None and self.folder_entry is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
+        if central_data_store.directory is not None and self.folder_entry is not None:
+            self.directory = central_data_store.directory
+            self.folder_entry.setText(str(central_data_store.directory))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.MCT_button2.clicked.connect(self.gotomct2)
@@ -96,7 +97,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
-        central_data_store.data_folder = data_folder
+        central_data_store.directory = data_folder
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CAL')
@@ -139,6 +140,8 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
             return
 
+        directory = self.folder_entry.text()
+
         # Check if all images have the same number of rows and columns
         dimensions = [self.get_image_dimensions(img) for img in images]
         if len(set(dimensions)) != 1:
@@ -167,7 +170,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(self.directory)
+            data_folder = self.vulnerability_map.set_working_directory(directory)
             NRT = self.vulnerability_map.nrt_calculation(self.in_fn, self.deforestation_hrp, self.mask)
             # Update the central data store
             central_data_store.NRT = NRT
@@ -262,8 +265,9 @@ class AT_FIT_CAL_Screen(QDialog):
         super(AT_FIT_CAL_Screen, self).__init__()
         self.initial_directory = os.getcwd()
         loadUi(r"data\at_fit_cal_screen.ui", self)
-        if central_data_store.data_folder is not None and self.folder_entry is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
+        if central_data_store.directory is not None and self.folder_entry is not None:
+            self.directory = central_data_store.directory
+            self.folder_entry.setText(str(central_data_store.directory))
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
         self.MCT_button3.clicked.connect(self.gotomct3)
@@ -309,7 +313,7 @@ class AT_FIT_CAL_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
-        central_data_store.data_folder = data_folder
+        central_data_store.directory = data_folder
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -363,6 +367,8 @@ class AT_FIT_CAL_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
+        directory = self.folder_entry.text()
+
         out_fn1 = self.image1_entry.text()
         if not out_fn1:
             QMessageBox.critical(self, "Error", "Please enter the name for Modeling Region Map in CAL!")
@@ -410,7 +416,7 @@ class AT_FIT_CAL_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            fit_density_map = self.allocation_tool.execute_workflow_fit(self.directory,self.risk30_hrp,
+            fit_density_map = self.allocation_tool.execute_workflow_fit(directory,self.risk30_hrp,
                                                                         self.municipality,self.deforestation_hrp, csv_name,
                                                                         out_fn1,out_fn2)
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
@@ -432,12 +438,15 @@ class MCT_FIT_CAL_Screen(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r"data\mct_fit_cal_screen.ui", self)
-        if central_data_store.data_folder is not None and self.folder_entry is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
+        if central_data_store.directory is not None and self.folder_entry is not None:
+            self.directory = central_data_store.directory
+            self.folder_entry.setText(str(central_data_store.directory))
+        else:
+            self.select_folder_button.clicked.connect(self.select_working_directory)
         self.AT_button4.clicked.connect(self.gotoat4)
         self.Intro_button4.clicked.connect(self.gotointro4)
         self.RMT_button4.clicked.connect(self.gotormt4)
-        self.select_folder_button.clicked.connect(self.select_working_directory)
+
         self.mask_button.clicked.connect(self.select_mask)
         self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
         self.density_button.clicked.connect(self.select_density)
@@ -477,7 +486,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
-        central_data_store.data_folder = data_folder
+        central_data_store.directory = data_folder
 
     def select_mask(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
@@ -554,10 +563,12 @@ class MCT_FIT_CAL_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the name of plot!")
             return
 
+        directory = self.folder_entry.text()
+
         # Check if the out_fn has the correct file extension
         if not (out_fn.endswith('.png') or out_fn.endswith('.jpg')or out_fn.endswith('.pdf')or out_fn.endswith('.svg')or out_fn.endswith('.eps')or out_fn.endswith('.ps')or out_fn.endswith('.tif')):
             QMessageBox.critical(self, "Error",
-                                 "Please enter extension in the name of plot!")
+                                 "Please enter extension(.png/.jpg/.pdf/.svg/.eps/.ps/.tif) in the name of plot!")
             return
 
         # Show "Processing" message
@@ -577,7 +588,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.map_comparison.set_working_directory(self.directory)
+            data_folder = self.map_comparison.set_working_directory(directory)
             self.map_comparison.create_mask_polygon(self.mask)
             clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp)
             self.map_comparison.create_plot(clipped_gdf, title,out_fn)
@@ -603,14 +614,13 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r"data\rmt_pre_cnf_screen.ui", self)
-        if central_data_store.data_folder is not None and self.folder_entry is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
+        if central_data_store.directory is not None and self.folder_entry is not None:
+            self.directory = central_data_store.directory
+            self.folder_entry.setText(str(central_data_store.directory))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.MCT_button2.clicked.connect(self.gotomct2)
         self.select_folder_button.clicked.connect(self.select_working_directory)
-        if central_data_store.data_folder is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
         self.fd_button.clicked.connect(self.select_fd)
         self.ok_button2.clicked.connect(self.process_data2)
         self.vulnerability_map = VulnerabilityMap()
@@ -648,7 +658,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
-        central_data_store.data_folder = data_folder
+        central_data_store.directory = data_folder
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CNF')
@@ -687,6 +697,8 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Number of classes value should be a valid number!")
             return
 
+        directory = self.folder_entry.text()
+
         out_fn = self.out_fn_entry.text()
         if not out_fn:
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in CNF!")
@@ -714,7 +726,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(self.directory)
+            data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -99)
 
@@ -735,8 +747,9 @@ class AT_PRE_CNF_Screen(QDialog):
         super(AT_PRE_CNF_Screen, self).__init__()
         self.initial_directory = os.getcwd()
         loadUi(r"data\at_pre_cnf_screen.ui", self)
-        if central_data_store.data_folder is not None and self.folder_entry is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
+        if central_data_store.directory is not None and self.folder_entry is not None:
+            self.directory = central_data_store.directory
+            self.folder_entry.setText(str(central_data_store.directory))
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
         self.MCT_button3.clicked.connect(self.gotomct3)
@@ -783,7 +796,7 @@ class AT_PRE_CNF_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
-        central_data_store.data_folder = data_folder
+        central_data_store.directory = data_folder
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -843,6 +856,8 @@ class AT_PRE_CNF_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
+        directory = self.folder_entry.text()
+
         out_fn1 = self.image1_entry.text()
         if not out_fn1:
             QMessageBox.critical(self, "Error", "Please enter the name of Prediction Modeling Region Map in CNF!")
@@ -890,7 +905,7 @@ class AT_PRE_CNF_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            adjusted_prediction_density_map = self.allocation_tool.execute_workflow_cnf(self.directory,
+            adjusted_prediction_density_map = self.allocation_tool.execute_workflow_cnf(directory,
                                                                                         self.max_iterations, self.csv,
                                                                                         self.municipality,
                                                                                         self.deforestation_cnf,
@@ -914,8 +929,9 @@ class MCT_PRE_CNF_Screen(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r"data\mct_pre_cnf_screen.ui", self)
-        if central_data_store.data_folder is not None and self.folder_entry is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
+        if central_data_store.directory is not None and self.folder_entry is not None:
+            self.directory = central_data_store.directory
+            self.folder_entry.setText(str(central_data_store.directory))
         self.AT_button4.clicked.connect(self.gotoat4)
         self.Intro_button4.clicked.connect(self.gotointro4)
         self.RMT_button4.clicked.connect(self.gotormt4)
@@ -959,7 +975,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
-        central_data_store.data_folder = data_folder
+        central_data_store.directory = data_folder
 
     def select_mask(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
@@ -1031,6 +1047,8 @@ class MCT_PRE_CNF_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the title of plot!")
             return
 
+        directory = self.folder_entry.text()
+
         out_fn = self.out_fn_entry.text()
         if not out_fn:
             QMessageBox.critical(self, "Error", "Please enter the name of plot!")
@@ -1040,7 +1058,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         if not (out_fn.endswith('.png') or out_fn.endswith('.jpg') or out_fn.endswith('.pdf') or out_fn.endswith(
                 '.svg') or out_fn.endswith('.eps') or out_fn.endswith('.ps') or out_fn.endswith('.tif')):
             QMessageBox.critical(self, "Error",
-                                 "Please enter extension in the name of plot!")
+                                 "Please enter extension(.png/.jpg/.pdf/.svg/.eps/.ps/.tif) in the name of plot!")
             return
 
         # Show "Processing" message
@@ -1060,7 +1078,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.map_comparison.set_working_directory(self.directory)
+            data_folder = self.map_comparison.set_working_directory(directory)
             self.map_comparison.create_mask_polygon(self.mask)
             clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp)
             self.map_comparison.create_plot(clipped_gdf, title, out_fn)
@@ -1084,13 +1102,12 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r"data\rmt_fit_hrp_screen.ui", self)
-        if central_data_store.data_folder is not None and self.folder_entry is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
+        if central_data_store.directory is not None and self.folder_entry is not None:
+            self.directory = central_data_store.directory
+            self.folder_entry.setText(str(central_data_store.directory))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.select_folder_button.clicked.connect(self.select_working_directory)
-        if central_data_store.data_folder is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
         self.fd_button.clicked.connect(self.select_fd)
         self.ok_button2.clicked.connect(self.process_data2)
         self.vulnerability_map = VulnerabilityMap()
@@ -1121,7 +1138,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
-        central_data_store.data_folder = data_folder
+        central_data_store.directory = data_folder
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in HRP')
@@ -1160,6 +1177,8 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Number of classes value should be a valid number!")
             return
 
+        directory = self.folder_entry.text()
+
         out_fn = self.out_fn_entry.text()
         if not out_fn:
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in HRP!")
@@ -1187,7 +1206,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(self.directory)
+            data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -99)
 
@@ -1208,8 +1227,9 @@ class AT_FIT_HRP_Screen(QDialog):
         super(AT_FIT_HRP_Screen, self).__init__()
         self.initial_directory = os.getcwd()
         loadUi(r"data\at_fit_hrp_screen.ui", self)
-        if central_data_store.data_folder is not None and self.folder_entry is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
+        if central_data_store.directory is not None and self.folder_entry is not None:
+            self.directory = central_data_store.directory
+            self.folder_entry.setText(str(central_data_store.directory))
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
         self.select_folder_button.clicked.connect(self.select_working_directory)
@@ -1248,7 +1268,7 @@ class AT_FIT_HRP_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
-        central_data_store.data_folder = data_folder
+        central_data_store.directory = data_folder
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -1301,6 +1321,8 @@ class AT_FIT_HRP_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
+        directory = self.folder_entry.text()
+
         out_fn1 = self.image1_entry.text()
         if not out_fn1:
             QMessageBox.critical(self, "Error", "Please enter the name for Modeling Region Map in HRP!")
@@ -1348,7 +1370,7 @@ class AT_FIT_HRP_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            fit_density_map = self.allocation_tool.execute_workflow_fit(self.directory,self.risk30_hrp,
+            fit_density_map = self.allocation_tool.execute_workflow_fit(directory,self.risk30_hrp,
                                                                         self.municipality,self.deforestation_hrp, csv_name,
                                                                         out_fn1,out_fn2)
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
@@ -1370,8 +1392,9 @@ class RMT_PRE_VP_SCREEN(QDialog):
         # Store the initial directory path
         self.initial_directory = os.getcwd()
         loadUi(r"data\rmt_pre_vp_screen.ui", self)
-        if central_data_store.data_folder is not None and self.folder_entry is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
+        if central_data_store.directory is not None and self.folder_entry is not None:
+            self.directory = central_data_store.directory
+            self.folder_entry.setText(str(central_data_store.directory))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.select_folder_button.clicked.connect(self.select_working_directory)
@@ -1405,7 +1428,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
-        central_data_store.data_folder = data_folder
+        central_data_store.directory = data_folder
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in VP')
@@ -1444,6 +1467,8 @@ class RMT_PRE_VP_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Number of classes value should be a valid number!")
             return
 
+        directory = self.folder_entry.text()
+
         out_fn = self.out_fn_entry.text()
         if not out_fn:
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in VP!")
@@ -1471,7 +1496,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(self.directory)
+            data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -99)
 
@@ -1493,8 +1518,9 @@ class AT_PRE_VP_Screen(QDialog):
         super(AT_PRE_VP_Screen, self).__init__()
         self.initial_directory = os.getcwd()
         loadUi(r"data\at_pre_vp_screen.ui", self)
-        if central_data_store.data_folder is not None and self.folder_entry is not None:
-            self.folder_entry.setText(str(central_data_store.data_folder))
+        if central_data_store.directory is not None and self.folder_entry is not None:
+            self.directory = central_data_store.directory
+            self.folder_entry.setText(str(central_data_store.directory))
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
         self.select_folder_button.clicked.connect(self.select_working_directory)
@@ -1536,7 +1562,7 @@ class AT_PRE_VP_Screen(QDialog):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         self.directory = data_folder
         self.folder_entry.setText(str(data_folder))
-        central_data_store.data_folder = data_folder
+        central_data_store.directory = data_folder
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -1602,6 +1628,8 @@ class AT_PRE_VP_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Expected deforestation value should be a valid number!")
             return
 
+        directory = self.folder_entry.text()
+
         out_fn1 = self.image1_entry.text()
         if not out_fn1:
             QMessageBox.critical(self, "Error", "Please enter the name of Prediction Modeling Region Map in VP!")
@@ -1659,7 +1687,7 @@ class AT_PRE_VP_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            adjusted_prediction_density_map = self.allocation_tool.execute_workflow_vp(self.directory, self.max_iterations,
+            adjusted_prediction_density_map = self.allocation_tool.execute_workflow_vp(directory, self.max_iterations,
                                                                                        self.csv,
                                                                                        self.municipality,
                                                                                        self.expected_deforestation,
@@ -1681,7 +1709,7 @@ class AT_PRE_VP_Screen(QDialog):
 class CentralDataStore:
     def __init__(self):
         self.NRT = None
-        self.data_folder = None
+        self.directory = None
 
 # main
 app = QApplication(sys.argv)
