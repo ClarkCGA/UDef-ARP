@@ -158,7 +158,7 @@ class MapComparison(QObject):
         self.progress_updated.emit(50)
 
         ## Calculate zonal statistics
-        # Actual Deforestiona(ha)
+        # Actual Deforestation(ha)
         stats = zonal_stats(clipped_gdf.geometry, deforestation, stats="sum", nodata=0)
         self.progress_updated.emit(60)
 
@@ -168,14 +168,14 @@ class MapComparison(QObject):
         areal_resolution_of_map_pixels = P * P / 10000
 
         # Add the results back to the GeoDataFrame
-        clipped_gdf['Actual Deforestion(ha)'] = [(item['sum'] if item['sum'] is not None else 0) * areal_resolution_of_map_pixels for item in stats]
+        clipped_gdf['Actual Deforestation(ha)'] = [(item['sum'] if item['sum'] is not None else 0) * areal_resolution_of_map_pixels for item in stats]
         self.progress_updated.emit(70)
 
-        # Predicted Deforestiona(ha)
+        # Predicted Deforestation(ha)
         stats1 = zonal_stats(clipped_gdf.geometry, density, stats="sum", nodata=0)
         self.progress_updated.emit(80)
 
-        clipped_gdf['Predicted Deforestion(ha)'] = [(item['sum'] if item['sum'] is not None else 0) for item in stats1]
+        clipped_gdf['Predicted Deforestation(ha)'] = [(item['sum'] if item['sum'] is not None else 0) for item in stats1]
         self.progress_updated.emit(90)
 
         # ID
@@ -183,12 +183,12 @@ class MapComparison(QObject):
 
         # Export to csv
         csv_file_path = csv_name
-        csv=clipped_gdf.drop('geometry', axis=1).to_csv(csv_file_path, columns=['ID', 'Actual Deforestion(ha)', 'Predicted Deforestion(ha)'],
+        csv=clipped_gdf.drop('geometry', axis=1).to_csv(csv_file_path, columns=['ID', 'Actual Deforestation(ha)', 'Predicted Deforestation(ha)'],
                                                     index=False)
 
         # Rename columns title for shapefile
-        clipped_gdf = clipped_gdf.rename(columns={'Predicted Deforestion(ha)': 'PredDef',
-                                                  'Actual Deforestion(ha)': 'ActualDef'})
+        clipped_gdf = clipped_gdf.rename(columns={'Predicted Deforestation(ha)': 'PredDef',
+                                                  'Actual Deforestation(ha)': 'ActualDef'})
 
         # Save the updated GeoDataFrame back to a shapefile
         clipped_gdf.to_file('thiessen_polygon.shp')
@@ -235,8 +235,8 @@ class MapComparison(QObject):
         plt.scatter(clipped_gdf['ActualDef'], clipped_gdf['PredDef'], color='steelblue', label='Data Points')
 
         # Add labels and title
-        plt.xlabel('Actual Deforestion(ha)', color='dimgrey')
-        plt.ylabel('Predicted Deforestion(ha)', color='dimgrey')
+        plt.xlabel('Actual Deforestation(ha)', color='dimgrey')
+        plt.ylabel('Predicted Deforestation(ha)', color='dimgrey')
         plt.title(title, color='firebrick', fontsize=20, pad=20)
 
         # Plot the trend line
