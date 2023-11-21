@@ -215,11 +215,11 @@ class MapComparison(QObject):
         # Calculate the trend line
         trend_line = slope * X + intercept
 
-        # ## Calculate R square
-        # # Get the correlation coefficient
-        # r = np.corrcoef(X, Y)[0, 1]
-        # # Square the correlation coefficient
-        # r_squared = r ** 2
+        ## Calculate R square
+        # Get the correlation coefficient
+        r = np.corrcoef(X, Y)[0, 1]
+        # Square the correlation coefficient
+        r_squared = r ** 2
 
         ##Calculate MedAE
         total_distance = []
@@ -259,8 +259,11 @@ class MapComparison(QObject):
         # Set gap between texts to 3% of the maximum value
         text_y_gap = max_value * 0.05
 
-        plt.text(text_x_pos, text_y_start_pos, f'Samples = {len(X):.2f}', fontsize=11, color='black')
-        plt.text(text_x_pos, text_y_start_pos - text_y_gap, f'MedAE = {MedAE:.2f}', fontsize=11, color='black')
+        # Adjust plt texts with the new calculated positions
+        plt.text(text_x_pos, text_y_start_pos, equation, fontsize=11, color='black')
+        plt.text(text_x_pos, text_y_start_pos - text_y_gap, f'Samples = {len(X):.2f}', fontsize=11, color='black')
+        plt.text(text_x_pos, text_y_start_pos - 2 * text_y_gap, f'R^2 = {r_squared:.2f}', fontsize=11, color='black')
+        plt.text(text_x_pos, text_y_start_pos - 3 * text_y_gap, f'MedAE = {MedAE:.2f}', fontsize=11, color='black')
 
         # x, yticks
         plt.yticks(fontsize=10, color='dimgrey')
