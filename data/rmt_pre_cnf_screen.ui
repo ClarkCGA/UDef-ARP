@@ -431,7 +431,7 @@ border-radius:20px;
 </string>
     </property>
     <property name="text">
-     <string>3: Model Fit Assessment</string>
+     <string>3: Prediction Assessment</string>
     </property>
    </widget>
    <widget class="QPushButton" name="AT_button2">
@@ -484,8 +484,6 @@ border-radius:20px;
    <zorder>AT_button2</zorder>
   </widget>
  </widget>
- <resources>
-  <include location="forest_image.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
