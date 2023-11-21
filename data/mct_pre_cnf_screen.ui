@@ -515,7 +515,7 @@ border-radius:20px;}
 </string>
     </property>
     <property name="text">
-     <string>3: Prediction Assessment</string>
+     <string>3: Model Assessment</string>
     </property>
    </widget>
    <widget class="QPushButton" name="AT_button4">
