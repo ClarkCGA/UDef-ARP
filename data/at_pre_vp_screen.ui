@@ -269,7 +269,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
      <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     </property>
     <property name="text">
-     <string>Expected Annual Jurisdictional Activity (ha)</string>
+     <string>Expected Jurisdictional Activity (ha)</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_8">
@@ -331,7 +331,7 @@ font: 9pt;</string>
      <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
     </property>
     <property name="text">
-     <string>100000</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLineEdit" name="risk30_vp_entry">
