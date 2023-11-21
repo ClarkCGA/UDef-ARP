@@ -17,7 +17,7 @@ class IntroScreen(QDialog):
         # Set window properties
         self.setWindowTitle('JNR Allocated Risk Mapping Procedure (UDef-ARP)')
         # Set window icon
-        self.setWindowIcon(QIcon('icon.ico'))
+        self.setWindowIcon(QIcon('data\icon.ico'))
         self.Fit_Cal_button.clicked.connect(self.gotofitcal)
         self.Pre_Cnf_button.clicked.connect(self.gotoprecnf)
         self.Fit_Hrp_button.clicked.connect(self.gotofithrp)
@@ -446,7 +446,6 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.AT_button4.clicked.connect(self.gotoat4)
         self.Intro_button4.clicked.connect(self.gotointro4)
         self.RMT_button4.clicked.connect(self.gotormt4)
-
         self.mask_button.clicked.connect(self.select_mask)
         self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
         self.density_button.clicked.connect(self.select_density)
@@ -462,6 +461,8 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.title = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Map_Comparison_CAL_Plot.png')
+        self.csv_name = None
+        self.csv_entry.setPlaceholderText('e.g., Performance_Chart_CAL.csv')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat4(self):
@@ -558,17 +559,27 @@ class MCT_FIT_CAL_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please enter the title of plot!")
             return
 
+        directory = self.folder_entry.text()
+
         out_fn = self.out_fn_entry.text()
         if not out_fn:
             QMessageBox.critical(self, "Error", "Please enter the name of plot!")
             return
 
-        directory = self.folder_entry.text()
-
         # Check if the out_fn has the correct file extension
         if not (out_fn.endswith('.png') or out_fn.endswith('.jpg')or out_fn.endswith('.pdf')or out_fn.endswith('.svg')or out_fn.endswith('.eps')or out_fn.endswith('.ps')or out_fn.endswith('.tif')):
             QMessageBox.critical(self, "Error",
                                  "Please enter extension(.png/.jpg/.pdf/.svg/.eps/.ps/.tif) in the name of plot!")
+            return
+
+        csv_name = self.csv_entry.text()
+        if not csv_name:
+            QMessageBox.critical(self, "Error", "Please enter the name for the Performance Chart!")
+            return
+
+        if not (csv_name.endswith('.csv')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .csv extension in the name of Performance_Chart!")
             return
 
         # Show "Processing" message
@@ -590,7 +601,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         try:
             data_folder = self.map_comparison.set_working_directory(directory)
             self.map_comparison.create_mask_polygon(self.mask)
-            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp)
+            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, csv_name)
             self.map_comparison.create_plot(clipped_gdf, title,out_fn)
             self.map_comparison.remove_temp_files()
 
@@ -951,6 +962,8 @@ class MCT_PRE_CNF_Screen(QDialog):
         self.title = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Map_Comparison_CNF_Plot.png')
+        self.csv_name = None
+        self.csv_entry.setPlaceholderText('e.g., Performance_Chart_CNF.csv')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat4(self):
@@ -1061,6 +1074,16 @@ class MCT_PRE_CNF_Screen(QDialog):
                                  "Please enter extension(.png/.jpg/.pdf/.svg/.eps/.ps/.tif) in the name of plot!")
             return
 
+        csv_name = self.csv_entry.text()
+        if not csv_name:
+            QMessageBox.critical(self, "Error", "Please enter the name for the Performance Chart!")
+            return
+
+        if not (csv_name.endswith('.csv')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .csv extension in the name of Performance_Chart!")
+            return
+
         # Show "Processing" message
         processing_message = "Processing data..."
         self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
@@ -1080,7 +1103,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         try:
             data_folder = self.map_comparison.set_working_directory(directory)
             self.map_comparison.create_mask_polygon(self.mask)
-            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp)
+            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, csv_name)
             self.map_comparison.create_plot(clipped_gdf, title, out_fn)
             self.map_comparison.remove_temp_files()
 

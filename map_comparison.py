@@ -79,13 +79,14 @@ class MapComparison(QObject):
 
         return
 
-    def create_thiessen_polygon (self, grid_area, mask, density, deforestation):
+    def create_thiessen_polygon (self, grid_area, mask, density, deforestation, csv_name):
         '''
           Create thiessen polygon
          :param grid_area: assessment grid cell area or 100,000 (ha)
          :param mask: mask of the jurisdiction (binary map)
          :param density: adjusted prediction density map
          :param deforestation:Deforestation Map during the HRP
+         :param csv_name:Name of performance chart
          :return  clipped_gdf: thiessen polygon dataframe
                   csv: performance chart
         '''
@@ -181,8 +182,10 @@ class MapComparison(QObject):
         clipped_gdf['ID'] = range(1, len(clipped_gdf) + 1)
 
         # Export to csv
-        csv=clipped_gdf.drop('geometry', axis=1).to_csv('Performance_Chart.csv', columns=['ID', 'Actual Deforestion(ha)', 'Predicted Deforestion(ha)'],
+        csv_file_path = csv_name
+        csv=clipped_gdf.drop('geometry', axis=1).to_csv(csv_file_path, columns=['ID', 'Actual Deforestion(ha)', 'Predicted Deforestion(ha)'],
                                                     index=False)
+
         # Rename columns title for shapefile
         clipped_gdf = clipped_gdf.rename(columns={'Predicted Deforestion(ha)': 'PredDef',
                                                   'Actual Deforestion(ha)': 'ActualDef'})

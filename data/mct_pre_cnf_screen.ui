@@ -54,7 +54,7 @@
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>550</y>
+      <y>530</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -68,7 +68,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1670</x>
-      <y>550</y>
+      <y>530</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -84,7 +84,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>550</y>
+      <y>530</y>
       <width>191</width>
       <height>31</height>
      </rect>
@@ -101,7 +101,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>680</y>
+      <y>660</y>
       <width>431</width>
       <height>31</height>
      </rect>
@@ -117,7 +117,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>720</y>
+      <y>700</y>
       <width>531</width>
       <height>31</height>
      </rect>
@@ -133,7 +133,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>640</y>
+      <y>620</y>
       <width>531</width>
       <height>31</height>
      </rect>
@@ -149,7 +149,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>760</y>
+      <y>740</y>
       <width>531</width>
       <height>31</height>
      </rect>
@@ -165,7 +165,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>850</y>
+      <y>830</y>
       <width>431</width>
       <height>31</height>
      </rect>
@@ -181,7 +181,7 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>680</y>
+      <y>660</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -195,7 +195,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>720</y>
+      <y>700</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -208,7 +208,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>760</y>
+      <y>740</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -224,7 +224,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>640</y>
+      <y>620</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -237,7 +237,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1670</x>
-      <y>680</y>
+      <y>660</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -253,7 +253,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1670</x>
-      <y>640</y>
+      <y>620</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -269,7 +269,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1670</x>
-      <y>720</y>
+      <y>700</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -285,7 +285,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>850</y>
+      <y>830</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -298,7 +298,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1640</x>
-      <y>870</y>
+      <y>850</y>
       <width>121</width>
       <height>41</height>
      </rect>
@@ -314,7 +314,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>1640</x>
-      <y>820</y>
+      <y>800</y>
       <width>121</width>
       <height>41</height>
      </rect>
@@ -330,7 +330,7 @@ font: 9pt;</string>
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>520</y>
+      <y>500</y>
       <width>1281</width>
       <height>81</height>
      </rect>
@@ -363,7 +363,7 @@ color: rgb(125, 169, 172);
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>610</y>
+      <y>590</y>
       <width>1281</width>
       <height>201</height>
      </rect>
@@ -396,9 +396,9 @@ color: rgb(125, 169, 172);
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>820</y>
+      <y>800</y>
       <width>1131</width>
-      <height>131</height>
+      <height>161</height>
      </rect>
     </property>
     <property name="font">
@@ -550,7 +550,7 @@ border-radius:20px;
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>890</y>
+      <y>870</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -563,7 +563,7 @@ border-radius:20px;
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>890</y>
+      <y>870</y>
       <width>521</width>
       <height>31</height>
      </rect>
@@ -573,6 +573,35 @@ border-radius:20px;
     </property>
     <property name="text">
      <string>Name for the Plot</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="csv_entry">
+    <property name="geometry">
+     <rect>
+      <x>1040</x>
+      <y>910</y>
+      <width>541</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>910</y>
+      <width>531</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Name for the Performance Chart (.csv)</string>
     </property>
    </widget>
    <zorder>label</zorder>
@@ -603,6 +632,8 @@ border-radius:20px;
    <zorder>AT_button4</zorder>
    <zorder>out_fn_entry</zorder>
    <zorder>label_9</zorder>
+   <zorder>csv_entry</zorder>
+   <zorder>label_10</zorder>
   </widget>
  </widget>
  <resources/>
