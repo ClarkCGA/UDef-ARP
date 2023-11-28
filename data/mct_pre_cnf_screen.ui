@@ -177,9 +177,9 @@ border-radius:20px;
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>490</y>
+      <y>460</y>
       <width>1301</width>
-      <height>481</height>
+      <height>511</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -565,7 +565,7 @@ color: rgb(125, 169, 172);
           <x>10</x>
           <y>300</y>
           <width>1131</width>
-          <height>161</height>
+          <height>201</height>
          </rect>
         </property>
         <property name="font">
@@ -622,6 +622,35 @@ color: rgb(125, 169, 172);
          <string>OK</string>
         </property>
        </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>450</y>
+          <width>531</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Name for the Thiessen Polygon (.shp)</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="tp_entry">
+        <property name="geometry">
+         <rect>
+          <x>580</x>
+          <y>450</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+        </property>
+       </widget>
        <zorder>groupBox_3</zorder>
        <zorder>groupBox</zorder>
        <zorder>groupBox_2</zorder>
@@ -647,6 +676,8 @@ color: rgb(125, 169, 172);
        <zorder>csv_entry</zorder>
        <zorder>doc_button</zorder>
        <zorder>ok_button</zorder>
+       <zorder>label_11</zorder>
+       <zorder>tp_entry</zorder>
       </widget>
      </item>
     </layout>

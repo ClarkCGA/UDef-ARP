@@ -79,7 +79,7 @@ class MapComparison(QObject):
 
         return
 
-    def create_thiessen_polygon (self, grid_area, mask, density, deforestation, csv_name):
+    def create_thiessen_polygon (self, grid_area, mask, density, deforestation, csv_name, tp_name):
         '''
           Create thiessen polygon
          :param grid_area: assessment grid cell area or 100,000 (ha)
@@ -191,7 +191,8 @@ class MapComparison(QObject):
                                                   'Actual Deforestation(ha)': 'ActualDef'})
 
         # Save the updated GeoDataFrame back to a shapefile
-        clipped_gdf.to_file('thiessen_polygon.shp')
+        tp_file_path = tp_name
+        clipped_gdf.to_file(tp_file_path)
 
         return clipped_gdf, csv
 
@@ -222,11 +223,8 @@ class MapComparison(QObject):
         r_squared = r ** 2
 
         ##Calculate MedAE
-        total_distance = []
-        for i in Y:
-            for j in X:
-                total_distance.append(abs(i - j))
-        MedAE = sum(total_distance) / len(total_distance)
+        distance_arr = [abs(X[i] - Y[i]) for i in range(len(X))]
+        MedAE = np.median(distance_arr)
 
         # Set the figure size
         plt.figure(figsize=(8, 6))

@@ -478,6 +478,8 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.out_fn_entry.setPlaceholderText('e.g., Map_Comparison_CAL_Plot.png')
         self.csv_name = None
         self.csv_entry.setPlaceholderText('e.g., Performance_Chart_CAL.csv')
+        self.tp_name = None
+        self.tp_entry.setPlaceholderText('e.g., Thiessen_Polygon_CAL.shp')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat4(self):
@@ -601,6 +603,16 @@ class MCT_FIT_CAL_Screen(QDialog):
                                  "Please enter .csv extension in the name of Performance_Chart!")
             return
 
+        tp_name = self.tp_entry.text()
+        if not tp_name:
+            QMessageBox.critical(self, "Error", "Please enter the name for the Thiessen Polygon!")
+            return
+
+        if not (tp_name.endswith('.shp')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .shp extension in the name of Thiessen Polygon!")
+            return
+
         # Show "Processing" message
         processing_message = "Processing data..."
         self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
@@ -620,7 +632,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         try:
             data_folder = self.map_comparison.set_working_directory(directory)
             self.map_comparison.create_mask_polygon(self.mask)
-            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, csv_name)
+            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, csv_name, tp_name)
             self.map_comparison.create_plot(clipped_gdf, title,out_fn)
             self.map_comparison.remove_temp_files()
 
@@ -994,6 +1006,8 @@ class MCT_PRE_CNF_Screen(QDialog):
         self.out_fn_entry.setPlaceholderText('e.g., Map_Comparison_CNF_Plot.png')
         self.csv_name = None
         self.csv_entry.setPlaceholderText('e.g., Performance_Chart_CNF.csv')
+        self.tp_name = None
+        self.tp_entry.setPlaceholderText('e.g., Thiessen_Polygon_CNF.shp')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat4(self):
@@ -1116,6 +1130,16 @@ class MCT_PRE_CNF_Screen(QDialog):
         if not (csv_name.endswith('.csv')):
             QMessageBox.critical(self, "Error",
                                  "Please enter .csv extension in the name of Performance_Chart!")
+            return
+
+        tp_name = self.tp_entry.text()
+        if not tp_name:
+            QMessageBox.critical(self, "Error", "Please enter the name for the Thiessen Polygon!")
+            return
+
+        if not (tp_name.endswith('.shp')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .shp extension in the name of Thiessen Polygon!")
             return
 
         # Show "Processing" message
