@@ -1,9 +1,9 @@
 import sys
 import os
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt,QUrl
 from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog, QMessageBox, QProgressDialog
-from PyQt5.QtGui import QFontDatabase, QIcon, QFont
+from PyQt5.QtGui import QFontDatabase, QIcon, QFont, QDesktopServices
 from PyQt5.uic import loadUi
 from allocation_tool import AllocationTool
 from vulnerability_map import VulnerabilityMap
@@ -22,6 +22,7 @@ class IntroScreen(QDialog):
         self.Pre_Cnf_button.clicked.connect(self.gotoprecnf)
         self.Fit_Hrp_button.clicked.connect(self.gotofithrp)
         self.Pre_VP_button.clicked.connect(self.gotoprevp)
+        self.doc_button.clicked.connect(self.openDocument)
 
     def gotofitcal(self):
         rmt_fit_cal = RMT_FIT_CAL_SCREEN()
@@ -43,6 +44,10 @@ class IntroScreen(QDialog):
         widget.addWidget(rmt_pre_vp)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
+    def openDocument(self):
+        pdf_path = "doc/UDef-ARP_Introduction.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+
 class RMT_FIT_CAL_SCREEN(QDialog):
     def __init__(self):
         super(RMT_FIT_CAL_SCREEN, self).__init__()
@@ -55,6 +60,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.MCT_button2.clicked.connect(self.gotomct2)
+        self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
         self.mask_button.clicked.connect(self.select_mask)
@@ -92,6 +98,10 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         intro2 = IntroScreen()
         widget.addWidget(intro2)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def openDocument(self):
+        pdf_path = "doc/TestFitVM.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -271,6 +281,7 @@ class AT_FIT_CAL_Screen(QDialog):
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
         self.MCT_button3.clicked.connect(self.gotomct3)
+        self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.municipality_button.clicked.connect(self.select_municipality)
         self.risk30_hrp_button.clicked.connect(self.select_risk30_hrp)
@@ -308,6 +319,10 @@ class AT_FIT_CAL_Screen(QDialog):
         mct3 = MCT_FIT_CAL_Screen()
         widget.addWidget(mct3)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def openDocument(self):
+        pdf_path = "doc/TestFitAM.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -446,6 +461,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.AT_button4.clicked.connect(self.gotoat4)
         self.Intro_button4.clicked.connect(self.gotointro4)
         self.RMT_button4.clicked.connect(self.gotormt4)
+        self.doc_button.clicked.connect(self.openDocument)
         self.mask_button.clicked.connect(self.select_mask)
         self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
         self.density_button.clicked.connect(self.select_density)
@@ -482,6 +498,10 @@ class MCT_FIT_CAL_Screen(QDialog):
         rmt4 = RMT_FIT_CAL_SCREEN()
         widget.addWidget(rmt4)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def openDocument(self):
+        pdf_path = "doc/TestFitMA.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -631,6 +651,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.MCT_button2.clicked.connect(self.gotomct2)
+        self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.fd_button.clicked.connect(self.select_fd)
         self.ok_button2.clicked.connect(self.process_data2)
@@ -664,6 +685,10 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         intro2 = IntroScreen()
         widget.addWidget(intro2)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def openDocument(self):
+        pdf_path = "doc/TestPreVM.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -764,6 +789,7 @@ class AT_PRE_CNF_Screen(QDialog):
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
         self.MCT_button3.clicked.connect(self.gotomct3)
+        self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.municipality_button.clicked.connect(self.select_municipality)
         self.csv_button.clicked.connect(self.select_csv)
@@ -787,7 +813,7 @@ class AT_PRE_CNF_Screen(QDialog):
 
     def gotormt3(self):
         os.chdir(self.initial_directory)
-        rmt3 = RMT_PRE_VP_SCREEN()
+        rmt3 = RMT_PRE_CNF_SCREEN()
         widget.addWidget(rmt3)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
@@ -802,6 +828,10 @@ class AT_PRE_CNF_Screen(QDialog):
         mct3 = MCT_PRE_CNF_Screen()
         widget.addWidget(mct3)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def openDocument(self):
+        pdf_path = "doc/TestPreAM.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -946,6 +976,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         self.AT_button4.clicked.connect(self.gotoat4)
         self.Intro_button4.clicked.connect(self.gotointro4)
         self.RMT_button4.clicked.connect(self.gotormt4)
+        self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.mask_button.clicked.connect(self.select_mask)
         self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
@@ -983,6 +1014,10 @@ class MCT_PRE_CNF_Screen(QDialog):
         rmt4 = RMT_PRE_CNF_SCREEN()
         widget.addWidget(rmt4)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def openDocument(self):
+        pdf_path = "doc/TestPreMA.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -1130,6 +1165,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             self.folder_entry.setText(str(central_data_store.directory))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
+        self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.fd_button.clicked.connect(self.select_fd)
         self.ok_button2.clicked.connect(self.process_data2)
@@ -1156,6 +1192,10 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         intro2 = IntroScreen()
         widget.addWidget(intro2)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def openDocument(self):
+        pdf_path = "doc/AppFitVM.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -1255,6 +1295,7 @@ class AT_FIT_HRP_Screen(QDialog):
             self.folder_entry.setText(str(central_data_store.directory))
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
+        self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.municipality_button.clicked.connect(self.select_municipality)
         self.risk30_hrp_button.clicked.connect(self.select_risk30_hrp)
@@ -1286,6 +1327,10 @@ class AT_FIT_HRP_Screen(QDialog):
         intro3 = IntroScreen()
         widget.addWidget(intro3)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def openDocument(self):
+        pdf_path = "doc/AppFitAM.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -1420,6 +1465,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
             self.folder_entry.setText(str(central_data_store.directory))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
+        self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.fd_button.clicked.connect(self.select_fd)
         self.ok_button2.clicked.connect(self.process_data2)
@@ -1446,6 +1492,10 @@ class RMT_PRE_VP_SCREEN(QDialog):
         intro2 = IntroScreen()
         widget.addWidget(intro2)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def openDocument(self):
+        pdf_path = "doc/AppPreVM.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -1546,6 +1596,7 @@ class AT_PRE_VP_Screen(QDialog):
             self.folder_entry.setText(str(central_data_store.directory))
         self.Intro_button3.clicked.connect(self.gotointro3)
         self.RMT_button3.clicked.connect(self.gotormt3)
+        self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.municipality_button.clicked.connect(self.select_municipality)
         self.csv_button.clicked.connect(self.select_csv)
@@ -1580,6 +1631,10 @@ class AT_PRE_VP_Screen(QDialog):
         intro3 = IntroScreen()
         widget.addWidget(intro3)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def openDocument(self):
+        pdf_path = "doc/AppPreAM.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
