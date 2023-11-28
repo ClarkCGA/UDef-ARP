@@ -161,439 +161,455 @@ border-radius:20px;}
      <string>2: Allocated Risk Mapping</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="folder_entry">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>1040</x>
-      <y>550</y>
-      <width>541</width>
-      <height>31</height>
+      <x>480</x>
+      <y>510</y>
+      <width>1291</width>
+      <height>431</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);
-font: 9pt;</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="select_folder_button">
-    <property name="geometry">
-     <rect>
-      <x>1670</x>
-      <y>550</y>
-      <width>41</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>...</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>550</y>
-      <width>461</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QFrame" name="frame">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>30</y>
+          <width>461</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">
 font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Working Directory</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>640</y>
-      <width>471</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Map of Administrative Divisions</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>680</y>
-      <width>471</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Vulnerability Map for the HRP (previous step)</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>720</y>
-      <width>471</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Map of Deforestation in the HRP (binary map)</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_8">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>810</y>
-      <width>541</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Name for the Modeling Region Map in the HRP</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_9">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>890</y>
-      <width>541</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Name for the Fitted Density Map in the HRP</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="municipality_entry">
-    <property name="geometry">
-     <rect>
-      <x>1040</x>
-      <y>640</y>
-      <width>541</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);
+        </property>
+        <property name="text">
+         <string>Working Directory</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="folder_entry">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>30</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);
 font: 9pt;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="risk30_hrp_entry">
-    <property name="geometry">
-     <rect>
-      <x>1040</x>
-      <y>680</y>
-      <width>541</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="deforestation_hrp_entry">
-    <property name="geometry">
-     <rect>
-      <x>1040</x>
-      <y>720</y>
-      <width>541</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="municipality_button">
-    <property name="geometry">
-     <rect>
-      <x>1670</x>
-      <y>640</y>
-      <width>41</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>...</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="deforestation_hrp_button">
-    <property name="geometry">
-     <rect>
-      <x>1670</x>
-      <y>720</y>
-      <width>41</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>...</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="risk30_hrp_button">
-    <property name="geometry">
-     <rect>
-      <x>1670</x>
-      <y>680</y>
-      <width>41</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>...</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="image2_entry">
-    <property name="geometry">
-     <rect>
-      <x>1040</x>
-      <y>890</y>
-      <width>541</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="image1_entry">
-    <property name="geometry">
-     <rect>
-      <x>1040</x>
-      <y>810</y>
-      <width>541</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="ok_button3">
-    <property name="geometry">
-     <rect>
-      <x>1640</x>
-      <y>830</y>
-      <width>121</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 9pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-    </property>
-    <property name="text">
-     <string>OK</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="help_button3">
-    <property name="geometry">
-     <rect>
-      <x>1640</x>
-      <y>780</y>
-      <width>121</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 9pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-    </property>
-    <property name="text">
-     <string>HELP</string>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>520</y>
-      <width>1281</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>6</pointsize>
-      <weight>75</weight>
-      <italic>true</italic>
-      <bold>true</bold>
-      <strikeout>false</strikeout>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: transparent;
+        </property>
+       </widget>
+       <widget class="QPushButton" name="select_folder_button">
+        <property name="geometry">
+         <rect>
+          <x>1190</x>
+          <y>30</y>
+          <width>41</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1281</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>MS Shell Dlg 2</family>
+          <pointsize>6</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background: transparent;
 border: 1px solid white;
 color: rgb(125, 169, 172);
 
 </string>
-    </property>
-    <property name="title">
-     <string>Application Stage: Fitting Phase for the Historical Reference Period (HRP)</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>610</y>
-      <width>1281</width>
-      <height>161</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>6</pointsize>
-      <weight>75</weight>
-      <italic>true</italic>
-      <bold>true</bold>
-      <strikeout>false</strikeout>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: transparent;
+        </property>
+        <property name="title">
+         <string>Application Stage: Fitting Phase for the Historical Reference Period (HRP)</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>120</y>
+          <width>471</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Map of Administrative Divisions</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_4">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>160</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Vulnerability Map for the HRP (previous step)</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>200</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Map of Deforestation in the HRP (binary map)</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="municipality_entry">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>120</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);
+font: 9pt;</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="risk30_hrp_entry">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>160</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="deforestation_hrp_entry">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>200</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="municipality_button">
+        <property name="geometry">
+         <rect>
+          <x>1190</x>
+          <y>120</y>
+          <width>41</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="risk30_hrp_button">
+        <property name="geometry">
+         <rect>
+          <x>1190</x>
+          <y>160</y>
+          <width>41</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="deforestation_hrp_button">
+        <property name="geometry">
+         <rect>
+          <x>1190</x>
+          <y>200</y>
+          <width>41</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>90</y>
+          <width>1281</width>
+          <height>161</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>MS Shell Dlg 2</family>
+          <pointsize>6</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background: transparent;
 border: 1px solid white;
 color: rgb(125, 169, 172);
 
 </string>
-    </property>
-    <property name="title">
-     <string>Input Parameters</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_3">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>780</y>
-      <width>1121</width>
-      <height>161</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>6</pointsize>
-      <weight>75</weight>
-      <italic>true</italic>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: transparent;
+        </property>
+        <property name="title">
+         <string>Input Parameters</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_8">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>290</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Name for the Modeling Region Map in the HRP</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_10">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>330</y>
+          <width>531</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Name for the Relative Frequency Table (.csv)</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_9">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>370</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Name for the Fitted Density Map in the HRP</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="image1_entry">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>280</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="csv_entry">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>320</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="image2_entry">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>360</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="doc_button">
+        <property name="geometry">
+         <rect>
+          <x>1160</x>
+          <y>260</y>
+          <width>121</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 9pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>HELP</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="ok_button3">
+        <property name="geometry">
+         <rect>
+          <x>1160</x>
+          <y>310</y>
+          <width>121</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 9pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>OK</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>260</y>
+          <width>1131</width>
+          <height>161</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background: transparent;
 border: 1px solid white;
 color: rgb(125, 169, 172);
 
 </string>
-    </property>
-    <property name="title">
-     <string>Output Parameters</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-    </property>
+        </property>
+        <property name="title">
+         <string>Output Parameters</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <zorder>groupBox_3</zorder>
+       <zorder>groupBox_2</zorder>
+       <zorder>groupBox</zorder>
+       <zorder>label_2</zorder>
+       <zorder>folder_entry</zorder>
+       <zorder>select_folder_button</zorder>
+       <zorder>label_3</zorder>
+       <zorder>label_4</zorder>
+       <zorder>label_6</zorder>
+       <zorder>municipality_entry</zorder>
+       <zorder>risk30_hrp_entry</zorder>
+       <zorder>deforestation_hrp_entry</zorder>
+       <zorder>municipality_button</zorder>
+       <zorder>risk30_hrp_button</zorder>
+       <zorder>deforestation_hrp_button</zorder>
+       <zorder>label_8</zorder>
+       <zorder>label_10</zorder>
+       <zorder>label_9</zorder>
+       <zorder>image1_entry</zorder>
+       <zorder>csv_entry</zorder>
+       <zorder>image2_entry</zorder>
+       <zorder>doc_button</zorder>
+       <zorder>ok_button3</zorder>
+      </widget>
+     </item>
+    </layout>
    </widget>
-   <widget class="QLabel" name="label_10">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>850</y>
-      <width>531</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Name for the Relative Frequency Table (.csv)</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="csv_entry">
-    <property name="geometry">
-     <rect>
-      <x>1040</x>
-      <y>850</y>
-      <width>541</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
-    </property>
-   </widget>
-   <zorder>label</zorder>
-   <zorder>Intro_button3</zorder>
-   <zorder>RMT_button3</zorder>
-   <zorder>AT_button3</zorder>
-   <zorder>folder_entry</zorder>
-   <zorder>label_2</zorder>
-   <zorder>label_3</zorder>
-   <zorder>label_4</zorder>
-   <zorder>label_6</zorder>
-   <zorder>label_8</zorder>
-   <zorder>label_9</zorder>
-   <zorder>municipality_entry</zorder>
-   <zorder>risk30_hrp_entry</zorder>
-   <zorder>deforestation_hrp_entry</zorder>
-   <zorder>ok_button3</zorder>
-   <zorder>help_button3</zorder>
-   <zorder>groupBox_2</zorder>
-   <zorder>groupBox_3</zorder>
-   <zorder>groupBox</zorder>
-   <zorder>select_folder_button</zorder>
-   <zorder>risk30_hrp_button</zorder>
-   <zorder>municipality_button</zorder>
-   <zorder>deforestation_hrp_button</zorder>
-   <zorder>image1_entry</zorder>
-   <zorder>image2_entry</zorder>
-   <zorder>label_10</zorder>
-   <zorder>csv_entry</zorder>
   </widget>
  </widget>
- <resources>
-  <include location="forest_image.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -61,7 +61,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="Intro_button">
+   <widget class="QPushButton" name="doc_button">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -103,39 +103,6 @@ border-radius:20px;
     </property>
     <property name="checkable">
      <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>450</y>
-      <width>1291</width>
-      <height>541</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>6</pointsize>
-      <weight>75</weight>
-      <italic>true</italic>
-      <bold>true</bold>
-      <strikeout>false</strikeout>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: transparent;
-border: 1px solid white;
-color: rgb(125, 169, 172);
-
-</string>
-    </property>
-    <property name="title">
-     <string>Introduction</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QPushButton" name="Fit_Cal_button">
@@ -356,47 +323,82 @@ font: 75 10pt &quot;AvenirNext LT Pro Bold&quot;;</string>
      <string>Application Stage</string>
     </property>
    </widget>
-   <widget class="QWidget" name="verticalLayoutWidget">
+   <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>460</y>
-      <width>1261</width>
-      <height>541</height>
+      <x>460</x>
+      <y>440</y>
+      <width>1311</width>
+      <height>591</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QLabel" name="label_4">
-       <property name="maximumSize">
-        <size>
-         <width>167772</width>
-         <height>167772</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>intro4.jpg</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>1261</width>
+       <height>491</height>
+      </rect>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>167772</width>
+       <height>167772</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>intro.jpg</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>1291</width>
+       <height>521</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>6</pointsize>
+       <weight>75</weight>
+       <italic>true</italic>
+       <bold>true</bold>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: transparent;
+border: 1px solid white;
+color: rgb(125, 169, 172);
+
+</string>
+     </property>
+     <property name="title">
+      <string>Introduction</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <zorder>groupBox_2</zorder>
+    <zorder>label_4</zorder>
    </widget>
-   <zorder>label</zorder>
-   <zorder>Intro_button</zorder>
-   <zorder>Fit_Cal_button</zorder>
-   <zorder>Pre_Cnf_button</zorder>
-   <zorder>Fit_Hrp_button</zorder>
-   <zorder>Pre_VP_button</zorder>
-   <zorder>label_2</zorder>
-   <zorder>label_7</zorder>
-   <zorder>verticalLayoutWidget</zorder>
-   <zorder>groupBox_2</zorder>
   </widget>
  </widget>
  <resources/>
