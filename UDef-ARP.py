@@ -456,12 +456,11 @@ class MCT_FIT_CAL_Screen(QDialog):
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
-        else:
-            self.select_folder_button.clicked.connect(self.select_working_directory)
         self.AT_button4.clicked.connect(self.gotoat4)
         self.Intro_button4.clicked.connect(self.gotointro4)
         self.RMT_button4.clicked.connect(self.gotormt4)
         self.doc_button.clicked.connect(self.openDocument)
+        self.select_folder_button.clicked.connect(self.select_working_directory)
         self.mask_button.clicked.connect(self.select_mask)
         self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
         self.density_button.clicked.connect(self.select_density)
