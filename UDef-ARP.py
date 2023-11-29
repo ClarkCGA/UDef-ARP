@@ -10,6 +10,9 @@ from vulnerability_map import VulnerabilityMap
 from map_comparison import MapComparison
 from osgeo import gdal
 
+# GDAL exceptions
+gdal.UseExceptions()
+
 class IntroScreen(QDialog):
     def __init__(self):
         super(IntroScreen, self).__init__()

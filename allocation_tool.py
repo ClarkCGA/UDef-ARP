@@ -4,6 +4,9 @@ import pandas as pd
 from osgeo import gdal
 from PyQt5.QtCore import QObject, pyqtSignal
 
+# GDAL exceptions
+gdal.UseExceptions()
+
 class AllocationTool(QObject):
     progress_updated = pyqtSignal(int)
 
@@ -49,7 +52,7 @@ class AllocationTool(QObject):
         out_ds = driver.Create(out_fn, in_ds.RasterXSize, in_ds.RasterYSize, 1, data_type, options=["BigTIFF=YES"])
         out_band = out_ds.GetRasterBand(1)
         out_ds.SetGeoTransform(in_ds.GetGeoTransform())
-        out_ds.SetProjection(in_ds.GetProjection())
+        out_ds.SetProjection(in_ds.GetProjection().encode('utf-8', 'backslashreplace').decode('utf-8'))
         if nodata is not None:
             out_band.SetNoDataValue(nodata)
         out_band.WriteArray(data)

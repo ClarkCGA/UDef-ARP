@@ -12,6 +12,9 @@ from shapely.geometry import Point
 import pandas as pd
 from PyQt5.QtCore import QObject, pyqtSignal
 
+# GDAL exceptions
+gdal.UseExceptions()
+
 class MapComparison(QObject):
     progress_updated = pyqtSignal(int)
     def __init__(self):
@@ -27,7 +30,6 @@ class MapComparison(QObject):
         self.data_folder = directory
         os.chdir(self.data_folder)
 
-
     def create_mask_polygon(self, mask):
         '''
         Create municipality mask polygon
@@ -38,7 +40,7 @@ class MapComparison(QObject):
         in_band = in_ds.GetRasterBand(1)
 
         # Set up osr spatial reference
-        projection = in_ds.GetProjection()
+        projection = in_ds.GetProjection().encode('utf-8', 'backslashreplace').decode('utf-8')
         self.progress_updated.emit(10)
         spatial_ref = osr.SpatialReference()
         spatial_ref.ImportFromWkt(projection)
