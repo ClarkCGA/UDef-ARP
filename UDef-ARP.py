@@ -16,11 +16,11 @@ gdal.UseExceptions()
 class IntroScreen(QDialog):
     def __init__(self):
         super(IntroScreen, self).__init__()
-        loadUi("data\intro_screen.ui", self)
+        loadUi("data\\intro_screen.ui", self)
         # Set window properties
         self.setWindowTitle('JNR Allocated Risk Mapping Procedure (UDef-ARP)')
         # Set window icon
-        self.setWindowIcon(QIcon('data\icon.ico'))
+        self.setWindowIcon(QIcon("data\\icon.ico"))
         self.Fit_Cal_button.clicked.connect(self.gotofitcal)
         self.Pre_Cnf_button.clicked.connect(self.gotoprecnf)
         self.Fit_Hrp_button.clicked.connect(self.gotofithrp)
@@ -48,7 +48,7 @@ class IntroScreen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/UDef-ARP_Introduction.pdf"
+        pdf_path = "doc\\UDef-ARP_Introduction.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
 class RMT_FIT_CAL_SCREEN(QDialog):
@@ -56,7 +56,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         super(RMT_FIT_CAL_SCREEN, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi(r'data\rmt_fit_cal_screen.ui', self)
+        loadUi("data\\rmt_fit_cal_screen.ui", self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -103,7 +103,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/TestFitVM.pdf"
+        pdf_path = "doc\\TestFitVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -277,7 +277,7 @@ class AT_FIT_CAL_Screen(QDialog):
     def __init__(self):
         super(AT_FIT_CAL_Screen, self).__init__()
         self.initial_directory = os.getcwd()
-        loadUi(r"data\at_fit_cal_screen.ui", self)
+        loadUi("data\\at_fit_cal_screen.ui", self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -324,7 +324,7 @@ class AT_FIT_CAL_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/TestFitAM.pdf"
+        pdf_path = "doc\\TestFitAM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -455,7 +455,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         super(MCT_FIT_CAL_Screen, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi(r"data\mct_fit_cal_screen.ui", self)
+        loadUi("data\\mct_fit_cal_screen.ui", self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -504,7 +504,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/TestFitMA.pdf"
+        pdf_path = "doc\\TestFitMA.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -658,7 +658,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         super(RMT_PRE_CNF_SCREEN, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi(r"data\rmt_pre_cnf_screen.ui", self)
+        loadUi("data\\rmt_pre_cnf_screen.ui", self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -701,7 +701,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/TestPreVM.pdf"
+        pdf_path = "doc\\TestPreVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -796,7 +796,7 @@ class AT_PRE_CNF_Screen(QDialog):
     def __init__(self):
         super(AT_PRE_CNF_Screen, self).__init__()
         self.initial_directory = os.getcwd()
-        loadUi(r"data\at_pre_cnf_screen.ui", self)
+        loadUi("data\\at_pre_cnf_screen.ui", self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -844,7 +844,7 @@ class AT_PRE_CNF_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/TestPreAM.pdf"
+        pdf_path = "doc\\TestPreAM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -983,7 +983,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         super(MCT_PRE_CNF_Screen, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi(r"data\mct_pre_cnf_screen.ui", self)
+        loadUi("data\\mct_pre_cnf_screen.ui", self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -1032,7 +1032,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/TestPreMA.pdf"
+        pdf_path = "doc\\TestPreMA.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -1185,7 +1185,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         super(RMT_FIT_HRP_SCREEN, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi(r"data\rmt_fit_hrp_screen.ui", self)
+        loadUi("data\\rmt_fit_hrp_screen.ui", self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -1220,7 +1220,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/AppFitVM.pdf"
+        pdf_path = "doc\\AppFitVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -1315,7 +1315,7 @@ class AT_FIT_HRP_Screen(QDialog):
     def __init__(self):
         super(AT_FIT_HRP_Screen, self).__init__()
         self.initial_directory = os.getcwd()
-        loadUi(r"data\at_fit_hrp_screen.ui", self)
+        loadUi("data\\at_fit_hrp_screen.ui", self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -1355,7 +1355,7 @@ class AT_FIT_HRP_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/AppFitAM.pdf"
+        pdf_path = "doc\\AppFitAM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -1485,7 +1485,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         super(RMT_PRE_VP_SCREEN, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi(r"data\rmt_pre_vp_screen.ui", self)
+        loadUi("data\\rmt_pre_vp_screen.ui", self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -1520,7 +1520,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/AppPreVM.pdf"
+        pdf_path = "doc\\AppPreVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -1616,7 +1616,7 @@ class AT_PRE_VP_Screen(QDialog):
     def __init__(self):
         super(AT_PRE_VP_Screen, self).__init__()
         self.initial_directory = os.getcwd()
-        loadUi(r"data\at_pre_vp_screen.ui", self)
+        loadUi("data\\at_pre_vp_screen.ui", self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -1659,7 +1659,7 @@ class AT_PRE_VP_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc/AppPreAM.pdf"
+        pdf_path = "doc\\AppPreAM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -1818,7 +1818,7 @@ class CentralDataStore:
 # main
 app = QApplication(sys.argv)
 # Load custom fonts
-font_id=QFontDatabase.addApplicationFont("font\AvenirNextLTPro-DemiCn.otf")
+font_id=QFontDatabase.addApplicationFont("font\\AvenirNextLTPro-DemiCn.otf")
 
 intro = IntroScreen()
 # Create a global instance of this store
