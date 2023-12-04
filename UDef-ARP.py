@@ -1170,7 +1170,8 @@ class MCT_PRE_CNF_Screen(QDialog):
         try:
             data_folder = self.map_comparison.set_working_directory(directory)
             self.map_comparison.create_mask_polygon(self.mask)
-            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, csv_name)
+            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask, self.density,
+                                                                           self.deforestation_hrp, csv_name, tp_name)
             self.map_comparison.create_plot(clipped_gdf, title, out_fn)
             self.map_comparison.remove_temp_files()
 
