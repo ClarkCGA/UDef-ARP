@@ -108,9 +108,10 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        self.directory = data_folder
-        self.folder_entry.setText(str(data_folder))
-        central_data_store.directory = data_folder
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory = data_folder_with_backslashes
+        self.folder_entry.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CAL')
@@ -329,9 +330,10 @@ class AT_FIT_CAL_Screen(QDialog):
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        self.directory = data_folder
-        self.folder_entry.setText(str(data_folder))
-        central_data_store.directory = data_folder
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory = data_folder_with_backslashes
+        self.folder_entry.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -509,9 +511,10 @@ class MCT_FIT_CAL_Screen(QDialog):
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        self.directory = data_folder
-        self.folder_entry.setText(str(data_folder))
-        central_data_store.directory = data_folder
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory = data_folder_with_backslashes
+        self.folder_entry.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
 
     def select_mask(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
@@ -706,9 +709,10 @@ class RMT_PRE_CNF_SCREEN(QDialog):
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        self.directory = data_folder
-        self.folder_entry.setText(str(data_folder))
-        central_data_store.directory = data_folder
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory = data_folder_with_backslashes
+        self.folder_entry.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CNF')
@@ -849,9 +853,10 @@ class AT_PRE_CNF_Screen(QDialog):
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        self.directory = data_folder
-        self.folder_entry.setText(str(data_folder))
-        central_data_store.directory = data_folder
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory = data_folder_with_backslashes
+        self.folder_entry.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -1037,9 +1042,10 @@ class MCT_PRE_CNF_Screen(QDialog):
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        self.directory = data_folder
-        self.folder_entry.setText(str(data_folder))
-        central_data_store.directory = data_folder
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory = data_folder_with_backslashes
+        self.folder_entry.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
 
     def select_mask(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
@@ -1225,9 +1231,10 @@ class RMT_FIT_HRP_SCREEN(QDialog):
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        self.directory = data_folder
-        self.folder_entry.setText(str(data_folder))
-        central_data_store.directory = data_folder
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory = data_folder_with_backslashes
+        self.folder_entry.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in HRP')
@@ -1360,9 +1367,10 @@ class AT_FIT_HRP_Screen(QDialog):
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        self.directory = data_folder
-        self.folder_entry.setText(str(data_folder))
-        central_data_store.directory = data_folder
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory = data_folder_with_backslashes
+        self.folder_entry.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -1525,9 +1533,10 @@ class RMT_PRE_VP_SCREEN(QDialog):
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        self.directory = data_folder
-        self.folder_entry.setText(str(data_folder))
-        central_data_store.directory = data_folder
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory = data_folder_with_backslashes
+        self.folder_entry.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in VP')
@@ -1664,9 +1673,10 @@ class AT_PRE_VP_Screen(QDialog):
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        self.directory = data_folder
-        self.folder_entry.setText(str(data_folder))
-        central_data_store.directory = data_folder
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory = data_folder_with_backslashes
+        self.folder_entry.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
