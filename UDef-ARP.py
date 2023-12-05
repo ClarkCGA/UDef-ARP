@@ -1650,7 +1650,6 @@ class AT_PRE_VP_Screen(QDialog):
         self.time = None
         self.image1 = None
         self.image2 = None
-        self.expected_entry.setPlaceholderText('Number is between 10000 and 100000')
         self.iteration_entry.setPlaceholderText('The suggestion max iteration number is 5')
         self.image1_entry.setPlaceholderText('e.g., Acre_Prediction_Modeling_Region_VP.tif')
         self.image2_entry.setPlaceholderText('e.g., Acre_Adjucted_Density_Map_VP.tif')
@@ -1736,9 +1735,6 @@ class AT_PRE_VP_Screen(QDialog):
             return
         try:
             self.expected_deforestation = float(expected_deforestation)
-            if not (10000 <= self.expected_deforestation <= 100000):
-                QMessageBox.critical(self, "Error", "Expected deforestation is between 10000 and 100000!")
-                return
         except ValueError:
             QMessageBox.critical(self, "Error", "Expected deforestation value should be a valid number!")
             return
