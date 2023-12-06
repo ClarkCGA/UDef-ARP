@@ -54,7 +54,9 @@ Python UDef-ARP.py
 ### Step 3: Prepare Your Data
 UDef-ARP accepts raster map data is either a Geotiff “.tif” or TerrSet “.rst” (binary flat raster ) format. Similarly, outputs can be in either format. All map data are required to be on an equal area projection. All map inputs must be co-registered and have the same resolution and the same number of rows and columns.
 
-![GUI Image](data/intro_screen.png)
+<p align="center">
+  <img src="data/intro_screen.png" alt="GUI Image">
+</p>
 
 ## COPYRIGHT AND LICENSE
 ©2023 Clark Labs. This software is free to use and distribute under the terms of the GNU-GLP license.
