@@ -7,7 +7,7 @@ from PyQt5.QtGui import QFontDatabase, QIcon, QFont, QDesktopServices
 from PyQt5.uic import loadUi
 from allocation_tool import AllocationTool
 from vulnerability_map import VulnerabilityMap
-from map_comparison import MapComparison
+from model_evaluation import ModelEvaluation
 from osgeo import gdal
 
 # GDAL exceptions
@@ -470,8 +470,8 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
         self.density_button.clicked.connect(self.select_density)
         self.ok_button.clicked.connect(self.process_data4)
-        self.map_comparison = MapComparison()
-        self.map_comparison.progress_updated.connect(self.update_progress)
+        self.model_evaluation = ModelEvaluation()
+        self.model_evaluation.progress_updated.connect(self.update_progress)
         self.directory = None
         self.mask = None
         self.deforestation_hrp = None
@@ -480,7 +480,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.grid_area_entry.setPlaceholderText('Type default 100000 or other number')
         self.title = None
         self.out_fn = None
-        self.out_fn_entry.setPlaceholderText('e.g., Map_Comparison_CAL_Plot.png')
+        self.out_fn_entry.setPlaceholderText('e.g., Plot_CAL.png')
         self.csv_name = None
         self.csv_entry.setPlaceholderText('e.g., Performance_Chart_CAL.csv')
         self.tp_name = None
@@ -636,11 +636,11 @@ class MCT_FIT_CAL_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.map_comparison.set_working_directory(directory)
-            self.map_comparison.create_mask_polygon(self.mask)
-            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, csv_name, tp_name)
-            self.map_comparison.create_plot(clipped_gdf, title,out_fn)
-            self.map_comparison.remove_temp_files()
+            data_folder = self.model_evaluation.set_working_directory(directory)
+            self.model_evaluation.create_mask_polygon(self.mask)
+            clipped_gdf, csv = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, csv_name, tp_name)
+            self.model_evaluation.create_plot(clipped_gdf, title,out_fn)
+            self.model_evaluation.remove_temp_files()
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
@@ -1001,8 +1001,8 @@ class MCT_PRE_CNF_Screen(QDialog):
         self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
         self.density_button.clicked.connect(self.select_density)
         self.ok_button.clicked.connect(self.process_data4)
-        self.map_comparison = MapComparison()
-        self.map_comparison.progress_updated.connect(self.update_progress)
+        self.model_evaluation = ModelEvaluation()
+        self.model_evaluation.progress_updated.connect(self.update_progress)
         self.directory = None
         self.mask = None
         self.deforestation_hrp = None
@@ -1011,7 +1011,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         self.grid_area_entry.setPlaceholderText('Type default 100000 or other number')
         self.title = None
         self.out_fn = None
-        self.out_fn_entry.setPlaceholderText('e.g., Map_Comparison_CNF_Plot.png')
+        self.out_fn_entry.setPlaceholderText('e.g., Plot_CNF.png')
         self.csv_name = None
         self.csv_entry.setPlaceholderText('e.g., Performance_Chart_CNF.csv')
         self.tp_name = None
@@ -1168,12 +1168,12 @@ class MCT_PRE_CNF_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.map_comparison.set_working_directory(directory)
-            self.map_comparison.create_mask_polygon(self.mask)
-            clipped_gdf, csv = self.map_comparison.create_thiessen_polygon(self.grid_area, self.mask, self.density,
+            data_folder = self.model_evaluation.set_working_directory(directory)
+            self.model_evaluation.create_mask_polygon(self.mask)
+            clipped_gdf, csv = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask, self.density,
                                                                            self.deforestation_hrp, csv_name, tp_name)
-            self.map_comparison.create_plot(clipped_gdf, title, out_fn)
-            self.map_comparison.remove_temp_files()
+            self.model_evaluation.create_plot(clipped_gdf, title, out_fn)
+            self.model_evaluation.remove_temp_files()
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()

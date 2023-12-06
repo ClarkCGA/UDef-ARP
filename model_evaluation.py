@@ -15,10 +15,10 @@ from PyQt5.QtCore import QObject, pyqtSignal
 # GDAL exceptions
 gdal.UseExceptions()
 
-class MapComparison(QObject):
+class ModelEvaluation(QObject):
     progress_updated = pyqtSignal(int)
     def __init__(self):
-        super(MapComparison, self).__init__()
+        super(ModelEvaluation, self).__init__()
         self.data_folder = None
 
     def set_working_directory(self, directory: object) -> object:
