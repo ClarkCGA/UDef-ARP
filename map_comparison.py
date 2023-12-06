@@ -1,12 +1,12 @@
 import os
-from osgeo import gdal, osr
+import sys
+from osgeo import gdal, osr, ogr
+from osgeo.gdalconst import *
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.spatial import Voronoi
 import geopandas as gpd
 import shapely
-from osgeo import ogr
-from rasterstats import zonal_stats
 import seaborn as sns
 from shapely.geometry import Point
 import pandas as pd
@@ -80,6 +80,122 @@ class MapComparison(QObject):
         final_ds.Destroy()
 
         return
+
+    def bbox_to_pixel_offsets(self,gt, bbox):
+        '''
+        https://gist.github.com/perrygeo/5667173
+        '''
+        originX = gt[0]
+        originY = gt[3]
+        pixel_width = gt[1]
+        pixel_height = gt[5]
+        x1 = int((bbox[0] - originX) / pixel_width)
+        x2 = int((bbox[1] - originX) / pixel_width) + 1
+
+        y1 = int((bbox[3] - originY) / pixel_height)
+        y2 = int((bbox[2] - originY) / pixel_height) + 1
+
+        xsize = x2 - x1
+        ysize = y2 - y1
+        return (x1, y1, xsize, ysize)
+
+    def zonal_stats(self, vector_path, raster_path, nodata_value=None, global_src_extent=False):
+        '''
+        https://gist.github.com/perrygeo/5667173
+        '''
+        rds = gdal.Open(raster_path, GA_ReadOnly)
+        assert (rds)
+        rb = rds.GetRasterBand(1)
+        rgt = rds.GetGeoTransform()
+
+        if nodata_value:
+            nodata_value = float(nodata_value)
+            rb.SetNoDataValue(nodata_value)
+
+        vds = ogr.Open(vector_path, GA_ReadOnly)  # TODO maybe open update if we want to write stats
+        assert (vds)
+        vlyr = vds.GetLayer(0)
+
+        # create an in-memory numpy array of the source raster data
+        # covering the whole extent of the vector layer
+        if global_src_extent:
+            # use global source extent
+            # useful only when disk IO or raster scanning inefficiencies are your limiting factor
+            # advantage: reads raster data in one pass
+            # disadvantage: large vector extents may have big memory requirements
+            src_offset = self.bbox_to_pixel_offsets(rgt, vlyr.GetExtent())
+            src_array = rb.ReadAsArray(*src_offset)
+
+            # calculate new geotransform of the layer subset
+            new_gt = (
+                (rgt[0] + (src_offset[0] * rgt[1])),
+                rgt[1],
+                0.0,
+                (rgt[3] + (src_offset[1] * rgt[5])),
+                0.0,
+                rgt[5]
+            )
+
+        mem_drv = ogr.GetDriverByName('Memory')
+        driver = gdal.GetDriverByName('MEM')
+
+        # Loop through vectors
+        stats = []
+        feat = vlyr.GetNextFeature()
+        while feat is not None:
+
+            if not global_src_extent:
+                # use local source extent
+                # fastest option when you have fast disks and well indexed raster (ie tiled Geotiff)
+                # advantage: each feature uses the smallest raster chunk
+                # disadvantage: lots of reads on the source raster
+                src_offset = self.bbox_to_pixel_offsets(rgt, feat.geometry().GetEnvelope())
+                src_array = rb.ReadAsArray(*src_offset)
+
+                # calculate new geotransform of the feature subset
+                new_gt = (
+                    (rgt[0] + (src_offset[0] * rgt[1])),
+                    rgt[1],
+                    0.0,
+                    (rgt[3] + (src_offset[1] * rgt[5])),
+                    0.0,
+                    rgt[5]
+                )
+
+            # Create a temporary vector layer in memory
+            mem_ds = mem_drv.CreateDataSource('out')
+            mem_layer = mem_ds.CreateLayer('poly', None, ogr.wkbPolygon)
+            mem_layer.CreateFeature(feat.Clone())
+
+            # Rasterize it
+            rvds = driver.Create('', src_offset[2], src_offset[3], 1, gdal.GDT_Byte)
+            rvds.SetGeoTransform(new_gt)
+            gdal.RasterizeLayer(rvds, [1], mem_layer, burn_values=[1])
+            rv_array = rvds.ReadAsArray()
+
+            # Mask the source data array with our current feature
+            # we take the logical_not to flip 0<->1 to get the correct mask effect
+            # we also mask out nodata values explictly
+            masked = np.ma.MaskedArray(
+                src_array,
+                mask=np.logical_or(
+                    src_array == nodata_value,
+                    np.logical_not(rv_array)
+                )
+            )
+
+            feature_stats = {
+                'sum': float(masked.sum())}
+
+            stats.append(feature_stats)
+
+            rvds = None
+            mem_ds = None
+            feat = vlyr.GetNextFeature()
+
+        vds = None
+        rds = None
+        return stats
 
     def create_thiessen_polygon (self, grid_area, mask, density, deforestation, csv_name, tp_name):
         '''
@@ -160,8 +276,14 @@ class MapComparison(QObject):
         self.progress_updated.emit(50)
 
         ## Calculate zonal statistics
+
+        # # Convert clipped_gdf to shapefile
+        vector_temp_path = "temp_vector.shp"
+        clipped_gdf.to_file(vector_temp_path)
+
         # Actual Deforestation(ha)
-        stats = zonal_stats(clipped_gdf.geometry, deforestation, stats="sum", nodata=0)
+        stats = self.zonal_stats(vector_temp_path, deforestation, nodata_value=0)
+
         self.progress_updated.emit(60)
 
         # Calculate areal_resolution_of_map_pixels
@@ -174,7 +296,7 @@ class MapComparison(QObject):
         self.progress_updated.emit(70)
 
         # Predicted Deforestation(ha)
-        stats1 = zonal_stats(clipped_gdf.geometry, density, stats="sum", nodata=0)
+        stats1 = self.zonal_stats(vector_temp_path, density, nodata_value=0)
         self.progress_updated.emit(80)
 
         clipped_gdf['Predicted Deforestation(ha)'] = [(item['sum'] if item['sum'] is not None else 0) for item in stats1]
@@ -276,7 +398,7 @@ class MapComparison(QObject):
     def remove_temp_files(self):
         # Files to check for and delete
         mask_file = 'mask'
-        shapefiles_to_delete = ["TEMP_POLYGONIZED","POLYGONIZED_MASK","thiessen_polygon_temp"]
+        shapefiles_to_delete = ["TEMP_POLYGONIZED","POLYGONIZED_MASK","thiessen_polygon_temp","temp_vector"]
 
         # Shapefile associated extensions
         mask_file_extensions =[".tif",".rst",".rdc",".RST",".RST.aux.xml",".ref"]
