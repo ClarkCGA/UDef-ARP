@@ -530,7 +530,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Name for the Performance Chart (.csv)</string>
+         <string>Name for the Chart Data (.csv)</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="out_fn_entry">
@@ -635,7 +635,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Name for the Thiessen Polygon (.shp)</string>
+         <string>Name for the Assessment Polygons (.shp)</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="tp_entry">
