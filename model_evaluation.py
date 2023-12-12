@@ -5,6 +5,7 @@ from osgeo.gdalconst import *
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.spatial import Voronoi
+import scipy.stats as stats
 import geopandas as gpd
 import shapely
 import seaborn as sns
@@ -305,6 +306,11 @@ class ModelEvaluation(QObject):
         # ID
         clipped_gdf['ID'] = range(1, len(clipped_gdf) + 1)
 
+        # Replace NaN or blank values with '0'
+        columns_to_fill = ['Actual Deforestation(ha)', 'Predicted Deforestation(ha)']
+        for column in columns_to_fill:
+            clipped_gdf[column] = clipped_gdf[column].fillna(0)
+
         # Export to csv
         csv_file_path = csv_name
         csv=clipped_gdf.drop('geometry', axis=1).to_csv(csv_file_path, columns=['ID', 'Actual Deforestation(ha)', 'Predicted Deforestation(ha)'],
@@ -335,8 +341,11 @@ class ModelEvaluation(QObject):
         Y = np.array(clipped_gdf['PredDef'], dtype=np.float64)
 
         ## Perform linear regression
-        slope, intercept = np.polyfit(X, Y, 1)
-        equation = f'Y = {slope:.2f} * X + {intercept:.2f}'
+        slope, intercept, _, _, _ = stats.linregress(X, Y)
+
+        # Create the equation string
+        equation = f'Y = {slope:.4f} * X + {intercept:.2f}'
+
         # Calculate the trend line
         trend_line = slope * X + intercept
 
@@ -383,8 +392,8 @@ class ModelEvaluation(QObject):
 
         # Adjust plt texts with the new calculated positions
         plt.text(text_x_pos, text_y_start_pos, equation, fontsize=11, color='black')
-        plt.text(text_x_pos, text_y_start_pos - text_y_gap, f'Samples = {len(X):.2f}', fontsize=11, color='black')
-        plt.text(text_x_pos, text_y_start_pos - 2 * text_y_gap, f'R^2 = {r_squared:.2f}', fontsize=11, color='black')
+        plt.text(text_x_pos, text_y_start_pos - text_y_gap, f'Samples = {len(X)}', fontsize=11, color='black')
+        plt.text(text_x_pos, text_y_start_pos - 2 * text_y_gap, f'R^2 = {r_squared:.4f}', fontsize=11, color='black')
         plt.text(text_x_pos, text_y_start_pos - 3 * text_y_gap, f'MedAE = {MedAE:.2f}', fontsize=11, color='black')
 
         # x, yticks
