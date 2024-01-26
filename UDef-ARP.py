@@ -2,7 +2,7 @@ import sys
 import os
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt,QUrl
-from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog, QMessageBox, QProgressDialog
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QProgressDialog, QApplication, QWidget
 from PyQt5.QtGui import QFontDatabase, QIcon, QFont, QDesktopServices
 from PyQt5.uic import loadUi
 from allocation_tool import AllocationTool
@@ -60,9 +60,27 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
+        if central_data_store.directory is not None and self.folder_entry_2 is not None:
+            self.directory_2 = central_data_store.directory
+            self.folder_entry_2.setText(str(central_data_store.directory))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.MCT_button2.clicked.connect(self.gotomct2)
+        self.doc_button = self.tab1.findChild(QWidget, "doc_button")
+        self.select_folder_button = self.tab1.findChild(QWidget, "select_folder_button")
+        self.deforestation_hrp_button = self.tab1.findChild(QWidget, "deforestation_hrp_button")
+        self.mask_button = self.tab1.findChild(QWidget, "mask_button")
+        self.fd_button = self.tab1.findChild(QWidget, "fd_button")
+        self.calculate_button2 = self.tab1.findChild(QWidget, "calculate_button2")
+        self.ok_button2 = self.tab1.findChild(QWidget, "ok_button2")
+
+        self.doc_button_2 = self.tab2.findChild(QWidget, "doc_button_2")
+        self.select_folder_button_2 = self.tab2.findChild(QWidget, "select_folder_button_2")
+        self.mask_button_2 = self.tab2.findChild(QWidget, "mask_button_2")
+        self.fmask_button_2 = self.tab2.findChild(QWidget, "fmask_button_2")
+        self.fd_button_2 = self.tab2.findChild(QWidget, "fd_button_2")
+        self.ok_button2_2 = self.tab2.findChild(QWidget, "ok_button2_2")
+
         self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
@@ -70,6 +88,14 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         self.fd_button.clicked.connect(self.select_fd)
         self.calculate_button2.clicked.connect(self.process_data2_nrt)
         self.ok_button2.clicked.connect(self.process_data2)
+
+        self.doc_button_2.clicked.connect(self.openDocument_2)
+        self.select_folder_button_2.clicked.connect(self.select_working_directory_2)
+        self.mask_button_2.clicked.connect(self.select_mask_2)
+        self.fmask_button_2.clicked.connect(self.select_fmask_2)
+        self.fd_button_2.clicked.connect(self.select_fd_2)
+        self.ok_button2_2.clicked.connect(self.process_data2_2)
+
         self.vulnerability_map = VulnerabilityMap()
         self.vulnerability_map.progress_updated.connect(self.update_progress)
         self.directory = None
@@ -82,6 +108,13 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         self.n_classes = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_CAL.tif')
+        self.directory_2 = None
+        self.mask_2 = None
+        self.fmask_2 = None
+        self.in_fn_2 = None
+        self.out_fn_2 = None
+        self.n_classes_2 = None
+        self.out_fn_entry_2.setPlaceholderText('e.g., Acre_Vulnerability_CAL.tif')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat2(self):
@@ -104,6 +137,10 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
     def openDocument(self):
         pdf_path = "doc\\TestFitVM.pdf"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+
+    def openDocument_2(self):
+        pdf_path = ""
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -130,6 +167,31 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         if file_path:
             self.mask = file_path
             self.mask_entry.setText(file_path.split('/')[-1])
+
+    def select_working_directory_2(self):
+        data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory_2 = data_folder_with_backslashes
+        self.folder_entry_2.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
+
+    def select_fd_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CAL')
+        if file_path:
+            self.in_fn_2 = file_path
+            self.in_fn_entry_2.setText(file_path.split('/')[-1])
+
+    def select_mask_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path:
+            self.mask_2 = file_path
+            self.mask_entry_2.setText(file_path.split('/')[-1])
+
+    def select_fmask_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
+        if file_path:
+            self.fmask_2 = file_path
+            self.fmask_entry_2.setText(file_path.split('/')[-1])
 
     def get_image_resolution(self,image):
         # Set up a GDAL dataset
@@ -217,6 +279,8 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "NRT value should be a valid number!")
             return
 
+        directory = self.folder_entry.text()
+
         n_classes = int(29)
         if not n_classes:
             QMessageBox.critical(self, "Error", "Please enter the number of classes!")
@@ -258,8 +322,71 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
+            data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -99)
+            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
+
+            QMessageBox.information(self, "Processing Completed", "Processing completed!")
+
+            self.progressDialog.close()
+
+        except Exception as e:
+            self.progressDialog.close()
+            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+
+
+    def process_data2_2(self):
+        images = [self.in_fn_2, self.mask_2, self.fmask_2]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
+
+        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
+            QMessageBox.critical(self, "Error", "Please select  the input file!")
+            return
+        n_classes_2 = int(30)
+        directory_2 = self.folder_entry_2.text()
+        out_fn_2 = self.out_fn_entry_2.text()
+        if not out_fn_2:
+            QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in CAL!")
+            return
+
+        # Check if the out_fn has the correct file extension
+        if not (out_fn_2.endswith('.tif') or out_fn_2.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Vulnerability Map in CAL!")
+            return
+
+        # Show "Processing" message
+        processing_message = "Processing data..."
+        self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
+
+        # Change the font size
+        font = QFont()
+        font.setPointSize(9)
+        self.progressDialog.setFont(font)
+
+        self.progressDialog.setWindowTitle("Processing")
+        self.progressDialog.setWindowModality(Qt.WindowModal)
+        self.progressDialog.setMinimumDuration(0)
+        self.progressDialog.resize(400, 300)
+        self.progressDialog.show()
+        QApplication.processEvents()
+
+        try:
+            data_folder = self.vulnerability_map.set_working_directory(directory_2)
+            mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2, self.mask_2, self.fmask_2)
+            out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
@@ -665,13 +792,36 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
+        if central_data_store.directory is not None and self.folder_entry_2 is not None:
+            self.directory_2 = central_data_store.directory
+            self.folder_entry_2.setText(str(central_data_store.directory))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
         self.MCT_button2.clicked.connect(self.gotomct2)
+        self.doc_button = self.tab1.findChild(QWidget, "doc_button")
+        self.select_folder_button = self.tab1.findChild(QWidget, "select_folder_button")
+        self.fd_button = self.tab1.findChild(QWidget, "fd_button")
+        self.ok_button2 = self.tab1.findChild(QWidget, "ok_button2")
+
+        self.doc_button_2 = self.tab2.findChild(QWidget, "doc_button_2")
+        self.select_folder_button_2 = self.tab2.findChild(QWidget, "select_folder_button_2")
+        self.mask_button_2 = self.tab2.findChild(QWidget, "mask_button_2")
+        self.fmask_button_2 = self.tab2.findChild(QWidget, "fmask_button_2")
+        self.fd_button_2 = self.tab2.findChild(QWidget, "fd_button_2")
+        self.ok_button2_2 = self.tab2.findChild(QWidget, "ok_button2_2")
+
         self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.fd_button.clicked.connect(self.select_fd)
         self.ok_button2.clicked.connect(self.process_data2)
+
+        self.doc_button_2.clicked.connect(self.openDocument_2)
+        self.select_folder_button_2.clicked.connect(self.select_working_directory_2)
+        self.mask_button_2.clicked.connect(self.select_mask_2)
+        self.fmask_button_2.clicked.connect(self.select_fmask_2)
+        self.fd_button_2.clicked.connect(self.select_fd_2)
+        self.ok_button2_2.clicked.connect(self.process_data2_2)
+
         self.vulnerability_map = VulnerabilityMap()
         self.vulnerability_map.progress_updated.connect(self.update_progress)
         self.directory = None
@@ -683,6 +833,15 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.n_classes = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_CNF.tif')
+
+        self.directory_2 = None
+        self.mask_2 = None
+        self.fmask_2 = None
+        self.in_fn_2 = None
+        self.out_fn_2 = None
+        self.n_classes_2 = None
+        self.out_fn_entry_2.setPlaceholderText('e.g., Acre_Vulnerability_CNF.tif')
+
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat2(self):
@@ -707,6 +866,10 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         pdf_path = "doc\\TestPreVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
+    def openDocument_2(self):
+        pdf_path = ""
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         data_folder_with_backslashes = data_folder.replace('/', '\\')
@@ -719,6 +882,31 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         if file_path:
             self.in_fn = file_path
             self.in_fn_entry.setText(file_path.split('/')[-1])
+
+    def select_working_directory_2(self):
+        data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory_2 = data_folder_with_backslashes
+        self.folder_entry_2.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
+
+    def select_fd_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CNF')
+        if file_path:
+            self.in_fn_2 = file_path
+            self.in_fn_entry_2.setText(file_path.split('/')[-1])
+
+    def select_mask_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path:
+            self.mask_2 = file_path
+            self.mask_entry_2.setText(file_path.split('/')[-1])
+
+    def select_fmask_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
+        if file_path:
+            self.fmask_2 = file_path
+            self.fmask_entry_2.setText(file_path.split('/')[-1])
 
     def process_data2(self):
         if not self.in_fn:
@@ -782,9 +970,85 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         try:
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -99)
+            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
+            self.progressDialog.close()
+
+        except Exception as e:
+            self.progressDialog.close()
+            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+
+    def get_image_resolution(self, image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        P = in_ds.GetGeoTransform()[1]
+        # Create Numpy Array1
+        return P
+
+    def get_image_dimensions(self, image):
+        dataset = gdal.Open(image)
+        cols = dataset.RasterXSize
+        rows = dataset.RasterYSize
+        return rows, cols
+
+    def process_data2_2(self):
+        images = [self.in_fn_2, self.mask_2, self.fmask_2]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
+
+        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
+            QMessageBox.critical(self, "Error", "Please select  the input file!")
+            return
+        n_classes_2 = int(30)
+        directory_2 = self.folder_entry_2.text()
+        out_fn_2 = self.out_fn_entry_2.text()
+        if not out_fn_2:
+            QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in CNF!")
+            return
+
+        # Check if the out_fn has the correct file extension
+        if not (out_fn_2.endswith('.tif') or out_fn_2.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Vulnerability Map in CNF!")
+            return
+
+        # Show "Processing" message
+        processing_message = "Processing data..."
+        self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
+
+        # Change the font size
+        font = QFont()
+        font.setPointSize(9)
+        self.progressDialog.setFont(font)
+
+        self.progressDialog.setWindowTitle("Processing")
+        self.progressDialog.setWindowModality(Qt.WindowModal)
+        self.progressDialog.setMinimumDuration(0)
+        self.progressDialog.resize(400, 300)
+        self.progressDialog.show()
+        QApplication.processEvents()
+
+        try:
+            data_folder = self.vulnerability_map.set_working_directory(directory_2)
+            mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
+                                                                                   self.mask_2, self.fmask_2)
+            out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+
+            QMessageBox.information(self, "Processing Completed", "Processing completed!")
+
             self.progressDialog.close()
 
         except Exception as e:
@@ -1196,12 +1460,36 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
+        if central_data_store.directory is not None and self.folder_entry_2 is not None:
+            self.directory_2 = central_data_store.directory
+            self.folder_entry_2.setText(str(central_data_store.directory))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
+
+        self.doc_button = self.tab1.findChild(QWidget, "doc_button")
+        self.select_folder_button = self.tab1.findChild(QWidget, "select_folder_button")
+        self.fd_button = self.tab1.findChild(QWidget, "fd_button")
+        self.ok_button2 = self.tab1.findChild(QWidget, "ok_button2")
+
+        self.doc_button_2 = self.tab2.findChild(QWidget, "doc_button_2")
+        self.select_folder_button_2 = self.tab2.findChild(QWidget, "select_folder_button_2")
+        self.mask_button_2 = self.tab2.findChild(QWidget, "mask_button_2")
+        self.fmask_button_2 = self.tab2.findChild(QWidget, "fmask_button_2")
+        self.fd_button_2 = self.tab2.findChild(QWidget, "fd_button_2")
+        self.ok_button2_2 = self.tab2.findChild(QWidget, "ok_button2_2")
+
         self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.fd_button.clicked.connect(self.select_fd)
         self.ok_button2.clicked.connect(self.process_data2)
+
+        self.doc_button_2.clicked.connect(self.openDocument_2)
+        self.select_folder_button_2.clicked.connect(self.select_working_directory_2)
+        self.mask_button_2.clicked.connect(self.select_mask_2)
+        self.fmask_button_2.clicked.connect(self.select_fmask_2)
+        self.fd_button_2.clicked.connect(self.select_fd_2)
+        self.ok_button2_2.clicked.connect(self.process_data2_2)
+
         self.vulnerability_map = VulnerabilityMap()
         self.vulnerability_map.progress_updated.connect(self.update_progress)
         self.directory = None
@@ -1212,6 +1500,15 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         self.n_classes = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_HRP.tif')
+
+        self.directory_2 = None
+        self.mask_2 = None
+        self.fmask_2 = None
+        self.in_fn_2 = None
+        self.out_fn_2 = None
+        self.n_classes_2 = None
+        self.out_fn_entry_2.setPlaceholderText('e.g., Acre_Vulnerability_HRP.tif')
+
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat2(self):
@@ -1230,6 +1527,10 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         pdf_path = "doc\\AppFitVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
+    def openDocument_2(self):
+        pdf_path = ""
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         data_folder_with_backslashes = data_folder.replace('/', '\\')
@@ -1242,6 +1543,31 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         if file_path:
             self.in_fn = file_path
             self.in_fn_entry.setText(file_path.split('/')[-1])
+
+    def select_working_directory_2(self):
+        data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory_2 = data_folder_with_backslashes
+        self.folder_entry_2.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
+
+    def select_fd_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in HRP')
+        if file_path:
+            self.in_fn_2 = file_path
+            self.in_fn_entry_2.setText(file_path.split('/')[-1])
+
+    def select_mask_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path:
+            self.mask_2 = file_path
+            self.mask_entry_2.setText(file_path.split('/')[-1])
+
+    def select_fmask_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
+        if file_path:
+            self.fmask_2 = file_path
+            self.fmask_entry_2.setText(file_path.split('/')[-1])
 
     def process_data2(self):
         if not self.in_fn:
@@ -1305,9 +1631,85 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         try:
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -99)
+            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
+            self.progressDialog.close()
+
+        except Exception as e:
+            self.progressDialog.close()
+            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+
+    def get_image_resolution(self, image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        P = in_ds.GetGeoTransform()[1]
+        # Create Numpy Array1
+        return P
+
+    def get_image_dimensions(self, image):
+        dataset = gdal.Open(image)
+        cols = dataset.RasterXSize
+        rows = dataset.RasterYSize
+        return rows, cols
+
+    def process_data2_2(self):
+        images = [self.in_fn_2, self.mask_2, self.fmask_2]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
+
+        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
+            QMessageBox.critical(self, "Error", "Please select  the input file!")
+            return
+        n_classes_2 = int(30)
+        directory_2 = self.folder_entry_2.text()
+        out_fn_2 = self.out_fn_entry_2.text()
+        if not out_fn_2:
+            QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in HRP!")
+            return
+
+        # Check if the out_fn has the correct file extension
+        if not (out_fn_2.endswith('.tif') or out_fn_2.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Vulnerability Map in HRP!")
+            return
+
+        # Show "Processing" message
+        processing_message = "Processing data..."
+        self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
+
+        # Change the font size
+        font = QFont()
+        font.setPointSize(9)
+        self.progressDialog.setFont(font)
+
+        self.progressDialog.setWindowTitle("Processing")
+        self.progressDialog.setWindowModality(Qt.WindowModal)
+        self.progressDialog.setMinimumDuration(0)
+        self.progressDialog.resize(400, 300)
+        self.progressDialog.show()
+        QApplication.processEvents()
+
+        try:
+            data_folder = self.vulnerability_map.set_working_directory(directory_2)
+            mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
+                                                                                   self.mask_2, self.fmask_2)
+            out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+
+            QMessageBox.information(self, "Processing Completed", "Processing completed!")
+
             self.progressDialog.close()
 
         except Exception as e:
@@ -1498,12 +1900,36 @@ class RMT_PRE_VP_SCREEN(QDialog):
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
+        if central_data_store.directory is not None and self.folder_entry_2 is not None:
+            self.directory_2 = central_data_store.directory
+            self.folder_entry_2.setText(str(central_data_store.directory))
         self.AT_button2.clicked.connect(self.gotoat2)
         self.Intro_button2.clicked.connect(self.gotointro2)
+
+        self.doc_button = self.tab1.findChild(QWidget, "doc_button")
+        self.select_folder_button = self.tab1.findChild(QWidget, "select_folder_button")
+        self.fd_button = self.tab1.findChild(QWidget, "fd_button")
+        self.ok_button2 = self.tab1.findChild(QWidget, "ok_button2")
+
+        self.doc_button_2 = self.tab2.findChild(QWidget, "doc_button_2")
+        self.select_folder_button_2 = self.tab2.findChild(QWidget, "select_folder_button_2")
+        self.mask_button_2 = self.tab2.findChild(QWidget, "mask_button_2")
+        self.fmask_button_2 = self.tab2.findChild(QWidget, "fmask_button_2")
+        self.fd_button_2 = self.tab2.findChild(QWidget, "fd_button_2")
+        self.ok_button2_2 = self.tab2.findChild(QWidget, "ok_button2_2")
+
         self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.fd_button.clicked.connect(self.select_fd)
         self.ok_button2.clicked.connect(self.process_data2)
+
+        self.doc_button_2.clicked.connect(self.openDocument_2)
+        self.select_folder_button_2.clicked.connect(self.select_working_directory_2)
+        self.mask_button_2.clicked.connect(self.select_mask_2)
+        self.fmask_button_2.clicked.connect(self.select_fmask_2)
+        self.fd_button_2.clicked.connect(self.select_fd_2)
+        self.ok_button2_2.clicked.connect(self.process_data2_2)
+
         self.vulnerability_map = VulnerabilityMap()
         self.vulnerability_map.progress_updated.connect(self.update_progress)
         self.directory = None
@@ -1514,6 +1940,15 @@ class RMT_PRE_VP_SCREEN(QDialog):
         self.n_classes = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_VP.tif')
+
+        self.directory_2 = None
+        self.mask_2 = None
+        self.fmask_2 = None
+        self.in_fn_2 = None
+        self.out_fn_2 = None
+        self.n_classes_2 = None
+        self.out_fn_entry_2.setPlaceholderText('e.g., Acre_Vulnerability_VP.tif')
+
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat2(self):
@@ -1532,6 +1967,10 @@ class RMT_PRE_VP_SCREEN(QDialog):
         pdf_path = "doc\\AppPreVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
+    def openDocument_2(self):
+        pdf_path = ""
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
         data_folder_with_backslashes = data_folder.replace('/', '\\')
@@ -1544,6 +1983,31 @@ class RMT_PRE_VP_SCREEN(QDialog):
         if file_path:
             self.in_fn = file_path
             self.in_fn_entry.setText(file_path.split('/')[-1])
+
+    def select_working_directory_2(self):
+        data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
+        data_folder_with_backslashes = data_folder.replace('/', '\\')
+        self.directory_2 = data_folder_with_backslashes
+        self.folder_entry_2.setText(data_folder_with_backslashes)
+        central_data_store.directory = data_folder_with_backslashes
+
+    def select_fd_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in VP')
+        if file_path:
+            self.in_fn_2 = file_path
+            self.in_fn_entry_2.setText(file_path.split('/')[-1])
+
+    def select_mask_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path:
+            self.mask_2 = file_path
+            self.mask_entry_2.setText(file_path.split('/')[-1])
+
+    def select_fmask_2(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
+        if file_path:
+            self.fmask_2 = file_path
+            self.fmask_entry_2.setText(file_path.split('/')[-1])
 
     def process_data2(self):
         if not self.in_fn:
@@ -1607,9 +2071,85 @@ class RMT_PRE_VP_SCREEN(QDialog):
         try:
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -99)
+            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
+            self.progressDialog.close()
+
+        except Exception as e:
+            self.progressDialog.close()
+            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+
+    def get_image_resolution(self, image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        P = in_ds.GetGeoTransform()[1]
+        # Create Numpy Array1
+        return P
+
+    def get_image_dimensions(self, image):
+        dataset = gdal.Open(image)
+        cols = dataset.RasterXSize
+        rows = dataset.RasterYSize
+        return rows, cols
+
+    def process_data2_2(self):
+        images = [self.in_fn_2, self.mask_2, self.fmask_2]
+
+        # Check if all images have the same resolution
+        resolutions = [self.get_image_resolution(img) for img in images]
+        if len(set(resolutions)) != 1:
+            QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
+            return
+
+        # Check if all images have the same number of rows and columns
+        dimensions = [self.get_image_dimensions(img) for img in images]
+        if len(set(dimensions)) != 1:
+            QMessageBox.critical(None, "Error",
+                                 "All the input raster images must have the same number of rows and columns!")
+            return
+
+        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
+            QMessageBox.critical(self, "Error", "Please select  the input file!")
+            return
+        n_classes_2 = int(30)
+        directory_2 = self.folder_entry_2.text()
+        out_fn_2 = self.out_fn_entry_2.text()
+        if not out_fn_2:
+            QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in VP!")
+            return
+
+        # Check if the out_fn has the correct file extension
+        if not (out_fn_2.endswith('.tif') or out_fn_2.endswith('.rst')):
+            QMessageBox.critical(self, "Error",
+                                 "Please enter .rst or .tif extension in the name of Vulnerability Map in VP!")
+            return
+
+        # Show "Processing" message
+        processing_message = "Processing data..."
+        self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
+
+        # Change the font size
+        font = QFont()
+        font.setPointSize(9)
+        self.progressDialog.setFont(font)
+
+        self.progressDialog.setWindowTitle("Processing")
+        self.progressDialog.setWindowModality(Qt.WindowModal)
+        self.progressDialog.setMinimumDuration(0)
+        self.progressDialog.resize(400, 300)
+        self.progressDialog.show()
+        QApplication.processEvents()
+
+        try:
+            data_folder = self.vulnerability_map.set_working_directory(directory_2)
+            mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
+                                                                                   self.mask_2, self.fmask_2)
+            out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+
+            QMessageBox.information(self, "Processing Completed", "Processing completed!")
+
             self.progressDialog.close()
 
         except Exception as e:
