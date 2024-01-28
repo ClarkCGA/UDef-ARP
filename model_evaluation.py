@@ -278,7 +278,7 @@ class ModelEvaluation(QObject):
 
         ## Calculate zonal statistics
 
-        # # Convert clipped_gdf to shapefile
+        ## Convert clipped_gdf to shapefile
         vector_temp_path = "temp_vector.shp"
         clipped_gdf.to_file(vector_temp_path)
 
@@ -289,8 +289,9 @@ class ModelEvaluation(QObject):
 
         # Calculate areal_resolution_of_map_pixels
         in_ds4 = gdal.Open(density)
-        P = in_ds4.GetGeoTransform()[1]
-        areal_resolution_of_map_pixels = P * P / 10000
+        P1 = in_ds4.GetGeoTransform()[1]
+        P2 = abs(in_ds4.GetGeoTransform()[5])
+        areal_resolution_of_map_pixels = P1 * P2 / 10000
 
         # Add the results back to the GeoDataFrame
         clipped_gdf['Actual Deforestation(ha)'] = [(item['sum'] if item['sum'] is not None else 0) * areal_resolution_of_map_pixels for item in stats]
@@ -377,18 +378,22 @@ class ModelEvaluation(QObject):
         plt.plot([0, max(clipped_gdf['ActualDef'])], [0, max(clipped_gdf['ActualDef'])], color='crimson', linestyle='--',
                  label='1-to-1 Line')
 
-        # Set max value of xlim abd ylim
-        max_value = max(max(X), max(Y))
-        plt.xlim([0, max_value])
-        plt.ylim([0, max_value])
+        # Set a proportion to extend the limits
+        extension_f = 0.1
 
-        # Get the max value for setting text positions
+        # Set max value of xlim and ylim
+        plt.xlim([0, max(X)*(1+extension_f)])
+        plt.ylim([0, max(Y)*(1+extension_f)])
+
         # Set text x position to 5% of the maximum value
-        text_x_pos = max_value * 0.05
+        text_x_pos = max(Y) * 0.05
+
         # Set starting y position to 95% of the max value
-        text_y_start_pos = max_value * 0.9
+        text_y_start_pos = max(Y) * 0.9
+
         # Set gap between texts to 3% of the maximum value
-        text_y_gap = max_value * 0.05
+        text_y_gap = max(Y) * 0.05
+
 
         # Adjust plt texts with the new calculated positions
         plt.text(text_x_pos, text_y_start_pos, equation, fontsize=11, color='black')
