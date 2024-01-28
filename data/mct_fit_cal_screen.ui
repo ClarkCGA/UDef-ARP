@@ -316,7 +316,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Actual Deforestation in the CAL (binary map)</string>
+         <string>Map of Deforestation in the CAL (binary map)</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_7">

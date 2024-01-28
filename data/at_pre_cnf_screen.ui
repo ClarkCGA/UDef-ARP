@@ -472,7 +472,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Map of Actual Deforestation in the CNF (binary)</string>
+         <string>Map of Deforestation in the CNF (binary)</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="deforestation_cnf_entry">
