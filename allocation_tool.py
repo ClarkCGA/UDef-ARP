@@ -90,7 +90,7 @@ class AllocationTool(QObject):
 
         # Create the final image using tabulation_bin_image function
         tabulation_bin_image = self.array_to_image(risk30_hrp, out_fn1, tabulation_bin_id_masked,
-                                     gdal.GDT_Int16, -99)
+                                     gdal.GDT_Int16, -1)
         return tabulation_bin_id_masked, tabulation_bin_image
 
 ###Step2 Calculate the Relative Frequencies###
@@ -159,27 +159,31 @@ class AllocationTool(QObject):
 
         # Calculate areal_resolution_of_map_pixels
         in_ds4 = gdal.Open(risk30_hrp)
-        P = in_ds4.GetGeoTransform()[1]
-        areal_resolution_of_map_pixels = P * P / 10000
+        P1 = in_ds4.GetGeoTransform()[1]
+        P2 = abs(in_ds4.GetGeoTransform()[5])
+        areal_resolution_of_map_pixels = P1 * P2 / 10000
 
         # Relative_frequency multiplied by the areal resolution of the map pixels to express the probabilities as densities
         fit_density_arr=relative_frequency_arr * areal_resolution_of_map_pixels
 
         # Create the final image using tabulation_bin_image function
         fit_density_map = self.array_to_image(risk30_hrp, out_fn2, fit_density_arr,
-                                     gdal.GDT_Float32, -99)
+                                     gdal.GDT_Float32, -1)
 
         return fit_density_map
 
 ###Step 3 Prediction Phase: create the adjusted predicted density map###
-    def tabulation_bin_id_VP (self, risk30_vp, municipality,out_fn1):
-        '''
-        Create the new tabulation bin image for CNF/VP
+    def tabulation_bin_id_VP (self, risk30_vp, municipality, out_fn1):
+        """
+        This function is to create modeling region array(tabulation_bin_id_VP_masked)
+        and modeling region map(tabulation_bin_image_vp)
         :param risk30_vp: The 30-class vulnerability map for the CNF/VP
-        :param arr2: Subdivision array
+        :param municipality: Subdivision image
+        :param out_fn1: user input
         :return: tabulation_bin_id_VP_masked: tabulation bin id array in CNF/VP
-        '''
-        # Convert municipality and risk30_vp to NumPy array2
+        """
+
+        # Convert municipality and risk30_vp to NumPy array
         arr2 = self.image_to_array(municipality)
         arr4 = self.image_to_array(risk30_vp)
 
@@ -189,10 +193,10 @@ class AllocationTool(QObject):
         # Calculate tabulation bin id of CNF/VP with mask
         tabulation_bin_id_VP_masked = np.add(arr4 * 1000, arr2) * mask_arr_VP
 
-        # Convert the array to float32 data type
-        tabulation_bin_id_VP_masked = tabulation_bin_id_VP_masked.astype(np.float32)
+        # Convert the array to signed 16-bit integer (int16) data type
+        tabulation_bin_id_VP_masked = tabulation_bin_id_VP_masked.astype(np.int16)
         tabulation_bin_image_vp = self.array_to_image(risk30_vp, out_fn1, tabulation_bin_id_VP_masked,
-                                     gdal.GDT_Int16, -99)
+                                     gdal.GDT_Int16, -1)
 
         return tabulation_bin_id_VP_masked, tabulation_bin_image_vp
 
@@ -201,7 +205,7 @@ class AllocationTool(QObject):
         '''
         Calculate the prediction density arry
         :param tabulation_bin_id_VP_masked: array for tabulation bin id in CNF/VP
-        :param merged_df: relative frequency dataframe
+        :param csv: relative frequency table
         :param risk30_vp: the 30-class vulnerability map for the CNF/VP
         :return: prediction_density_arr: modeled deforestation (MD)
         '''
@@ -216,12 +220,14 @@ class AllocationTool(QObject):
         # Using numpy.searchsorted() to assign values to 'id'
         df_sorted = merged_df.sort_values('ID')
         sorted_indices = df_sorted['ID'].searchsorted(tabulation_bin_id_VP_masked)
+        # tabulation_bin_id_VP_masked[:] should be deleted
         relative_frequency_arr = tabulation_bin_id_VP_masked[:] = df_sorted['Average Deforestation(pixel)'].values[sorted_indices]
 
         # Calculate areal_resolution_of_map_pixels
         in_ds4 = gdal.Open(risk30_vp)
-        P = in_ds4.GetGeoTransform()[1]
-        areal_resolution_of_map_pixels = P * P / 10000
+        P1 = in_ds4.GetGeoTransform()[1]
+        P2 = abs(in_ds4.GetGeoTransform()[5])
+        areal_resolution_of_map_pixels = P1 * P2 / 10000
 
         # Relative_frequency multiplied by the areal resolution of the map pixels to express the probabilities as densities
         prediction_density_arr=relative_frequency_arr * areal_resolution_of_map_pixels
@@ -241,8 +247,9 @@ class AllocationTool(QObject):
 
         # Calculate areal_resolution_of_map_pixels
         in_ds5 = gdal.Open(deforestation_cnf)
-        P = in_ds5.GetGeoTransform()[1]
-        areal_resolution_of_map_pixels = P * P / 10000
+        P1 = in_ds5.GetGeoTransform()[1]
+        P2 = abs(in_ds5.GetGeoTransform()[5])
+        areal_resolution_of_map_pixels = P1 * P2 / 10000
 
         # Convert deforestation_cnf to array in ha
         arr5 = self.image_to_array(deforestation_cnf)
@@ -283,8 +290,9 @@ class AllocationTool(QObject):
         # Calculate the maximum density
         # Calculate areal_resolution_of_map_pixels
         in_ds4 = gdal.Open(risk30_vp)
-        P = in_ds4.GetGeoTransform()[1]
-        maximum_density = P * P / 10000
+        P1 = in_ds4.GetGeoTransform()[1]
+        P2 = abs(in_ds4.GetGeoTransform()[5])
+        maximum_density = P1 * P2 / 10000
 
         # Adjusted_Prediction_Density_Map = AR x Prediction_Density _Map
         adjusted_prediction_density_arr=AR*prediction_density_arr
@@ -293,7 +301,7 @@ class AllocationTool(QObject):
         adjusted_prediction_density_arr = np.where(adjusted_prediction_density_arr > maximum_density, maximum_density, adjusted_prediction_density_arr)
 
         # Create imagery
-        out_ds_vp = self.array_to_image(risk30_vp, out_fn2, adjusted_prediction_density_arr, gdal.GDT_Float32, -99)
+        out_ds_vp = self.array_to_image(risk30_vp, out_fn2, adjusted_prediction_density_arr, gdal.GDT_Float32, -1)
 
         return out_ds_vp
 
@@ -310,8 +318,9 @@ class AllocationTool(QObject):
         # Calculate the maximum density
         # Calculate areal_resolution_of_map_pixels
         in_ds4 = gdal.Open(risk30_vp)
-        P = in_ds4.GetGeoTransform()[1]
-        maximum_density = P * P / 10000
+        P1 = in_ds4.GetGeoTransform()[1]
+        P2 = abs(in_ds4.GetGeoTransform()[5])
+        maximum_density = P1 * P2 / 10000
 
         # Adjusted_Prediction_Density_Map = AR x Prediction_Density _Map
         adjusted_prediction_density_arr=AR*prediction_density_arr
@@ -323,7 +332,7 @@ class AllocationTool(QObject):
         adjusted_prediction_density_arr_annual=adjusted_prediction_density_arr/time
 
         # Create imagery
-        out_ds_vp = self.array_to_image(risk30_vp, out_fn2, adjusted_prediction_density_arr_annual, gdal.GDT_Float32, -99)
+        out_ds_vp = self.array_to_image(risk30_vp, out_fn2, adjusted_prediction_density_arr_annual, gdal.GDT_Float32, -1)
 
         return out_ds_vp
 
@@ -371,7 +380,7 @@ class AllocationTool(QObject):
             AR = self.calculate_adjustment_ratio_cnf(new_prediction_density_arr, deforestation_cnf)
             iteration_count += 1
         if iteration_count <= int(max_iterations):
-            out_ds_cnf = self.adjusted_prediction_density_map(prediction_density_arr, risk30_vp, AR, out_fn2)
+            out_ds_cnf = self.adjusted_prediction_density_map(new_prediction_density_arr, risk30_vp, AR, out_fn2)
 
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
@@ -402,7 +411,7 @@ class AllocationTool(QObject):
             iteration_count += 1
             # Emitting progress based on the current iteration_count and max_iterations
         if iteration_count <= int(max_iterations):
-            out_ds_vp = self.adjusted_prediction_density_map_vp(prediction_density_arr, risk30_vp, AR, out_fn2, time)
+            out_ds_vp = self.adjusted_prediction_density_map_vp(new_prediction_density_arr, risk30_vp, AR, out_fn2, time)
 
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
