@@ -807,7 +807,7 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Empirical Vulnerability Map in CAL</string>
+              <string>Empirical transition potential [0,1] for the CAL</string>
              </property>
             </widget>
             <widget class="QLabel" name="label_11">
