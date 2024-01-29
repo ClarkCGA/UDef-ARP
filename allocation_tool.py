@@ -406,6 +406,8 @@ class AllocationTool(QObject):
         self.progress_updated.emit(75)
         # Set a maximum number of iterations to avoid infinite loop
         iteration_count = 0
+        new_prediction_density_arr = None
+
         # When AR > 1.00001 and iteration_count <= max_iterations, treat the result as new prediction density map to iterate the AR util AR is <=1.00001 or iteration_count = max_iterations
         while AR > 1.00001 and iteration_count <= max_iterations:
             out_ds_vp = self.adjusted_prediction_density_map_vp(prediction_density_arr, risk30_vp, AR, out_fn2, time)
@@ -414,7 +416,8 @@ class AllocationTool(QObject):
             iteration_count += 1
             # Emitting progress based on the current iteration_count and max_iterations
         if iteration_count <= int(max_iterations):
-            out_ds_vp = self.adjusted_prediction_density_map_vp(new_prediction_density_arr, risk30_vp, AR, out_fn2, time)
+            selected_density_arr = new_prediction_density_arr if new_prediction_density_arr is not None else prediction_density_arr
+            out_ds_vp = self.adjusted_prediction_density_map_vp(selected_density_arr, risk30_vp, AR, out_fn2, time)
 
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
