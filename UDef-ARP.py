@@ -140,7 +140,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def openDocument_2(self):
-        pdf_path = ""
+        pdf_path = "doc\\TestFitVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -867,7 +867,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def openDocument_2(self):
-        pdf_path = ""
+        pdf_path = "doc\\TestPreVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -1528,7 +1528,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def openDocument_2(self):
-        pdf_path = ""
+        pdf_path = "doc\\AppFitVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
@@ -1968,7 +1968,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def openDocument_2(self):
-        pdf_path = ""
+        pdf_path = "doc\\AppPreVM.pdf"
         QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
 
     def select_working_directory(self):
