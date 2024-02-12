@@ -493,22 +493,6 @@ color: rgb(125, 169, 172);
          <rect>
           <x>30</x>
           <y>390</y>
-          <width>521</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-        </property>
-        <property name="text">
-         <string>Name for the Plot</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_10">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>430</y>
           <width>531</width>
           <height>31</height>
          </rect>
@@ -517,7 +501,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Name for the Chart Data (.csv)</string>
+         <string>Name for the Plot</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="title_entry">
@@ -538,19 +522,6 @@ color: rgb(125, 169, 172);
          <rect>
           <x>570</x>
           <y>390</y>
-          <width>541</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="csv_entry">
-        <property name="geometry">
-         <rect>
-          <x>570</x>
-          <y>430</y>
           <width>541</width>
           <height>31</height>
          </rect>
@@ -597,7 +568,7 @@ color: rgb(125, 169, 172);
           <x>10</x>
           <y>320</y>
           <width>1131</width>
-          <height>201</height>
+          <height>171</height>
          </rect>
         </property>
         <property name="font">
@@ -626,8 +597,8 @@ color: rgb(125, 169, 172);
         <property name="geometry">
          <rect>
           <x>30</x>
-          <y>470</y>
-          <width>531</width>
+          <y>430</y>
+          <width>541</width>
           <height>31</height>
          </rect>
         </property>
@@ -635,20 +606,23 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Name for the Assessment Polygons (.shp)</string>
+         <string>Name for the Residual Map</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="tp_entry">
+       <widget class="QLineEdit" name="raster_fn_entry">
         <property name="geometry">
          <rect>
           <x>570</x>
-          <y>470</y>
+          <y>430</y>
           <width>541</width>
           <height>31</height>
          </rect>
         </property>
         <property name="styleSheet">
          <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
        <zorder>groupBox_3</zorder>
@@ -670,14 +644,12 @@ color: rgb(125, 169, 172);
        <zorder>deforestation_hrp_button</zorder>
        <zorder>label_8</zorder>
        <zorder>label_9</zorder>
-       <zorder>label_10</zorder>
        <zorder>title_entry</zorder>
        <zorder>out_fn_entry</zorder>
-       <zorder>csv_entry</zorder>
        <zorder>doc_button</zorder>
        <zorder>ok_button</zorder>
        <zorder>label_11</zorder>
-       <zorder>tp_entry</zorder>
+       <zorder>raster_fn_entry</zorder>
       </widget>
      </item>
     </layout>

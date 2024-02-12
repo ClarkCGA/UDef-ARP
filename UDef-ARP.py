@@ -608,10 +608,8 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.title = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Plot_CAL.png')
-        self.csv_name = None
-        self.csv_entry.setPlaceholderText('e.g., Performance_Chart_CAL.csv')
-        self.tp_name = None
-        self.tp_entry.setPlaceholderText('e.g., Thiessen_Polygon_CAL.shp')
+        self.raster_fn = None
+        self.raster_fn_entry.setPlaceholderText('e.g., Acre_Residuals_CAL.tif')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat4(self):
@@ -721,29 +719,20 @@ class MCT_FIT_CAL_Screen(QDialog):
             return
 
         # Check if the out_fn has the correct file extension
-        if not (out_fn.endswith('.png') or out_fn.endswith('.jpg')or out_fn.endswith('.pdf')or out_fn.endswith('.svg')or out_fn.endswith('.eps')or out_fn.endswith('.ps')or out_fn.endswith('.tif')):
+        if not (out_fn.endswith('.png') or out_fn.endswith('.jpg') or out_fn.endswith('.pdf') or out_fn.endswith(
+                '.svg') or out_fn.endswith('.eps') or out_fn.endswith('.ps') or out_fn.endswith('.tif')):
             QMessageBox.critical(self, "Error",
                                  "Please enter extension(.png/.jpg/.pdf/.svg/.eps/.ps/.tif) in the name of plot!")
             return
 
-        csv_name = self.csv_entry.text()
-        if not csv_name:
-            QMessageBox.critical(self, "Error", "Please enter the name for the Performance Chart!")
+        raster_fn = self.raster_fn_entry.text()
+        if not raster_fn:
+            QMessageBox.critical(self, "Error", "Please enter the name for Residual Map!")
             return
 
-        if not (csv_name.endswith('.csv')):
+        if not (raster_fn.endswith('.tif') or raster_fn.endswith('.rst')):
             QMessageBox.critical(self, "Error",
-                                 "Please enter .csv extension in the name of Performance_Chart!")
-            return
-
-        tp_name = self.tp_entry.text()
-        if not tp_name:
-            QMessageBox.critical(self, "Error", "Please enter the name for the Thiessen Polygon!")
-            return
-
-        if not (tp_name.endswith('.shp')):
-            QMessageBox.critical(self, "Error",
-                                 "Please enter .shp extension in the name of Thiessen Polygon!")
+                                 "Please enter .rst or .tif extension in the name of Residual Map!")
             return
 
         # Show "Processing" message
@@ -765,8 +754,8 @@ class MCT_FIT_CAL_Screen(QDialog):
         try:
             data_folder = self.model_evaluation.set_working_directory(directory)
             self.model_evaluation.create_mask_polygon(self.mask)
-            clipped_gdf, csv = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, csv_name, tp_name)
-            self.model_evaluation.create_plot(clipped_gdf, title,out_fn)
+            clipped_gdf, csv = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, out_fn,raster_fn)
+            self.model_evaluation.create_plot(clipped_gdf, title, out_fn)
             self.model_evaluation.remove_temp_files()
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
@@ -776,12 +765,10 @@ class MCT_FIT_CAL_Screen(QDialog):
              self.progressDialog.close()
              QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
 
-
     def update_progress(self, value):
         # Update QProgressDialog with the new value
         if self.progressDialog is not None:
             self.progressDialog.setValue(value)
-
 
 class RMT_PRE_CNF_SCREEN(QDialog):
     def __init__(self):
@@ -966,6 +953,15 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.progressDialog.resize(400, 300)
         self.progressDialog.show()
         QApplication.processEvents()
+
+        data_folder = self.vulnerability_map.set_working_directory(directory)
+        mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
+        out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
+        out_ds= None
+        self.vulnerability_map.replace_ref_system(self.in_fn, out_fn)
+
+        QMessageBox.information(self, "Processing Completed", "Processing completed!")
+        self.progressDialog.close()
 
         try:
             data_folder = self.vulnerability_map.set_working_directory(directory)
@@ -1262,6 +1258,8 @@ class MCT_PRE_CNF_Screen(QDialog):
         self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.mask_button.clicked.connect(self.select_mask)
+        self.fmask_button.clicked.connect(self.select_fmask)
+        self.deforestation_cal_button.clicked.connect(self.select_deforestation_cal)
         self.deforestation_hrp_button.clicked.connect(self.select_deforestation_hrp)
         self.density_button.clicked.connect(self.select_density)
         self.ok_button.clicked.connect(self.process_data4)
@@ -1269,17 +1267,19 @@ class MCT_PRE_CNF_Screen(QDialog):
         self.model_evaluation.progress_updated.connect(self.update_progress)
         self.directory = None
         self.mask = None
+        self.fmask = None
+        self.deforestation_cal = None
         self.deforestation_hrp = None
         self.density = None
         self.grid_area = None
         self.grid_area_entry.setPlaceholderText('Type default 100000 or other number')
         self.title = None
         self.out_fn = None
+        self.out_fn_def = None
+        self.raster_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Plot_CNF.png')
-        self.csv_name = None
-        self.csv_entry.setPlaceholderText('e.g., Performance_Chart_CNF.csv')
-        self.tp_name = None
-        self.tp_entry.setPlaceholderText('e.g., Thiessen_Polygon_CNF.shp')
+        self.out_fn_def_entry.setPlaceholderText('e.g., Acre_Def_Review.tif')
+        self.raster_fn_entry.setPlaceholderText('e.g., Acre_Residuals_CNF.tif')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat4(self):
@@ -1317,6 +1317,18 @@ class MCT_PRE_CNF_Screen(QDialog):
             self.mask = file_path
             self.mask_entry.setText(file_path.split('/')[-1])
 
+    def select_fmask(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
+        if file_path:
+            self.fmask = file_path
+            self.fmask_entry.setText(file_path.split('/')[-1])
+
+    def select_deforestation_cal(self):
+        file_path3, _ = QFileDialog.getOpenFileName(self, "Actual Deforestation Map in CAL")
+        if file_path3:
+            self.deforestation_cal = file_path3
+            self.deforestation_cal_entry.setText(file_path3.split('/')[-1])
+
     def select_deforestation_hrp(self):
         file_path3, _ = QFileDialog.getOpenFileName(self, "Actual Deforestation Map in CNF")
         if file_path3:
@@ -1344,7 +1356,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         return rows, cols
 
     def process_data4(self):
-        images = [self.mask, self.deforestation_hrp, self.density]
+        images = [self.mask, self.fmask, self.deforestation_cal, self.deforestation_hrp, self.density]
 
         # Check if all images have the same resolution
         resolutions = [self.get_image_resolution(img) for img in images]
@@ -1359,7 +1371,7 @@ class MCT_PRE_CNF_Screen(QDialog):
                                  "All the input raster images must have the same number of rows and columns!")
             return
 
-        if not self.mask or not self.deforestation_hrp or not self.density :
+        if not self.mask or not self.fmask or not self.deforestation_cal or not self.deforestation_hrp or not self.density :
             QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
@@ -1385,7 +1397,7 @@ class MCT_PRE_CNF_Screen(QDialog):
 
         out_fn = self.out_fn_entry.text()
         if not out_fn:
-            QMessageBox.critical(self, "Error", "Please enter the name of plot!")
+            QMessageBox.critical(self, "Error", "Please enter the name used for the plot, performace chart and assessment polygons!")
             return
 
         # Check if the out_fn has the correct file extension
@@ -1395,24 +1407,24 @@ class MCT_PRE_CNF_Screen(QDialog):
                                  "Please enter extension(.png/.jpg/.pdf/.svg/.eps/.ps/.tif) in the name of plot!")
             return
 
-        csv_name = self.csv_entry.text()
-        if not csv_name:
-            QMessageBox.critical(self, "Error", "Please enter the name for the Performance Chart!")
+        raster_fn = self.raster_fn_entry.text()
+        if not raster_fn:
+            QMessageBox.critical(self, "Error", "Please enter the name for Residual Map!")
             return
 
-        if not (csv_name.endswith('.csv')):
+        if not (raster_fn.endswith('.tif') or raster_fn.endswith('.rst')):
             QMessageBox.critical(self, "Error",
-                                 "Please enter .csv extension in the name of Performance_Chart!")
+                                 "Please enter .rst or .tif extension in the name of Residual Map!")
             return
 
-        tp_name = self.tp_entry.text()
-        if not tp_name:
-            QMessageBox.critical(self, "Error", "Please enter the name for the Thiessen Polygon!")
+        out_fn_def = self.out_fn_def_entry.text()
+        if not out_fn_def:
+            QMessageBox.critical(self, "Error", "Please enter the name for Combined Deforestation Reference Map!")
             return
 
-        if not (tp_name.endswith('.shp')):
+        if not (out_fn_def.endswith('.tif') or out_fn_def.endswith('.rst')):
             QMessageBox.critical(self, "Error",
-                                 "Please enter .shp extension in the name of Thiessen Polygon!")
+                                 "Please enter .rst or .tif extension in the name of Combined Deforestation Reference Map!")
             return
 
         # Show "Processing" message
@@ -1435,7 +1447,12 @@ class MCT_PRE_CNF_Screen(QDialog):
             data_folder = self.model_evaluation.set_working_directory(directory)
             self.model_evaluation.create_mask_polygon(self.mask)
             clipped_gdf, csv = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask, self.density,
-                                                                           self.deforestation_hrp, csv_name, tp_name)
+                                                                             self.deforestation_hrp, out_fn, raster_fn)
+            self.model_evaluation.replace_ref_system(self.mask, raster_fn)
+            self.model_evaluation.create_deforestation_map(self.fmask, self.deforestation_cal, self.deforestation_hrp,
+                                                           out_fn_def)
+            self.model_evaluation.replace_ref_system(self.fmask, out_fn_def)
+            self.model_evaluation.replace_legend(out_fn_def)
             self.model_evaluation.create_plot(clipped_gdf, title, out_fn)
             self.model_evaluation.remove_temp_files()
 
