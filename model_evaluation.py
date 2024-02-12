@@ -12,6 +12,7 @@ import seaborn as sns
 from shapely.geometry import Point
 import pandas as pd
 from PyQt5.QtCore import QObject, pyqtSignal
+import shutil
 
 # GDAL exceptions
 gdal.UseExceptions()
@@ -30,6 +31,80 @@ class ModelEvaluation(QObject):
         self.progress_updated.emit(0)
         self.data_folder = directory
         os.chdir(self.data_folder)
+
+    def image_to_array(self,image):
+        # Set up a GDAL dataset
+        in_ds = gdal.Open(image)
+        # Set up a GDAL band
+        in_band = in_ds.GetRasterBand(1)
+        # Create Numpy Array1
+        arr = in_band.ReadAsArray()
+        return arr
+
+    def array_to_image(self, in_fn, out_fn, data, data_type, nodata=None):
+        '''
+          Create image from array
+         :param in_fn: datasource to copy projection and geotransform from
+         :param out_fn:path to the file to create
+         :param data:the NumPy array
+         :param data_type:output data type
+         :param nodata:optional NoData value
+         :return:out_ds:result image
+        '''
+        in_ds = gdal.Open(in_fn)
+        output_format = out_fn.split('.')[-1].upper()
+        if (output_format == 'TIF'):
+            output_format = 'GTIFF'
+        elif (output_format == 'RST'):
+            output_format = 'rst'
+        driver = gdal.GetDriverByName(output_format)
+        out_ds = driver.Create(out_fn, in_ds.RasterXSize, in_ds.RasterYSize, 1, data_type, options=["BigTIFF=YES"])
+        out_band = out_ds.GetRasterBand(1)
+        out_ds.SetGeoTransform(in_ds.GetGeoTransform())
+        out_ds.SetProjection(in_ds.GetProjection().encode('utf-8', 'backslashreplace').decode('utf-8'))
+        if nodata is not None:
+            out_band.SetNoDataValue(nodata)
+        out_band.WriteArray(data)
+        out_band.FlushCache()
+        out_ds.FlushCache()
+        return out_ds
+
+    def replace_ref_system(self, in_fn, out_fn):
+        if out_fn.split('.')[-1] == 'rst':
+            in_ds = gdal.Open(in_fn)
+            correct_name = in_ds.GetProjection().split('"')[1]
+            base_name, _ = os.path.splitext(out_fn)
+            temp_file_path = 'rdc_temp.rdc'
+
+            if correct_name:
+                with open(base_name + '.rdc', 'r') as read_file, open(temp_file_path, 'w') as write_file:
+                    for line in read_file:
+                        if line.startswith("ref. system :"):
+                            write_file.write("ref. system : " + correct_name + '\n')
+                        else:
+                            write_file.write(line)
+
+                # Move the temp file to replace the original
+                shutil.move(temp_file_path, base_name + '.rdc')
+
+
+    def replace_legend(self, out_fn):
+        if out_fn.split('.')[-1] == 'rst':
+            base_name, _ = os.path.splitext(out_fn)
+            temp_file_path = 'rdc_temp.rdc'
+
+            with open(base_name + '.rdc', 'r') as read_file, open(temp_file_path, 'w') as write_file:
+                for line in read_file:
+                    if line.startswith("legend cats :"):
+                        write_file.write("legend cats : " + '3'+'\n')
+                        # Write the three new lines
+                        write_file.write("code 1      : "+"Forest at the start of HRP"+"\n")
+                        write_file.write("code 2      : "+"Deforestation within CAL"+"\n")
+                        write_file.write("code 3      : "+"Deforestation within CNF"+"\n")
+                    else:
+                        write_file.write(line)
+            time.sleep(1)
+            shutil.move(temp_file_path, base_name + '.rdc')
 
     def create_mask_polygon(self, mask):
         '''
@@ -198,7 +273,44 @@ class ModelEvaluation(QObject):
         rds = None
         return stats
 
-    def create_thiessen_polygon (self, grid_area, mask, density, deforestation, csv_name, tp_name):
+    def vector_to_raster(self,vector_fn,in_fn,raster_fn,data_type, nodata=None):
+        '''
+          Create residual raster image from vector file
+         :param vector_fn: vector datasource
+         :param in_fn: datasource to copy projection and geotransform from
+         :param raster_fn:path to create raster file
+         :param data_type:output data type
+         :param nodata:optional NoData value
+         :return
+        '''
+        # Open the vector data source
+        source_ds = ogr.Open(vector_fn)
+        source_layer = source_ds.GetLayer()
+
+        in_ds = gdal.Open(in_fn)
+        output_format = raster_fn.split('.')[-1].upper()
+        if (output_format == 'TIF'):
+            output_format = 'GTIFF'
+        elif (output_format == 'RST'):
+            output_format = 'rst'
+        driver = gdal.GetDriverByName(output_format)
+        out_ds = driver.Create(raster_fn, in_ds.RasterXSize, in_ds.RasterYSize, 1, data_type, options=["BigTIFF=YES"])
+        out_band = out_ds.GetRasterBand(1)
+        out_ds.SetGeoTransform(in_ds.GetGeoTransform())
+
+        out_ds.SetProjection(in_ds.GetProjection().encode('utf-8', 'backslashreplace').decode('utf-8'))
+
+        if nodata is not None:
+            out_band.SetNoDataValue(nodata)
+        # Rasterize
+        gdal.RasterizeLayer(out_ds, [1], source_layer, options=["ATTRIBUTE=Residuals"])
+
+        # Cleanup
+        out_band.FlushCache()
+        out_ds.FlushCache()
+        return
+
+    def create_thiessen_polygon (self, grid_area, mask, density, deforestation, out_fn, raster_fn):
         '''
           Create thiessen polygon
          :param grid_area: assessment grid cell area or 100,000 (ha)
@@ -302,7 +414,6 @@ class ModelEvaluation(QObject):
         self.progress_updated.emit(80)
 
         clipped_gdf['Predicted Deforestation(ha)'] = [(item['sum'] if item['sum'] is not None else 0) for item in stats1]
-        self.progress_updated.emit(90)
 
         # ID
         clipped_gdf['ID'] = range(1, len(clipped_gdf) + 1)
@@ -312,20 +423,42 @@ class ModelEvaluation(QObject):
         for column in columns_to_fill:
             clipped_gdf[column] = clipped_gdf[column].fillna(0)
 
+        # Calculate residuals
+        clipped_gdf['Residuals(ha)'] = clipped_gdf['Predicted Deforestation(ha)'] - clipped_gdf['Actual Deforestation(ha)']
+
         # Export to csv
-        csv_file_path = csv_name
-        csv=clipped_gdf.drop('geometry', axis=1).to_csv(csv_file_path, columns=['ID', 'Actual Deforestation(ha)', 'Predicted Deforestation(ha)'],
+        csv_file_path = out_fn.split('.')[0]+'.csv'
+        csv=clipped_gdf.drop('geometry', axis=1).to_csv(csv_file_path, columns=['ID', 'Actual Deforestation(ha)', 'Predicted Deforestation(ha)','Residuals(ha)'],
                                                     index=False)
 
         # Rename columns title for shapefile
         clipped_gdf = clipped_gdf.rename(columns={'Predicted Deforestation(ha)': 'PredDef',
-                                                  'Actual Deforestation(ha)': 'ActualDef'})
+                                                  'Actual Deforestation(ha)': 'ActualDef',
+                                                  'Residuals(ha)':'Residuals'})
 
         # Save the updated GeoDataFrame back to a shapefile
-        tp_file_path = tp_name
+
+        tp_file_path = out_fn.split('.')[0]+'.shp'
         clipped_gdf.to_file(tp_file_path)
 
+        # Create residual map
+        self.vector_to_raster(tp_file_path, mask, raster_fn, gdal.GDT_Float32,-1)
+
         return clipped_gdf, csv
+
+    def create_deforestation_map (self, fmask, deforestation_cal, deforestation_cnf, out_fn_def):
+        arr_fmask = self.image_to_array(fmask)
+        arr_def_cal = self.image_to_array(deforestation_cal)
+        arr_def_cnf = self.image_to_array(deforestation_cnf)
+
+        deforestation_arr=np.copy(arr_fmask)
+
+        deforestation_arr[arr_def_cnf == 1] = 3
+        deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 1)] = 2
+        deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 0) & (fmask == 1)] = 1
+
+        self.array_to_image(fmask, out_fn_def, deforestation_arr, gdal.GDT_Int16, -1)
+        return
 
     def create_plot(self, clipped_gdf, title, out_fn):
         '''
@@ -334,6 +467,7 @@ class ModelEvaluation(QObject):
         :param title:plot title
         :return
         '''
+        self.progress_updated.emit(90)
         # Set Seaborn Style
         sns.set()
 
