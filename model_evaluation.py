@@ -253,8 +253,11 @@ class ModelEvaluation(QObject):
         # Convert the study area to GeoDataFrame.
         polydf = gpd.GeoDataFrame(geometry=[polygon], crs=mask_df.crs)
 
-        # Only preserved Thiessen Polygon within mask by intersection
-        thiessen_gdf = gpd.overlay(df1=voronois, df2=polydf, how="intersection", keep_geom_type=False)
+        # Only preserved Thiessen Polygon within mask by spatial join with mask polygon
+        thiessen_gdf = gpd.sjoin(voronois, polydf, how="inner", predicate="within")
+        #explicitly set the crs
+        thiessen_gdf.crs = mask_df.crs
+
         self.progress_updated.emit(40)
 
         # Extract polygons and multipolygons from the entire thiessen_gdf (including GeometryCollections)
@@ -264,17 +267,13 @@ class ModelEvaluation(QObject):
                 geom]
         ).explode().reset_index(drop=True)
 
-        extracted_gdf = gpd.GeoDataFrame({'geometry': extracted_gdf}, crs=thiessen_gdf.crs)
+        clipped_gdf = gpd.GeoDataFrame({'geometry': extracted_gdf}, crs=thiessen_gdf.crs)
 
         # Calculate area in hectares
-        extracted_gdf['Area_ha'] = extracted_gdf['geometry'].area / 10000
+        clipped_gdf['Area_ha'] = clipped_gdf['geometry'].area / 10000
 
-        # Find the maximum value of the 'area_ha' column
-        max_area = extracted_gdf['Area_ha'].max()
-
-        # Filter to keep only rows where 'area_ha' is equal to the maximum value
-        clipped_gdf = extracted_gdf[extracted_gdf['Area_ha'] == max_area]
-        self.progress_updated.emit(50)
+        # remove all columns except area_ha and geometry
+        clipped_gdf = clipped_gdf[['Area_ha', 'geometry']]
 
         ## Calculate zonal statistics
 
