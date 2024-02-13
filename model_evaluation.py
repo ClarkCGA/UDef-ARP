@@ -103,7 +103,6 @@ class ModelEvaluation(QObject):
                         write_file.write("code 3      : "+"Deforestation within CNF"+"\n")
                     else:
                         write_file.write(line)
-            time.sleep(1)
             shutil.move(temp_file_path, base_name + '.rdc')
 
     def create_mask_polygon(self, mask):
@@ -396,7 +395,7 @@ class ModelEvaluation(QObject):
         # Actual Deforestation(ha)
         stats = self.zonal_stats(vector_temp_path, deforestation, nodata_value=0)
 
-        self.progress_updated.emit(60)
+        self.progress_updated.emit(50)
 
         # Calculate areal_resolution_of_map_pixels
         in_ds4 = gdal.Open(density)
@@ -406,11 +405,11 @@ class ModelEvaluation(QObject):
 
         # Add the results back to the GeoDataFrame
         clipped_gdf['Actual Deforestation(ha)'] = [(item['sum'] if item['sum'] is not None else 0) * areal_resolution_of_map_pixels for item in stats]
-        self.progress_updated.emit(70)
+        self.progress_updated.emit(60)
 
         # Predicted Deforestation(ha)
         stats1 = self.zonal_stats(vector_temp_path, density, nodata_value=0)
-        self.progress_updated.emit(80)
+        self.progress_updated.emit(70)
 
         clipped_gdf['Predicted Deforestation(ha)'] = [(item['sum'] if item['sum'] is not None else 0) for item in stats1]
 
@@ -446,6 +445,7 @@ class ModelEvaluation(QObject):
         return clipped_gdf, csv
 
     def create_deforestation_map (self, fmask, deforestation_cal, deforestation_cnf, out_fn_def):
+        self.progress_updated.emit(80)
         arr_fmask = self.image_to_array(fmask)
         arr_def_cal = self.image_to_array(deforestation_cal)
         arr_def_cnf = self.image_to_array(deforestation_cnf)
