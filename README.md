@@ -1,7 +1,7 @@
 
 # Unplanned Deforestation Allocated Risk Modeling and Mapping Procedure (UDef-ARP)
 
-UDef-ARP was developed by Clark Labs, in collaboration with TerraCarbon, to facilitate implementation of Verra’s VT0007 Unplanned Deforestation Allocation Tool (UDef-AT). It is used in conjunction with a raster-capable GIS for input data preparation and output display. Tools are provided for the development of models using the Calibration Period and subsequent testing during the Confirmation Period. Based on these evaluations, the selected procedure uses the full Historical Reference Period to build a model and prediction for the Validity Period. The final output is a map expressed in hectares/pixel/year of expected forest loss.
+UDef-ARP was developed by Clark Labs, in collaboration with TerraCarbon, to facilitate implementation of the Verra tool, VT0007 Unplanned Deforestation Allocation (UDef-A). It is used in conjunction with a raster-capable GIS for input data preparation and output display. Tools are provided for the development of models using the Calibration Period and subsequent testing during the Confirmation Period. Based on these evaluations, the selected procedure uses the full Historical Reference Period to build a model and prediction for the Validity Period. The final output is a map expressed in hectares/pixel/year of expected forest loss.
 
 ## Requirements
 
