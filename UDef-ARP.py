@@ -9,6 +9,7 @@ from allocation_tool import AllocationTool
 from vulnerability_map import VulnerabilityMap
 from model_evaluation import ModelEvaluation
 from osgeo import gdal
+from pathlib import Path, PureWindowsPath
 
 # GDAL exceptions
 gdal.UseExceptions()
@@ -16,11 +17,11 @@ gdal.UseExceptions()
 class IntroScreen(QDialog):
     def __init__(self):
         super(IntroScreen, self).__init__()
-        loadUi("data\\intro_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\intro_screen.ui")), self)
         # Set window properties
         self.setWindowTitle('JNR Allocated Risk Mapping Procedure (UDef-ARP)')
         # Set window icon
-        self.setWindowIcon(QIcon("data\\icon.ico"))
+        self.setWindowIcon(QIcon(str(Path(PureWindowsPath("data\\icon.ico")))))
         self.Fit_Cal_button.clicked.connect(self.gotofitcal)
         self.Pre_Cnf_button.clicked.connect(self.gotoprecnf)
         self.Fit_Hrp_button.clicked.connect(self.gotofithrp)
@@ -48,15 +49,15 @@ class IntroScreen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\UDef-ARP_Introduction.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\UDef-ARP_Introduction.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
 class RMT_FIT_CAL_SCREEN(QDialog):
     def __init__(self):
         super(RMT_FIT_CAL_SCREEN, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi("data\\rmt_fit_cal_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\rmt_fit_cal_screen.ui")), self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -136,19 +137,19 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\TestFitVM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\TestFitVM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def openDocument_2(self):
-        pdf_path = "doc\\TestFitVM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\TestFitVM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory = data_folder_with_backslashes
-        self.folder_entry.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CAL')
@@ -170,10 +171,10 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
     def select_working_directory_2(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory_2 = data_folder_with_backslashes
-        self.folder_entry_2.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_fd_2(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CAL')
@@ -405,7 +406,7 @@ class AT_FIT_CAL_Screen(QDialog):
     def __init__(self):
         super(AT_FIT_CAL_Screen, self).__init__()
         self.initial_directory = os.getcwd()
-        loadUi("data\\at_fit_cal_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\at_fit_cal_screen.ui")), self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -452,15 +453,15 @@ class AT_FIT_CAL_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\TestFitAM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\TestFitAM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory = data_folder_with_backslashes
-        self.folder_entry.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -584,7 +585,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         super(MCT_FIT_CAL_Screen, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi("data\\mct_fit_cal_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\mct_fit_cal_screen.ui")), self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -631,15 +632,15 @@ class MCT_FIT_CAL_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\TestFitMA.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\TestFitMA.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory = data_folder_with_backslashes
-        self.folder_entry.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_mask(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
@@ -775,7 +776,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         super(RMT_PRE_CNF_SCREEN, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi("data\\rmt_pre_cnf_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\rmt_pre_cnf_screen.ui")), self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -850,19 +851,19 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\TestPreVM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\TestPreVM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def openDocument_2(self):
-        pdf_path = "doc\\TestPreVM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\TestPreVM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory = data_folder_with_backslashes
-        self.folder_entry.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CNF')
@@ -872,10 +873,10 @@ class RMT_PRE_CNF_SCREEN(QDialog):
 
     def select_working_directory_2(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory_2 = data_folder_with_backslashes
-        self.folder_entry_2.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_fd_2(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CNF')
@@ -1060,7 +1061,7 @@ class AT_PRE_CNF_Screen(QDialog):
     def __init__(self):
         super(AT_PRE_CNF_Screen, self).__init__()
         self.initial_directory = os.getcwd()
-        loadUi("data\\at_pre_cnf_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\at_pre_cnf_screen.ui")), self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -1108,15 +1109,15 @@ class AT_PRE_CNF_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\TestPreAM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\TestPreAM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory = data_folder_with_backslashes
-        self.folder_entry.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -1248,7 +1249,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         super(MCT_PRE_CNF_Screen, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi("data\\mct_pre_cnf_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\mct_pre_cnf_screen.ui")), self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -1301,15 +1302,15 @@ class MCT_PRE_CNF_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\TestPreMA.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\TestPreMA.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory = data_folder_with_backslashes
-        self.folder_entry.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_mask(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
@@ -1473,7 +1474,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         super(RMT_FIT_HRP_SCREEN, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi("data\\rmt_fit_hrp_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\rmt_fit_hrp_screen.ui")), self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -1541,19 +1542,19 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\AppFitVM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\AppFitVM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def openDocument_2(self):
-        pdf_path = "doc\\AppFitVM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\AppFitVM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory = data_folder_with_backslashes
-        self.folder_entry.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in HRP')
@@ -1563,10 +1564,10 @@ class RMT_FIT_HRP_SCREEN(QDialog):
 
     def select_working_directory_2(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory_2 = data_folder_with_backslashes
-        self.folder_entry_2.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_fd_2(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in HRP')
@@ -1742,7 +1743,7 @@ class AT_FIT_HRP_Screen(QDialog):
     def __init__(self):
         super(AT_FIT_HRP_Screen, self).__init__()
         self.initial_directory = os.getcwd()
-        loadUi("data\\at_fit_hrp_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\at_fit_hrp_screen.ui")), self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -1782,15 +1783,15 @@ class AT_FIT_HRP_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\AppFitAM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\AppFitAM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory = data_folder_with_backslashes
-        self.folder_entry.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -1913,7 +1914,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         super(RMT_PRE_VP_SCREEN, self).__init__()
         # Store the initial directory path
         self.initial_directory = os.getcwd()
-        loadUi("data\\rmt_pre_vp_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\rmt_pre_vp_screen.ui")), self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -1981,19 +1982,19 @@ class RMT_PRE_VP_SCREEN(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\AppPreVM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\AppPreVM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def openDocument_2(self):
-        pdf_path = "doc\\AppPreVM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\AppPreVM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory = data_folder_with_backslashes
-        self.folder_entry.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in VP')
@@ -2003,10 +2004,10 @@ class RMT_PRE_VP_SCREEN(QDialog):
 
     def select_working_directory_2(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory_2 = data_folder_with_backslashes
-        self.folder_entry_2.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_fd_2(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in VP')
@@ -2183,7 +2184,7 @@ class AT_PRE_VP_Screen(QDialog):
     def __init__(self):
         super(AT_PRE_VP_Screen, self).__init__()
         self.initial_directory = os.getcwd()
-        loadUi("data\\at_pre_vp_screen.ui", self)
+        loadUi(Path(PureWindowsPath("data\\at_pre_vp_screen.ui")), self)
         if central_data_store.directory is not None and self.folder_entry is not None:
             self.directory = central_data_store.directory
             self.folder_entry.setText(str(central_data_store.directory))
@@ -2225,15 +2226,15 @@ class AT_PRE_VP_Screen(QDialog):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def openDocument(self):
-        pdf_path = "doc\\AppPreAM.pdf"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
+        pdf_path = Path(PureWindowsPath("doc\\AppPreAM.pdf"))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_with_backslashes = data_folder.replace('/', '\\')
-        self.directory = data_folder_with_backslashes
-        self.folder_entry.setText(data_folder_with_backslashes)
-        central_data_store.directory = data_folder_with_backslashes
+        data_folder_path = Path(data_folder)
+        self.directory = str(data_folder_path)
+        self.folder_entry.setText(self.directory)
+        central_data_store.directory = self.directory
 
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
@@ -2382,7 +2383,8 @@ class CentralDataStore:
 # main
 app = QApplication(sys.argv)
 # Load custom fonts
-font_id=QFontDatabase.addApplicationFont("font\\AvenirNextLTPro-DemiCn.otf")
+
+font_id=QFontDatabase.addApplicationFont(str(Path(PureWindowsPath("font\\AvenirNextLTPro-DemiCn.otf"))))
 
 intro = IntroScreen()
 # Create a global instance of this store
