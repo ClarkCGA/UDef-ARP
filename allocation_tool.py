@@ -279,7 +279,7 @@ class AllocationTool(QObject):
 
     def adjusted_prediction_density_map (self, prediction_density_arr, risk30_vp, AR, out_fn2):
         '''
-        Create adjusted prediction density map for CNF
+        Create adjusted prediction density map
         :param prediction_density_arr:modeled deforestation (MD)
         :param risk30_vp: risk30_vp image
         :param AR:Adjustment Ratio
@@ -298,16 +298,16 @@ class AllocationTool(QObject):
         adjusted_prediction_density_arr=AR*prediction_density_arr
 
         # Reclassify all pixels greater than the maximum (e.g., 0.09) to be the maximum
-        adjusted_prediction_density_arr = np.where(adjusted_prediction_density_arr > maximum_density, maximum_density, adjusted_prediction_density_arr)
+        adjusted_prediction_density_arr[adjusted_prediction_density_arr > maximum_density] = maximum_density
 
         # Create imagery
         out_ds_vp = self.array_to_image(risk30_vp, out_fn2, adjusted_prediction_density_arr, gdal.GDT_Float32, -1)
 
         return out_ds_vp
 
-    def adjusted_prediction_density_map_vp (self, prediction_density_arr, risk30_vp, AR, out_fn2, time):
+    def adjusted_prediction_density_map_annual (self, prediction_density_arr, risk30_vp, AR, out_fn2, time):
         '''
-        Create adjusted prediction density map for VP
+        Create adjusted prediction density map for annual
         :param prediction_density_arr:modeled deforestation (MD)
         :param risk30_vp: risk30_vp image
         :param AR:Adjustment Ratio
@@ -326,7 +326,7 @@ class AllocationTool(QObject):
         adjusted_prediction_density_arr=AR*prediction_density_arr
 
         # Reclassify all pixels greater than the maximum (e.g., 0.09) to be the maximum
-        adjusted_prediction_density_arr = np.where(adjusted_prediction_density_arr > maximum_density, maximum_density, adjusted_prediction_density_arr)
+        adjusted_prediction_density_arr[adjusted_prediction_density_arr > maximum_density] = maximum_density
 
         # Convert the result back to an annual rate by dividing by the number of years in the VP
         adjusted_prediction_density_arr_annual=adjusted_prediction_density_arr/time
@@ -384,7 +384,6 @@ class AllocationTool(QObject):
             selected_density_arr = new_prediction_density_arr if new_prediction_density_arr is not None else prediction_density_arr
             out_ds_cnf = self.adjusted_prediction_density_map(selected_density_arr, risk30_vp, AR, out_fn2)
 
-
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
         self.progress_updated.emit(100)
@@ -410,14 +409,14 @@ class AllocationTool(QObject):
 
         # When AR > 1.00001 and iteration_count <= max_iterations, treat the result as new prediction density map to iterate the AR util AR is <=1.00001 or iteration_count = max_iterations
         while AR > 1.00001 and iteration_count <= max_iterations:
-            out_ds_vp = self.adjusted_prediction_density_map_vp(prediction_density_arr, risk30_vp, AR, out_fn2, time)
+            out_ds_vp = self.adjusted_prediction_density_map(prediction_density_arr, risk30_vp, AR, out_fn2)
             new_prediction_density_arr=self.image_to_array(out_fn2)
             AR = self.calculate_adjustment_ratio(new_prediction_density_arr, expected_deforestation)
             iteration_count += 1
             # Emitting progress based on the current iteration_count and max_iterations
         if iteration_count <= int(max_iterations):
             selected_density_arr = new_prediction_density_arr if new_prediction_density_arr is not None else prediction_density_arr
-            out_ds_vp = self.adjusted_prediction_density_map_vp(selected_density_arr, risk30_vp, AR, out_fn2, time)
+            out_ds_vp = self.adjusted_prediction_density_map_annual(selected_density_arr, risk30_vp, AR, out_fn2, time)
 
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
