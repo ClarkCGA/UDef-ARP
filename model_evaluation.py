@@ -464,6 +464,7 @@ class ModelEvaluation(QObject):
         Create plot and save to local directory
         :param clipped_gdf: thiessen_polygon geo-dataframe
         :param title:plot title
+        :param out_fn:plot path
         :return
         '''
         self.progress_updated.emit(90)
