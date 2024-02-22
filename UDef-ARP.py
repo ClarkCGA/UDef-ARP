@@ -50,11 +50,7 @@ class IntroScreen(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\UDef-ARP_Introduction.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
 class RMT_FIT_CAL_SCREEN(QDialog):
     def __init__(self):
@@ -142,19 +138,11 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\TestFitVM.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def openDocument_2(self):
         pdf_path = Path(PureWindowsPath("doc\\TestFitVM.pdf"))
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
-
-    def openDocument_2(self):
-        pdf_path = Path(PureWindowsPath("doc\\TestFitVM.pdf"))
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -466,11 +454,7 @@ class AT_FIT_CAL_Screen(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\TestFitAM.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -649,11 +633,7 @@ class MCT_FIT_CAL_Screen(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\TestFitMA.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -872,19 +852,11 @@ class RMT_PRE_CNF_SCREEN(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\TestPreVM.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def openDocument_2(self):
         pdf_path = Path(PureWindowsPath("doc\\TestPreVM.pdf"))
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
-
-    def openDocument_2(self):
-        pdf_path = Path(PureWindowsPath("doc\\TestPreVM.pdf"))
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -1138,11 +1110,7 @@ class AT_PRE_CNF_Screen(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\TestPreAM.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -1335,11 +1303,7 @@ class MCT_PRE_CNF_Screen(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\TestPreMA.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -1579,19 +1543,11 @@ class RMT_FIT_HRP_SCREEN(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\AppFitVM.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def openDocument_2(self):
         pdf_path = Path(PureWindowsPath("doc\\AppFitVM.pdf"))
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
-
-    def openDocument_2(self):
-        pdf_path = Path(PureWindowsPath("doc\\AppFitVM.pdf"))
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -1828,11 +1784,7 @@ class AT_FIT_HRP_Screen(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\AppFitAM.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -2031,19 +1983,11 @@ class RMT_PRE_VP_SCREEN(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\AppPreVM.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
 
     def openDocument_2(self):
         pdf_path = Path(PureWindowsPath("doc\\AppPreVM.pdf"))
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
-
-    def openDocument_2(self):
-        pdf_path = Path(PureWindowsPath("doc\\AppPreVM.pdf"))
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -2283,11 +2227,7 @@ class AT_PRE_VP_Screen(QDialog):
 
     def openDocument(self):
         pdf_path = Path(PureWindowsPath("doc\\AppPreAM.pdf"))
-<<<<<<< HEAD
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(pdf_path)))
-=======
-        QDesktopServices.openUrl(QUrl.fromLocalFile(pdf_path))
->>>>>>> ed196aea154a32c3681ae568dec5e57552b0d2eb
 
     def select_working_directory(self):
         data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
