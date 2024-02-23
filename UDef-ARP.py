@@ -955,15 +955,6 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.progressDialog.show()
         QApplication.processEvents()
 
-        data_folder = self.vulnerability_map.set_working_directory(directory)
-        mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
-        out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
-        out_ds= None
-        self.vulnerability_map.replace_ref_system(self.in_fn, out_fn)
-
-        QMessageBox.information(self, "Processing Completed", "Processing completed!")
-        self.progressDialog.close()
-
         try:
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
