@@ -357,7 +357,7 @@ font: 75 10pt &quot;AvenirNext LT Pro Bold&quot;;</string>
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>intro.jpg</pixmap>
+      <pixmap>intro.JPG</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
