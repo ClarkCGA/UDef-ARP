@@ -456,8 +456,9 @@ class ModelEvaluation(QObject):
         deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 1)] = 2
         deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 0) & (fmask == 1)] = 1
 
-        self.array_to_image(fmask, out_fn_def, deforestation_arr, gdal.GDT_Int16, -1)
-        return
+        deforestation_map=self.array_to_image(fmask, out_fn_def, deforestation_arr, gdal.GDT_Int16, -1)
+
+        return deforestation_map
 
     def create_plot(self, clipped_gdf, title, out_fn):
         '''

@@ -326,6 +326,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
+            out_ds = None
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
@@ -388,6 +389,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             data_folder = self.vulnerability_map.set_working_directory(directory_2)
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2, self.mask_2, self.fmask_2)
             out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+            out_ds = None
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
@@ -959,6 +961,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
+            out_ds = None
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
@@ -1034,6 +1037,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
                                                                                    self.mask_2, self.fmask_2)
             out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+            out_ds = None
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
@@ -1441,8 +1445,9 @@ class MCT_PRE_CNF_Screen(QDialog):
             clipped_gdf, csv = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask, self.density,
                                                                              self.deforestation_hrp, out_fn, raster_fn)
             self.model_evaluation.replace_ref_system(self.mask, raster_fn)
-            self.model_evaluation.create_deforestation_map(self.fmask, self.deforestation_cal, self.deforestation_hrp,
+            deforestation_map = self.model_evaluation.create_deforestation_map(self.fmask, self.deforestation_cal, self.deforestation_hrp,
                                                            out_fn_def)
+            deforestation_map = None
             self.model_evaluation.replace_ref_system(self.fmask, out_fn_def)
             self.model_evaluation.replace_legend(out_fn_def)
             self.model_evaluation.create_plot(clipped_gdf, title, out_fn)
@@ -1641,6 +1646,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
+            out_ds = None
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
@@ -1716,6 +1722,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
                                                                                    self.mask_2, self.fmask_2)
             out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+            out_ds = None
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
@@ -2081,6 +2088,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
+            out_ds = None
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
@@ -2156,6 +2164,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
                                                                                    self.mask_2, self.fmask_2)
             out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+            out_ds = None
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 

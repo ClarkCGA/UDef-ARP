@@ -58,7 +58,6 @@ class AllocationTool(QObject):
         out_band.WriteArray(data)
         out_band.FlushCache()
         out_ds.FlushCache()
-        out_band.ComputeStatistics(False)
         return out_ds
 
 
@@ -91,6 +90,7 @@ class AllocationTool(QObject):
         # Create the final image using tabulation_bin_image function
         tabulation_bin_image = self.array_to_image(risk30_hrp, out_fn1, tabulation_bin_id_masked,
                                      gdal.GDT_Int16, -1)
+        tabulation_bin_image = None
         return tabulation_bin_id_masked, tabulation_bin_image
 
 ###Step2 Calculate the Relative Frequencies###
@@ -197,6 +197,7 @@ class AllocationTool(QObject):
         tabulation_bin_id_VP_masked = tabulation_bin_id_VP_masked.astype(np.int16)
         tabulation_bin_image_vp = self.array_to_image(risk30_vp, out_fn1, tabulation_bin_id_VP_masked,
                                      gdal.GDT_Int16, -1)
+        tabulation_bin_image_vp = None
 
         return tabulation_bin_id_VP_masked, tabulation_bin_image_vp
 
@@ -302,6 +303,7 @@ class AllocationTool(QObject):
 
         # Create imagery
         out_ds_vp = self.array_to_image(risk30_vp, out_fn2, adjusted_prediction_density_arr, gdal.GDT_Float32, -1)
+        out_ds_vp = None
 
         return out_ds_vp
 
@@ -333,6 +335,7 @@ class AllocationTool(QObject):
 
         # Create imagery
         out_ds_vp = self.array_to_image(risk30_vp, out_fn2, adjusted_prediction_density_arr_annual, gdal.GDT_Float32, -1)
+        out_ds_vp = None
 
         return out_ds_vp
 
@@ -352,6 +355,7 @@ class AllocationTool(QObject):
         self.progress_updated.emit(75)
         fit_density_map = self.create_fit_density_map(risk30_hrp, tabulation_bin_id_masked,
                                                                       merged_df, out_fn2)
+        fit_density_map = None
         self.progress_updated.emit(100)
         # After processing, emit processCompleted or any other signal as needed
         return fit_density_map
