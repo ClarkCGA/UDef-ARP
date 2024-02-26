@@ -49,7 +49,7 @@ class ModelEvaluation(QObject):
          :param data:the NumPy array
          :param data_type:output data type
          :param nodata:optional NoData value
-         :return:out_ds:result image
+         :return:
         '''
         in_ds = gdal.Open(in_fn)
         output_format = out_fn.split('.')[-1].upper()
@@ -67,7 +67,7 @@ class ModelEvaluation(QObject):
         out_band.WriteArray(data)
         out_band.FlushCache()
         out_ds.FlushCache()
-        return out_ds
+        return
 
     def replace_ref_system(self, in_fn, out_fn):
         if out_fn.split('.')[-1] == 'rst':
@@ -109,7 +109,7 @@ class ModelEvaluation(QObject):
         '''
         Create municipality mask polygon
         :param mask: mask of the jurisdiction (binary map)
-        :return:Polygonized_Mask: municipality mask polygon
+        :return:
         '''
         in_ds = gdal.Open(mask)
         in_band = in_ds.GetRasterBand(1)
@@ -318,7 +318,6 @@ class ModelEvaluation(QObject):
          :param deforestation:Deforestation Map during the HRP
          :param csv_name:Name of performance chart
          :return  clipped_gdf: thiessen polygon dataframe
-                  csv: performance chart
         '''
         ## Create sample points:
         # Open the Polygonized_Mask shapefile
@@ -442,7 +441,7 @@ class ModelEvaluation(QObject):
         # Create residual map
         self.vector_to_raster(tp_file_path, mask, raster_fn, gdal.GDT_Float32,-1)
 
-        return clipped_gdf, csv
+        return clipped_gdf
 
     def create_deforestation_map (self, fmask, deforestation_cal, deforestation_cnf, out_fn_def):
         self.progress_updated.emit(80)
@@ -456,7 +455,9 @@ class ModelEvaluation(QObject):
         deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 1)] = 2
         deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 0) & (fmask == 1)] = 1
 
+        #write deforestation_map
         self.array_to_image(fmask, out_fn_def, deforestation_arr, gdal.GDT_Int16, -1)
+
         return
 
     def create_plot(self, clipped_gdf, title, out_fn):

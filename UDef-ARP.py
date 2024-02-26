@@ -325,7 +325,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         try:
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
+            self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
@@ -387,7 +387,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         try:
             data_folder = self.vulnerability_map.set_working_directory(directory_2)
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2, self.mask_2, self.fmask_2)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+            self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
@@ -564,9 +564,10 @@ class AT_FIT_CAL_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            fit_density_map = self.allocation_tool.execute_workflow_fit(directory,self.risk30_hrp,
-                                                                        self.municipality,self.deforestation_hrp, csv_name,
-                                                                        out_fn1,out_fn2)
+            #fit_density_map = self.allocation_tool.execute_workflow_fit(directory,self.risk30_hrp,
+            self.allocation_tool.execute_workflow_fit(directory, self.risk30_hrp,
+                                                        self.municipality,self.deforestation_hrp, csv_name,
+                                                        out_fn1,out_fn2)
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
@@ -755,7 +756,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         try:
             data_folder = self.model_evaluation.set_working_directory(directory)
             self.model_evaluation.create_mask_polygon(self.mask)
-            clipped_gdf, csv = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, out_fn,raster_fn)
+            clipped_gdf = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, out_fn,raster_fn)
             self.model_evaluation.create_plot(clipped_gdf, title, out_fn)
             self.model_evaluation.remove_temp_files()
 
@@ -958,7 +959,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         try:
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
+            self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
@@ -1033,7 +1034,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             data_folder = self.vulnerability_map.set_working_directory(directory_2)
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
                                                                                    self.mask_2, self.fmask_2)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+            self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
@@ -1217,12 +1218,13 @@ class AT_PRE_CNF_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            adjusted_prediction_density_map = self.allocation_tool.execute_workflow_cnf(directory,
-                                                                                        self.max_iterations, self.csv,
-                                                                                        self.municipality,
-                                                                                        self.deforestation_cnf,
-                                                                                        self.risk30_vp, out_fn1,
-                                                                                        out_fn2)
+            #adjusted_prediction_density_map = self.allocation_tool.execute_workflow_cnf(directory,
+            self.allocation_tool.execute_workflow_cnf(directory,
+                                                            self.max_iterations, self.csv,
+                                                            self.municipality,
+                                                            self.deforestation_cnf,
+                                                            self.risk30_vp, out_fn1,
+                                                            out_fn2)
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
@@ -1438,7 +1440,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         try:
             data_folder = self.model_evaluation.set_working_directory(directory)
             self.model_evaluation.create_mask_polygon(self.mask)
-            clipped_gdf, csv = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask, self.density,
+            clipped_gdf = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask, self.density,
                                                                              self.deforestation_hrp, out_fn, raster_fn)
             self.model_evaluation.replace_ref_system(self.mask, raster_fn)
             self.model_evaluation.create_deforestation_map(self.fmask, self.deforestation_cal, self.deforestation_hrp,
@@ -1640,7 +1642,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         try:
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
+            self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
@@ -1715,7 +1717,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             data_folder = self.vulnerability_map.set_working_directory(directory_2)
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
                                                                                    self.mask_2, self.fmask_2)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+            self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
@@ -1884,9 +1886,10 @@ class AT_FIT_HRP_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            fit_density_map = self.allocation_tool.execute_workflow_fit(directory,self.risk30_hrp,
-                                                                        self.municipality,self.deforestation_hrp, csv_name,
-                                                                        out_fn1,out_fn2)
+            #fit_density_map = self.allocation_tool.execute_workflow_fit(directory,self.risk30_hrp,
+            self.allocation_tool.execute_workflow_fit(directory, self.risk30_hrp,
+                                                        self.municipality,self.deforestation_hrp, csv_name,
+                                                        out_fn1,out_fn2)
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
@@ -2080,7 +2083,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         try:
             data_folder = self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
+            self.vulnerability_map.array2raster(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
@@ -2155,7 +2158,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
             data_folder = self.vulnerability_map.set_working_directory(directory_2)
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
                                                                                    self.mask_2, self.fmask_2)
-            out_ds = self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
+            self.vulnerability_map.array2raster(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
 
@@ -2347,12 +2350,13 @@ class AT_PRE_VP_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            adjusted_prediction_density_map = self.allocation_tool.execute_workflow_vp(directory, self.max_iterations,
-                                                                                       self.csv,
-                                                                                       self.municipality,
-                                                                                       self.expected_deforestation,
-                                                                                       self.risk30_vp, out_fn1,out_fn2,
-                                                                                       self.time)
+            #adjusted_prediction_density_map = self.allocation_tool.execute_workflow_vp(directory, self.max_iterations,
+            self.allocation_tool.execute_workflow_vp(directory, self.max_iterations,
+                                                                           self.csv,
+                                                                           self.municipality,
+                                                                           self.expected_deforestation,
+                                                                           self.risk30_vp, out_fn1,out_fn2,
+                                                                           self.time)
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
