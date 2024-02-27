@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from osgeo import gdal
 from PyQt5.QtCore import QObject, pyqtSignal
+import shutil
 
 # GDAL exceptions
 gdal.UseExceptions()
@@ -66,7 +67,7 @@ class AllocationTool(QObject):
         and fitting modeling region map(tabulation_bin_image)
         :param risk30_hrp: The 30-class vulnerability map for the CAL/HRP
         :param municipality: Subdivision image
-        :param out_fn: user input
+        :param out_fn1: user input
         :return: tabulation_bin_id_masked: tabulation bin id array in CAL/HRP
         """
         # Convert risk30_hrp to NumPy array
@@ -332,6 +333,29 @@ class AllocationTool(QObject):
 
         return
 
+    def replace_ref_system(self, in_fn, out_fn):
+        '''
+         RST raster format: correct reference system name in rdc file
+         :param in_fn: datasource to copy correct projection name
+         :param out_fn: rst raster file
+        '''
+        if out_fn.split('.')[-1] == 'rst':
+            in_ds = gdal.Open(in_fn)
+            correct_name = in_ds.GetProjection().split('"')[1]
+            base_name, _ = os.path.splitext(out_fn)
+            temp_file_path = 'rdc_temp.rdc'
+
+            if correct_name:
+                with open(base_name + '.rdc', 'r') as read_file, open(temp_file_path, 'w') as write_file:
+                    for line in read_file:
+                        if line.startswith("ref. system :"):
+                            write_file.write("ref. system : " + correct_name + '\n')
+                        else:
+                            write_file.write(line)
+
+                # Move the temp file to replace the original
+                shutil.move(temp_file_path, base_name + '.rdc')
+
     def execute_workflow_fit(self, directory,risk30_hrp,municipality, deforestation_hrp, csv_name, out_fn1, out_fn2):
         '''
         Create workflow function for CAL and HRP
@@ -339,15 +363,15 @@ class AllocationTool(QObject):
         self.progress_updated.emit(0)
         data_folder = self.set_working_directory(directory)
         self.progress_updated.emit(10)
-        tabulation_bin_id_masked = self.tabulation_bin_id_HRP(risk30_hrp,
-                                                                                                    municipality,
-                                                                                                    out_fn1)
+        tabulation_bin_id_masked = self.tabulation_bin_id_HRP(risk30_hrp,municipality,out_fn1)
+        self.replace_ref_system(municipality, out_fn1)
         self.progress_updated.emit(50)
         merged_df = self.create_relative_frequency_table(tabulation_bin_id_masked,
                                                                               deforestation_hrp, csv_name)
         self.progress_updated.emit(75)
         self.create_fit_density_map(risk30_hrp, tabulation_bin_id_masked,
                                                               merged_df, out_fn2)
+        self.replace_ref_system(municipality, out_fn2)
         self.progress_updated.emit(100)
         # After processing, emit processCompleted or any other signal as needed
         return
@@ -361,6 +385,7 @@ class AllocationTool(QObject):
         data_folder = self.set_working_directory(directory)
         self.progress_updated.emit(10)
         tabulation_bin_id_VP_masked = self.tabulation_bin_id_VP(risk30_vp, municipality, out_fn1)
+        self.replace_ref_system(municipality, out_fn1)
         self.progress_updated.emit(30)
         prediction_density_arr = self.calculate_prediction_density_arr(risk30_vp, tabulation_bin_id_VP_masked,csv)
         self.progress_updated.emit(50)
@@ -379,6 +404,7 @@ class AllocationTool(QObject):
         if iteration_count <= int(max_iterations):
             selected_density_arr = new_prediction_density_arr if new_prediction_density_arr is not None else prediction_density_arr
             self.adjusted_prediction_density_map(selected_density_arr, risk30_vp, AR, out_fn2)
+            self.replace_ref_system(municipality, out_fn2)
 
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
@@ -394,6 +420,7 @@ class AllocationTool(QObject):
         data_folder = self.set_working_directory(directory)
         self.progress_updated.emit(10)
         tabulation_bin_id_VP_masked = self.tabulation_bin_id_VP(risk30_vp, municipality, out_fn1)
+        self.replace_ref_system(municipality, out_fn1)
         self.progress_updated.emit(30)
         prediction_density_arr = self.calculate_prediction_density_arr(risk30_vp, tabulation_bin_id_VP_masked,csv)
         self.progress_updated.emit(50)
@@ -413,7 +440,7 @@ class AllocationTool(QObject):
         if iteration_count <= int(max_iterations):
             selected_density_arr = new_prediction_density_arr if new_prediction_density_arr is not None else prediction_density_arr
             self.adjusted_prediction_density_map_annual(selected_density_arr, risk30_vp, AR, out_fn2, time)
-
+            self.replace_ref_system(municipality, out_fn2)
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
         self.progress_updated.emit(100)

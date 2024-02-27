@@ -70,6 +70,11 @@ class ModelEvaluation(QObject):
         return
 
     def replace_ref_system(self, in_fn, out_fn):
+        '''
+         RST raster format: correct reference system name in rdc file
+         :param in_fn: datasource to copy correct projection name
+         :param out_fn: rst raster file
+        '''
         if out_fn.split('.')[-1] == 'rst':
             in_ds = gdal.Open(in_fn)
             correct_name = in_ds.GetProjection().split('"')[1]
@@ -89,6 +94,10 @@ class ModelEvaluation(QObject):
 
 
     def replace_legend(self, out_fn):
+        '''
+         RST raster format: correct legend in rdc file of Combined Deforestation Review Map
+         :param out_fn: rst raster file
+        '''
         if out_fn.split('.')[-1] == 'rst':
             base_name, _ = os.path.splitext(out_fn)
             temp_file_path = 'rdc_temp.rdc'
