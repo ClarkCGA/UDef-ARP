@@ -274,6 +274,31 @@ class AllocationTool(QObject):
         AR = expected_deforestation / MD
         return AR
 
+    def adjusted_prediction_density_array (self, prediction_density_arr, risk30_vp, AR):
+        '''
+        Create adjusted prediction density array
+        :param prediction_density_arr:modeled deforestation (MD)
+        :param risk30_vp: risk30_vp image
+        :param AR:Adjustment Ratio
+        :return: adjusted_prediction_density_np_arr
+        '''
+
+        # Calculate the maximum density
+        # Calculate areal_resolution_of_map_pixels
+        in_ds4 = gdal.Open(risk30_vp)
+        P1 = in_ds4.GetGeoTransform()[1]
+        P2 = abs(in_ds4.GetGeoTransform()[5])
+        maximum_density = P1 * P2 / 10000
+
+        # Adjusted_Prediction_Density_Map = AR x Prediction_Density _Map
+        adjusted_prediction_density_arr=AR*prediction_density_arr
+
+        # Reclassify all pixels greater than the maximum (e.g., 0.09) to be the maximum
+        adjusted_prediction_density_arr[adjusted_prediction_density_arr > maximum_density] = maximum_density
+
+        return adjusted_prediction_density_arr
+
+
     def adjusted_prediction_density_map (self, prediction_density_arr, risk30_vp, AR, out_fn2):
         '''
         Create adjusted prediction density map
@@ -397,8 +422,7 @@ class AllocationTool(QObject):
 
         # When AR > 1.00001 and iteration_count <= max_iterations, treat the result as new prediction density map to iterate the AR util AR is <=1.00001 or iteration_count = max_iterations
         while AR > 1.00001 and iteration_count <= max_iterations:
-            self.adjusted_prediction_density_map(prediction_density_arr, risk30_vp, AR, out_fn2)
-            new_prediction_density_arr=self.image_to_array(out_fn2)
+            new_prediction_density_arr = self.adjusted_prediction_density_array(prediction_density_arr, risk30_vp, AR)
             AR = self.calculate_adjustment_ratio_cnf(new_prediction_density_arr, deforestation_cnf)
             iteration_count += 1
         if iteration_count <= int(max_iterations):
@@ -432,8 +456,7 @@ class AllocationTool(QObject):
 
         # When AR > 1.00001 and iteration_count <= max_iterations, treat the result as new prediction density map to iterate the AR util AR is <=1.00001 or iteration_count = max_iterations
         while AR > 1.00001 and iteration_count <= max_iterations:
-            self.adjusted_prediction_density_map(prediction_density_arr, risk30_vp, AR, out_fn2)
-            new_prediction_density_arr=self.image_to_array(out_fn2)
+            new_prediction_density_arr = self.adjusted_prediction_density_array(prediction_density_arr, risk30_vp, AR)
             AR = self.calculate_adjustment_ratio(new_prediction_density_arr, expected_deforestation)
             iteration_count += 1
             # Emitting progress based on the current iteration_count and max_iterations
