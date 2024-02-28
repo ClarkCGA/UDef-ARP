@@ -408,7 +408,7 @@ class AllocationTool(QObject):
 
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
-        self.progress_updated.emit(100)
+
         return
 
     def execute_workflow_vp(self, directory,max_iterations, csv, municipality, expected_deforestation, risk30_vp, out_fn1, out_fn2, time):
@@ -443,6 +443,20 @@ class AllocationTool(QObject):
             self.replace_ref_system(municipality, out_fn2)
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
-        self.progress_updated.emit(100)
 
         return
+
+    def check_modeling_region_ids(self, csv, out_fn):
+        '''
+        Check modeling region IDs present in the prediction stage but absent in the fitting stage.
+        :param csv: csv file of relative frequency in fitiing stage
+        :param out_fn: modeling region image in prediction stage
+        :return: id_difference: A set of modeling region IDs that exist only in the prediction stage
+        '''
+        fit_model_region_id = pd.read_csv(csv)['ID'].to_numpy()
+        pre_model_region_arr = self.image_to_array(out_fn)
+        pre_model_region_id = np.unique(pre_model_region_arr[pre_model_region_arr != 0])
+        id_difference = np.setdiff1d(pre_model_region_id, fit_model_region_id)
+
+        self.progress_updated.emit(100)
+        return id_difference

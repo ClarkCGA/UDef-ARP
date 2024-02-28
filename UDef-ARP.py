@@ -1222,13 +1222,17 @@ class AT_PRE_CNF_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            #adjusted_prediction_density_map = self.allocation_tool.execute_workflow_cnf(directory,
             self.allocation_tool.execute_workflow_cnf(directory,
                                                             self.max_iterations, self.csv,
                                                             self.municipality,
                                                             self.deforestation_cnf,
                                                             self.risk30_vp, out_fn1,
                                                             out_fn2)
+
+            id_difference = self.allocation_tool.check_modeling_region_ids(self.csv, out_fn1)
+            if id_difference.size > 0:
+                QMessageBox.warning(self, " Warning ", f"Modeling Region ID {','.join(map(str, id_difference))} Did Not Exist in the CAL")
+
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
@@ -2358,13 +2362,16 @@ class AT_PRE_VP_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            #adjusted_prediction_density_map = self.allocation_tool.execute_workflow_vp(directory, self.max_iterations,
             self.allocation_tool.execute_workflow_vp(directory, self.max_iterations,
                                                                            self.csv,
                                                                            self.municipality,
                                                                            self.expected_deforestation,
                                                                            self.risk30_vp, out_fn1,out_fn2,
                                                                            self.time)
+            id_difference = self.allocation_tool.check_modeling_region_ids(self.csv, out_fn1)
+            if id_difference.size > 0:
+                QMessageBox.warning(self, " Warning ",
+                                    f"Modeling Region ID {','.join(map(str, id_difference))} Did Not Exist in the HRP")
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
