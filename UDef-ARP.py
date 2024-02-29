@@ -149,6 +149,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         data_folder_path = Path(data_folder)
         self.directory = str(data_folder_path)
         self.folder_entry.setText(self.directory)
+        self.folder_entry_2.setText(self.directory)
         central_data_store.directory = self.directory
 
     def select_fd(self):
@@ -170,11 +171,12 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             self.mask_entry.setText(file_path.split('/')[-1])
 
     def select_working_directory_2(self):
-        data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_path = Path(data_folder)
-        self.directory = str(data_folder_path)
-        self.folder_entry.setText(self.directory)
-        central_data_store.directory = self.directory
+        data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
+        data_folder_path_2 = Path(data_folder_2)
+        self.directory_2 = str(data_folder_path_2)
+        self.folder_entry_2.setText(self.directory_2)
+        self.folder_entry.setText(self.directory_2)
+        central_data_store.directory = self.directory_2
 
     def select_fd_2(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CAL')
@@ -247,7 +249,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(directory)
+            self.vulnerability_map.set_working_directory(directory)
             NRT = self.vulnerability_map.nrt_calculation(self.in_fn, self.deforestation_hrp, self.mask)
             # Update the central data store
             central_data_store.NRT = NRT
@@ -323,7 +325,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(directory)
+            self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             self.vulnerability_map.array_to_image(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
             self.vulnerability_map.replace_ref_system(self.in_fn, out_fn)
@@ -386,7 +388,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(directory_2)
+            self.vulnerability_map.set_working_directory(directory_2)
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2, self.mask_2, self.fmask_2)
             self.vulnerability_map.array_to_image(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
             self.vulnerability_map.replace_ref_system(self.in_fn_2, out_fn_2)
@@ -755,7 +757,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.model_evaluation.set_working_directory(directory)
+            self.model_evaluation.set_working_directory(directory)
             self.model_evaluation.create_mask_polygon(self.mask)
             clipped_gdf = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, out_fn,raster_fn)
             self.model_evaluation.replace_ref_system(self.mask, raster_fn)
@@ -866,6 +868,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         data_folder_path = Path(data_folder)
         self.directory = str(data_folder_path)
         self.folder_entry.setText(self.directory)
+        self.folder_entry_2.setText(self.directory)
         central_data_store.directory = self.directory
 
     def select_fd(self):
@@ -875,11 +878,12 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             self.in_fn_entry.setText(file_path.split('/')[-1])
 
     def select_working_directory_2(self):
-        data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_path = Path(data_folder)
-        self.directory = str(data_folder_path)
-        self.folder_entry.setText(self.directory)
-        central_data_store.directory = self.directory
+        data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
+        data_folder_path_2 = Path(data_folder_2)
+        self.directory_2 = str(data_folder_path_2)
+        self.folder_entry_2.setText(self.directory_2)
+        self.folder_entry.setText(self.directory_2)
+        central_data_store.directory = self.directory_2
 
     def select_fd_2(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CNF')
@@ -959,7 +963,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(directory)
+            self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             self.vulnerability_map.array_to_image(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
             self.vulnerability_map.replace_ref_system(self.in_fn, out_fn)
@@ -1034,7 +1038,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(directory_2)
+            self.vulnerability_map.set_working_directory(directory_2)
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
                                                                                    self.mask_2, self.fmask_2)
             self.vulnerability_map.array_to_image(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
@@ -1446,7 +1450,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.model_evaluation.set_working_directory(directory)
+            self.model_evaluation.set_working_directory(directory)
             self.model_evaluation.create_mask_polygon(self.mask)
             clipped_gdf = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask, self.density,
                                                                              self.deforestation_hrp, out_fn, raster_fn)
@@ -1555,6 +1559,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         data_folder_path = Path(data_folder)
         self.directory = str(data_folder_path)
         self.folder_entry.setText(self.directory)
+        self.folder_entry_2.setText(self.directory)
         central_data_store.directory = self.directory
 
     def select_fd(self):
@@ -1564,11 +1569,12 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             self.in_fn_entry.setText(file_path.split('/')[-1])
 
     def select_working_directory_2(self):
-        data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_path = Path(data_folder)
-        self.directory = str(data_folder_path)
-        self.folder_entry.setText(self.directory)
-        central_data_store.directory = self.directory
+        data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
+        data_folder_path_2 = Path(data_folder_2)
+        self.directory_2 = str(data_folder_path_2)
+        self.folder_entry_2.setText(self.directory_2)
+        self.folder_entry.setText(self.directory_2)
+        central_data_store.directory = self.directory_2
 
     def select_fd_2(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in HRP')
@@ -1648,7 +1654,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(directory)
+            self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             self.vulnerability_map.array_to_image(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
             self.vulnerability_map.replace_ref_system(self.in_fn, out_fn)
@@ -1723,7 +1729,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(directory_2)
+            self.vulnerability_map.set_working_directory(directory_2)
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
                                                                                    self.mask_2, self.fmask_2)
             self.vulnerability_map.array_to_image(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
@@ -1998,6 +2004,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         data_folder_path = Path(data_folder)
         self.directory = str(data_folder_path)
         self.folder_entry.setText(self.directory)
+        self.folder_entry_2.setText(self.directory)
         central_data_store.directory = self.directory
 
     def select_fd(self):
@@ -2007,11 +2014,12 @@ class RMT_PRE_VP_SCREEN(QDialog):
             self.in_fn_entry.setText(file_path.split('/')[-1])
 
     def select_working_directory_2(self):
-        data_folder = QFileDialog.getExistingDirectory(self, "Working Directory")
-        data_folder_path = Path(data_folder)
-        self.directory = str(data_folder_path)
-        self.folder_entry.setText(self.directory)
-        central_data_store.directory = self.directory
+        data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
+        data_folder_path_2 = Path(data_folder_2)
+        self.directory_2 = str(data_folder_path_2)
+        self.folder_entry_2.setText(self.directory_2)
+        self.folder_entry.setText(self.directory_2)
+        central_data_store.directory = self.directory_2
 
     def select_fd_2(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in VP')
@@ -2091,7 +2099,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(directory)
+            self.vulnerability_map.set_working_directory(directory)
             mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
             self.vulnerability_map.array_to_image(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
             self.vulnerability_map.replace_ref_system(self.in_fn, out_fn)
@@ -2166,7 +2174,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         QApplication.processEvents()
 
         try:
-            data_folder = self.vulnerability_map.set_working_directory(directory_2)
+            self.vulnerability_map.set_working_directory(directory_2)
             mask_arr = self.vulnerability_map.geometric_classification_alternative(self.in_fn_2, n_classes_2,
                                                                                    self.mask_2, self.fmask_2)
             self.vulnerability_map.array_to_image(self.in_fn_2, out_fn_2, mask_arr, gdal.GDT_Int16, -1)
