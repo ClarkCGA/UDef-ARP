@@ -4,6 +4,8 @@
 UDef-ARP was developed by Clark Labs, in collaboration with TerraCarbon, to facilitate implementation of the Verra tool, VT0007 Unplanned Deforestation Allocation (UDef-A). It is used in conjunction with a raster-capable GIS for input data preparation and output display. Tools are provided for the development of models using the Calibration Period and subsequent testing during the Confirmation Period. Based on these evaluations, the selected procedure uses the full Historical Reference Period to build a model and prediction for the Validity Period. The final output is a map expressed in hectares/pixel/year of expected forest loss.
 
 ## Requirements
+### Operating System
+The UDef-ARP is currently operational exclusively on Windows systems.
 
 ### Dependencies
 - [Python](https://www.python.org/) 3.9+
@@ -59,4 +61,4 @@ UDef-ARP accepts raster map data is either a Geotiff “.tif” or TerrSet “.r
 </p>
 
 ## COPYRIGHT AND LICENSE
-©2023 Clark Labs. This software is free to use and distribute under the terms of the GNU-GLP license.
+©2023-2024 Clark Labs. This software is free to use and distribute under the terms of the GNU-GLP license.
