@@ -473,12 +473,14 @@ class ModelEvaluation(QObject):
 
         return
 
-    def create_plot(self, clipped_gdf, title, out_fn):
+    def create_plot(self, clipped_gdf, title, out_fn,xmax=None, ymax=None):
         '''
         Create plot and save to local directory
         :param clipped_gdf: thiessen_polygon geo-dataframe
         :param title:plot title
-        :param out_fn:plot path
+        :param out_fn: plot path
+        :param xmax: maximum x-axis value
+        :param ymax: maximum y-axis value
         :return
         '''
         self.progress_updated.emit(90)
@@ -529,19 +531,23 @@ class ModelEvaluation(QObject):
         # Set a proportion to extend the limits
         extension_f = 0.1
 
-        # Set max value of xlim and ylim
-        plt.xlim([0, max(X)*(1+extension_f)])
-        plt.ylim([0, max(Y)*(1+extension_f)])
+        # Check if lim is string and "default"
+        if isinstance(xmax, str) and xmax.lower() == "default":
+            xmax = max(X) * (1 + extension_f)
+        else:
+            xmax = float(xmax)
 
-        # Set text x position to 5% of the maximum value
-        text_x_pos = max(Y) * 0.05
+        if isinstance(ymax, str) and ymax.lower() == "default":
+            ymax = max(Y) * (1 + extension_f)
+        else:
+            ymax = float(ymax)
 
-        # Set starting y position to 95% of the max value
-        text_y_start_pos = max(Y) * 0.9
+        plt.xlim([0, xmax])
+        plt.ylim([0, ymax])
 
-        # Set gap between texts to 3% of the maximum value
-        text_y_gap = max(Y) * 0.05
-
+        text_x_pos = ymax * 0.05
+        text_y_start_pos = ymax * 0.9
+        text_y_gap = ymax * 0.05
 
         # Adjust plt texts with the new calculated positions
         plt.text(text_x_pos, text_y_start_pos, equation, fontsize=11, color='black')

@@ -177,9 +177,9 @@ border-radius:20px;
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>450</y>
+      <y>430</y>
       <width>1311</width>
-      <height>531</height>
+      <height>561</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -568,7 +568,7 @@ color: rgb(125, 169, 172);
           <x>10</x>
           <y>320</y>
           <width>1131</width>
-          <height>171</height>
+          <height>231</height>
          </rect>
         </property>
         <property name="font">
@@ -625,6 +625,70 @@ color: rgb(125, 169, 172);
          <string/>
         </property>
        </widget>
+       <widget class="QLabel" name="label_12">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>470</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Plot Max X-Axis</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="xmax_entry">
+        <property name="geometry">
+         <rect>
+          <x>570</x>
+          <y>470</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+        </property>
+        <property name="text">
+         <string>Default</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_13">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>510</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Plot Max Y-Axis</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="ymax_entry">
+        <property name="geometry">
+         <rect>
+          <x>570</x>
+          <y>510</y>
+          <width>541</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
+        </property>
+        <property name="text">
+         <string>Default</string>
+        </property>
+       </widget>
        <zorder>groupBox_3</zorder>
        <zorder>groupBox</zorder>
        <zorder>groupBox_2</zorder>
@@ -650,6 +714,10 @@ color: rgb(125, 169, 172);
        <zorder>ok_button</zorder>
        <zorder>label_11</zorder>
        <zorder>raster_fn_entry</zorder>
+       <zorder>label_12</zorder>
+       <zorder>xmax_entry</zorder>
+       <zorder>label_13</zorder>
+       <zorder>ymax_entry</zorder>
       </widget>
      </item>
     </layout>

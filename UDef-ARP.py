@@ -615,6 +615,8 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.out_fn_entry.setPlaceholderText('e.g., Plot_CAL.png')
         self.raster_fn = None
         self.raster_fn_entry.setPlaceholderText('e.g., Acre_Residuals_CAL.tif')
+        self.xmax = None
+        self.xmax = None
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat4(self):
@@ -711,6 +713,27 @@ class MCT_FIT_CAL_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Thiessen polygon grid area value should be a valid number!")
             return
 
+
+        xmax = self.xmax_entry.text()
+        if xmax.lower() != "default":
+            try:
+                xmax = float(xmax)
+                if xmax <= 0:
+                    raise ValueError("The plot x-axis limit should be larger than 0!")
+            except ValueError:
+                QMessageBox.critical(self, "Error", "The plot x-axis limit should be a valid number or 'Default'!")
+                return
+
+        ymax = self.ymax_entry.text()
+        if ymax.lower() != "default":
+            try:
+                ymax = float(ymax)
+                if ymax <= 0:
+                    raise ValueError("The plot y-axis limit should be larger than 0!")
+            except ValueError:
+                QMessageBox.critical(self, "Error", "The plot y-axis limit should be a valid number or 'Default'!")
+                return
+
         title = self.title_entry.text()
         if not title:
             QMessageBox.critical(self, "Error", "Please enter the title of plot!")
@@ -761,7 +784,7 @@ class MCT_FIT_CAL_Screen(QDialog):
             self.model_evaluation.create_mask_polygon(self.mask)
             clipped_gdf = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, out_fn,raster_fn)
             self.model_evaluation.replace_ref_system(self.mask, raster_fn)
-            self.model_evaluation.create_plot(clipped_gdf, title, out_fn)
+            self.model_evaluation.create_plot(clipped_gdf, title, out_fn, xmax, ymax)
             self.model_evaluation.remove_temp_files()
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
@@ -1394,6 +1417,26 @@ class MCT_PRE_CNF_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Thiessen polygon grid area value should be a valid number!")
             return
 
+        xmax = self.xmax_entry.text()
+        if xmax.lower() != "default":
+            try:
+                xmax = float(xmax)
+                if xmax <= 0:
+                    raise ValueError("The plot x-axis limit should be larger than 0!")
+            except ValueError:
+                QMessageBox.critical(self, "Error", "The plot x-axis limit should be a valid number or 'Default'!")
+                return
+
+        ymax = self.ymax_entry.text()
+        if ymax.lower() != "default":
+            try:
+                ymax = float(ymax)
+                if ymax <= 0:
+                    raise ValueError("The plot y-axis limit should be larger than 0!")
+            except ValueError:
+                QMessageBox.critical(self, "Error", "The plot y-axis limit should be a valid number or 'Default'!")
+                return
+
         title = self.title_entry.text()
         if not title:
             QMessageBox.critical(self, "Error", "Please enter the title of plot!")
@@ -1459,7 +1502,7 @@ class MCT_PRE_CNF_Screen(QDialog):
                                                            out_fn_def)
             self.model_evaluation.replace_ref_system(self.fmask, out_fn_def)
             self.model_evaluation.replace_legend(out_fn_def)
-            self.model_evaluation.create_plot(clipped_gdf, title, out_fn)
+            self.model_evaluation.create_plot(clipped_gdf, title, out_fn, xmax, ymax)
             self.model_evaluation.remove_temp_files()
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
