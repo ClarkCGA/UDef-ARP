@@ -764,7 +764,7 @@ font: 9pt;</string>
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Plot Max X-Axis</string>
+         <string>X-Axis Maximum</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="xmax_entry">
@@ -796,7 +796,7 @@ font: 9pt;</string>
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Plot Max Y-Axis</string>
+         <string>Y-Axis Maximum</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="ymax_entry">
