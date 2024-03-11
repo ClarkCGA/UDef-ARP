@@ -1256,7 +1256,7 @@ class AT_PRE_CNF_Screen(QDialog):
                                                             self.risk30_vp, out_fn1,
                                                             out_fn2)
             if id_difference.size > 0:
-                QMessageBox.warning(self, " Warning ", f"Modeling Region ID {','.join(map(str, id_difference))} did not exist in the Calculation but have created new csv file for CAL. Relative frequencies for missing bins have been estimated from corresponding vulnerability zones over the entire jurisdiction.")
+                QMessageBox.warning(self, " Warning ", f"Modeling Region ID {','.join(map(str, id_difference))} do not exist in the Calculation Period. A new CSV has been created for the CAL where relative frequencies for missing bins have been estimated from corresponding vulnerability zones over the entire jurisdiction.")
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
@@ -2417,7 +2417,7 @@ class AT_PRE_VP_Screen(QDialog):
                                                                            self.time)
 
             if id_difference.size > 0:
-                QMessageBox.warning(self, " Warning ", f"Modeling Region ID {','.join(map(str, id_difference))} did not exist in the Historical Reference Period but have created new csv file for HRP. Relative frequencies for missing bins have been estimated from corresponding vulnerability zones over the entire jurisdiction.")
+                QMessageBox.warning(self, " Warning ", f"Modeling Region ID {','.join(map(str, id_difference))} do not exist in the Historical Reference Period. A new CSV has been created for the HRP where relative frequencies for missing bins have been estimated from corresponding vulnerability zones over the entire jurisdiction.")
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
