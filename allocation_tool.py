@@ -72,7 +72,6 @@ class AllocationTool(QObject):
         """
         # Convert risk30_hrp to NumPy array
         arr1 = self.image_to_array(risk30_hrp)
-        in_ds = gdal.Open(risk30_hrp)
 
         # Convert municipality to NumPy array2
         arr2 = self.image_to_array(municipality)
@@ -131,7 +130,7 @@ class AllocationTool(QObject):
         merged_df = merged_df.reset_index(drop=True)
 
         csv_file_path = csv_name
-        csv = merged_df.to_csv(csv_file_path, index=False)
+        merged_df.to_csv(csv_file_path, index=False)
 
         return merged_df
 
@@ -217,7 +216,6 @@ class AllocationTool(QObject):
         # Using numpy.searchsorted() to assign values to 'id'
         df_sorted = merged_df.sort_values('ID')
         sorted_indices = df_sorted['ID'].searchsorted(tabulation_bin_id_VP_masked)
-        # tabulation_bin_id_VP_masked[:] should be deleted
         relative_frequency_arr = tabulation_bin_id_VP_masked[:] = df_sorted['Average Deforestation(pixel)'].values[sorted_indices]
 
         # Calculate areal_resolution_of_map_pixels
@@ -418,6 +416,16 @@ class AllocationTool(QObject):
         tabulation_bin_id_VP_masked = self.tabulation_bin_id_VP(risk30_vp, municipality, out_fn1)
         self.replace_ref_system(municipality, out_fn1)
         self.progress_updated.emit(30)
+
+        # Check modeling region IDs present in the prediction stage but absent in the fitting stage
+        id_difference = self.check_modeling_region_ids(csv, out_fn1)
+
+        # If there are missing bins, calculate the relative frequency and create a new csv file
+        if id_difference.size > 0:
+            self.calculate_missing_bins_rf(id_difference, csv)
+
+        self.progress_updated.emit(40)
+
         prediction_density_arr = self.calculate_prediction_density_arr(risk30_vp, tabulation_bin_id_VP_masked,csv)
         self.progress_updated.emit(50)
         AR = self.calculate_adjustment_ratio_cnf(prediction_density_arr, deforestation_cnf)
@@ -439,7 +447,9 @@ class AllocationTool(QObject):
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
 
-        return
+        self.progress_updated.emit(100)
+
+        return id_difference
 
     def execute_workflow_vp(self, directory,max_iterations, csv, municipality, expected_deforestation, risk30_vp, out_fn1, out_fn2, time):
         '''
@@ -452,6 +462,16 @@ class AllocationTool(QObject):
         tabulation_bin_id_VP_masked = self.tabulation_bin_id_VP(risk30_vp, municipality, out_fn1)
         self.replace_ref_system(municipality, out_fn1)
         self.progress_updated.emit(30)
+
+        # Check modeling region IDs present in the prediction stage but absent in the fitting stage
+        id_difference = self.check_modeling_region_ids(csv, out_fn1)
+
+        # If there are missing bins, calculate the relative frequency and create a new csv file
+        if id_difference.size > 0:
+            self.calculate_missing_bins_rf(id_difference, csv)
+
+        self.progress_updated.emit(40)
+
         prediction_density_arr = self.calculate_prediction_density_arr(risk30_vp, tabulation_bin_id_VP_masked,csv)
         self.progress_updated.emit(50)
         AR = self.calculate_adjustment_ratio(prediction_density_arr, expected_deforestation)
@@ -473,19 +493,69 @@ class AllocationTool(QObject):
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")
 
-        return
+        self.progress_updated.emit(100)
+
+        return id_difference
 
     def check_modeling_region_ids(self, csv, out_fn):
         '''
         Check modeling region IDs present in the prediction stage but absent in the fitting stage.
         :param csv: csv file of relative frequency in fitiing stage
         :param out_fn: modeling region image in prediction stage
-        :return: id_difference: A set of modeling region IDs that exist only in the prediction stage
+        :return: id_difference: A set of modeling region IDs np array that exist only in the prediction stage
         '''
         fit_model_region_id = pd.read_csv(csv)['ID'].to_numpy()
         pre_model_region_arr = self.image_to_array(out_fn)
         pre_model_region_id = np.unique(pre_model_region_arr[pre_model_region_arr != 0])
         id_difference = np.setdiff1d(pre_model_region_id, fit_model_region_id)
 
-        self.progress_updated.emit(100)
         return id_difference
+
+    def calculate_missing_bins_rf (self, id_difference, csv):
+        '''
+        If one or more empty bins are found, compute the jurisdiction-wide weighted average of relative frequencies for
+        missing bins and create a new csv file
+        :param csv: csv file of relative frequency in the fitting stage
+        :param id_difference: A set of modeling region IDs np array that exist only in the prediction stage
+        :return
+        '''
+        # Convert modeling region ids to vulnerability zone id
+        df=pd.read_csv(csv)
+        df['v_zone'] = (df['ID'] // 1000).astype(int)
+
+        # Convert missing bin ids to vulnerability zone id
+        missing_v_zone = [x // 1000 for x in id_difference]
+
+        # Select rows
+        filtered_df = df[df['v_zone'].isin(missing_v_zone)].copy()
+
+        # Created new column
+        filtered_df['Total Deforestation(pixel)'] = filtered_df['Area of the Bin(pixel)'] * filtered_df['Average Deforestation(pixel)']
+
+        # Group by and sum area and weighted relative frequency
+        aggregated_df = filtered_df.groupby('v_zone')[['Total Deforestation(pixel)', 'Area of the Bin(pixel)']].sum().reset_index()
+
+        # Calculate Average Deforestation
+        aggregated_df['Average Deforestation(pixel)']=aggregated_df['Total Deforestation(pixel)']/aggregated_df['Area of the Bin(pixel)']
+
+        # Create a new dataframe id_difference_df
+        id_difference_df = pd.DataFrame(id_difference, columns=['ID'])
+        id_difference_df['v_zone'] = missing_v_zone
+
+        # Create missing bins dataframe by outer join aggregated_df and id_difference_df
+        missing_bins_df = pd.merge(id_difference_df,aggregated_df , on='v_zone', how='outer')
+
+        # Insert missing bins dataframe back to csv file
+        df_new = pd.concat([df, missing_bins_df], ignore_index=True)
+
+        # Sorting by column "ID"
+        df_new=df_new.sort_values(by=['ID'], ascending=True)
+
+        # Drop column 'v_zone'
+        df_new=df_new.drop(['v_zone'], axis=1)
+
+        # Copy the original csv file copy and rename it to csv_orig
+        shutil.copyfile(csv, csv.split('.')[0] + '_orig' + '.csv')
+
+        # Save the new result to csv
+        df_new.to_csv(csv, index=False)
