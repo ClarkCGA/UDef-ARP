@@ -7,8 +7,9 @@ UDef-ARP provides the basis for developing a benchmark model as well as tools fo
 
 #### Some important points:
 1. At present, UDef-ARP only supports Windows platforms.
-2. At present, only limited bulletproofing has been done. Please read the UDef-A document carefully regarding required inputs.
-3. UDef-ARP is still under development. Frequent updates are expected.
+2. A Windows installer is available as an alternative to working with the Python code. 
+3. At present, only limited bulletproofing has been done. Please read the UDef-A document carefully regarding required inputs.
+4. UDef-ARP is still under development. Frequent updates are expected.
 
 ## Requirements
 ### Operating System
