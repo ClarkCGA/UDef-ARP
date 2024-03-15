@@ -7,7 +7,7 @@ UDef-ARP provides the basis for developing a benchmark model as well as tools fo
 
 #### Some important points:
 1. At present, UDef-ARP only supports Windows platforms.
-2. A Windows installer is available as an alternative to working with the Python code. 
+2. A Windows installer is available as an alternative to working with the Python code. To successfully download UDef-ARP_WINDOWS_setup.exe, please install `Git LFS` before cloning or forking the repository. For further information, please see Pull Request #13.
 3. At present, only limited bulletproofing has been done. Please read the UDef-A document carefully regarding required inputs.
 4. UDef-ARP is still under development. Frequent updates are expected.
 
