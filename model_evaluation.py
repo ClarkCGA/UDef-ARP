@@ -402,9 +402,6 @@ class ModelEvaluation(QObject):
         # Ensure Thiessen Polygon cells retain 99.9% of maximum size after intersection with study area
         thiessen_gdf = self.remove_edge_cells(voronois, polydf, 0.999)
 
-        # Set the crs
-        thiessen_gdf.crs = mask_df.crs
-
         self.progress_updated.emit(40)
 
         # Extract polygons and multipolygons from the entire thiessen_gdf (including GeometryCollections)
@@ -418,9 +415,6 @@ class ModelEvaluation(QObject):
 
         # Calculate area in hectares
         clipped_gdf['Area_ha'] = clipped_gdf['geometry'].area / 10000
-
-        # remove all columns except area_ha and geometry
-        clipped_gdf = clipped_gdf[['Area_ha', 'geometry']]
 
         ## Calculate zonal statistics
 
