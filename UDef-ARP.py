@@ -784,7 +784,7 @@ class MCT_FIT_CAL_Screen(QDialog):
             self.model_evaluation.create_mask_polygon(self.mask)
             clipped_gdf = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask,self.density, self.deforestation_hrp, out_fn,raster_fn)
             self.model_evaluation.replace_ref_system(self.mask, raster_fn)
-            self.model_evaluation.create_plot(clipped_gdf, title, out_fn, xmax, ymax)
+            self.model_evaluation.create_plot(grid_area,clipped_gdf, title, out_fn, xmax, ymax)
             self.model_evaluation.remove_temp_files()
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
@@ -1499,7 +1499,7 @@ class MCT_PRE_CNF_Screen(QDialog):
                                                            out_fn_def)
             self.model_evaluation.replace_ref_system(self.fmask, out_fn_def)
             self.model_evaluation.replace_legend(out_fn_def)
-            self.model_evaluation.create_plot(clipped_gdf, title, out_fn, xmax, ymax)
+            self.model_evaluation.create_plot(grid_area,clipped_gdf, title, out_fn, xmax, ymax)
             self.model_evaluation.remove_temp_files()
 
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
