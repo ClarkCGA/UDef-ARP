@@ -13,6 +13,7 @@ from shapely.geometry import Point
 import pandas as pd
 from PyQt5.QtCore import QObject, pyqtSignal
 import shutil
+from geopandas import GeoDataFrame
 
 # GDAL exceptions
 gdal.UseExceptions()
@@ -322,6 +323,28 @@ class ModelEvaluation(QObject):
         out_ds.FlushCache()
         return
 
+    def remove_edge_cells(self, full_voronoi_grid: GeoDataFrame, area_mask: GeoDataFrame,
+                          area_percentile_threshold: float) -> GeoDataFrame:
+        '''
+        Ensure thiessen polygon cells retain percentile threshold of maximum size after intersection with mask of the jurisdiction
+         :param full_voronoi_grid: thiessen polygon dataframe
+         :param area_mask: mask of the jurisdiction
+         :param area_percentile_threshold: area percentile threshold
+         :return  thiessen_gdf: result dataframe
+        '''
+        thiessen_gdf = gpd.overlay(full_voronoi_grid, area_mask, how="intersection")
+        # get area of each polygon
+        thiessen_gdf["area"] = thiessen_gdf.area
+
+        max_area = thiessen_gdf["area"].max()
+        # using the area, calculate size of cell compared to max
+        thiessen_gdf["percentcell"] = thiessen_gdf["area"] / max_area
+
+        # select cells with more than thresh% of their area within the mask
+        thiessen_gdf = thiessen_gdf[thiessen_gdf["percentcell"] > area_percentile_threshold]
+
+        return thiessen_gdf
+
     def create_thiessen_polygon (self, grid_area, mask, density, deforestation, out_fn, raster_fn):
         '''
           Create thiessen polygon
@@ -376,9 +399,10 @@ class ModelEvaluation(QObject):
         # Convert the study area to GeoDataFrame.
         polydf = gpd.GeoDataFrame(geometry=[polygon], crs=mask_df.crs)
 
-        # Only preserved Thiessen Polygon within mask by spatial join with mask polygon
-        thiessen_gdf = gpd.sjoin(voronois, polydf, how="inner", predicate="within")
-        #explicitly set the crs
+        # Ensure Thiessen Polygon cells retain 99.9% of maximum size after intersection with study area
+        thiessen_gdf = self.remove_edge_cells(voronois, polydf, 0.999)
+
+        # Set the crs
         thiessen_gdf.crs = mask_df.crs
 
         self.progress_updated.emit(40)
@@ -438,7 +462,7 @@ class ModelEvaluation(QObject):
 
         # Export to csv
         csv_file_path = out_fn.split('.')[0]+'.csv'
-        csv=clipped_gdf.drop('geometry', axis=1).to_csv(csv_file_path, columns=['ID', 'Actual Deforestation(ha)', 'Predicted Deforestation(ha)','Residuals(ha)'],
+        clipped_gdf.drop('geometry', axis=1).to_csv(csv_file_path, columns=['ID', 'Actual Deforestation(ha)', 'Predicted Deforestation(ha)','Residuals(ha)'],
                                                     index=False)
 
         # Rename columns title for shapefile
