@@ -402,9 +402,6 @@ class ModelEvaluation(QObject):
         # Ensure Thiessen Polygon cells retain 99.9% of maximum size after intersection with study area
         thiessen_gdf = self.remove_edge_cells(voronois, polydf, 0.999)
 
-        # Set the crs
-        thiessen_gdf.crs = mask_df.crs
-
         self.progress_updated.emit(40)
 
         # Extract polygons and multipolygons from the entire thiessen_gdf (including GeometryCollections)
@@ -418,9 +415,6 @@ class ModelEvaluation(QObject):
 
         # Calculate area in hectares
         clipped_gdf['Area_ha'] = clipped_gdf['geometry'].area / 10000
-
-        # remove all columns except area_ha and geometry
-        clipped_gdf = clipped_gdf[['Area_ha', 'geometry']]
 
         ## Calculate zonal statistics
 
@@ -497,9 +491,10 @@ class ModelEvaluation(QObject):
 
         return
 
-    def create_plot(self, clipped_gdf, title, out_fn,xmax=None, ymax=None):
+    def create_plot(self, grid_area, clipped_gdf, title, out_fn,xmax=None, ymax=None):
         '''
         Create plot and save to local directory
+        :param grid_area: assessment grid cell area or 100,000 (ha)
         :param clipped_gdf: thiessen_polygon geo-dataframe
         :param title:plot title
         :param out_fn: plot path
@@ -534,23 +529,29 @@ class ModelEvaluation(QObject):
         distance_arr = [abs(X[i] - Y[i]) for i in range(len(X))]
         MedAE = np.median(distance_arr)
 
+        ## Calculate MedAE percent
+        MedAE_percent = (MedAE / int(grid_area)) * 100
+
         # Set the figure size
         plt.figure(figsize=(8, 6))
 
         # Create a scatter plot
-        plt.scatter(clipped_gdf['ActualDef'], clipped_gdf['PredDef'], color='steelblue', label='Data Points')
+        plt.scatter(clipped_gdf['ActualDef'], clipped_gdf['PredDef'], color='steelblue', edgecolors='white', linewidth=1.0, s=50)
 
         # Add labels and title
-        plt.xlabel('Actual Deforestation(ha)', color='dimgrey')
-        plt.ylabel('Predicted Deforestation(ha)', color='dimgrey')
-        plt.title(title, color='firebrick', fontsize=20, pad=20)
+        plt.xlabel('Actual Deforestation (ha)', color='black', fontweight='bold', labelpad=10)
+        plt.ylabel('Predicted Deforestation (ha)', color='black', fontweight='bold', labelpad=10)
+        plt.title(title, color='firebrick', fontweight='bold', fontsize=20, pad=20)
 
         # Plot the trend line
-        plt.plot(X, trend_line, color='mediumseagreen', linestyle='--', label='Trend Line')
+        plt.plot(X, trend_line, color='mediumseagreen', linestyle='-', label='Best Fit Line')
 
         # Plot a 1-to-1 line
         plt.plot([0, max(clipped_gdf['ActualDef'])], [0, max(clipped_gdf['ActualDef'])], color='crimson', linestyle='--',
-                 label='1-to-1 Line')
+                 label='1:1 Line')
+
+        # Add a legend in the bottom right position
+        plt.legend(loc='lower right')
 
         # Set a proportion to extend the limits
         extension_f = 0.1
@@ -577,7 +578,8 @@ class ModelEvaluation(QObject):
         plt.text(text_x_pos, text_y_start_pos, equation, fontsize=11, color='black')
         plt.text(text_x_pos, text_y_start_pos - text_y_gap, f'Samples = {len(X)}', fontsize=11, color='black')
         plt.text(text_x_pos, text_y_start_pos - 2 * text_y_gap, f'R^2 = {r_squared:.4f}', fontsize=11, color='black')
-        plt.text(text_x_pos, text_y_start_pos - 3 * text_y_gap, f'MedAE = {MedAE:.2f}', fontsize=11, color='black')
+        plt.text(text_x_pos, text_y_start_pos - 3 * text_y_gap, f'MedAE = {MedAE:.2f} ({MedAE_percent:.2f}%)',
+                 fontsize=11, color='black')
 
         # x, yticks
         plt.yticks(fontsize=10, color='dimgrey')
