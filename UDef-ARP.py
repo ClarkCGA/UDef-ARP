@@ -10,6 +10,7 @@ from vulnerability_map import VulnerabilityMap
 from model_evaluation import ModelEvaluation
 from osgeo import gdal
 from pathlib import Path, PureWindowsPath
+import numpy as np
 
 # GDAL exceptions
 gdal.UseExceptions()
@@ -210,6 +211,61 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         rows = dataset.RasterYSize
         return rows, cols
 
+    def get_image_datatype(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        datatype = gdal.GetDataTypeName(in_band.DataType)
+        return datatype
+
+    def get_image_max_min(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        min, max= in_band.ComputeRasterMinMax()
+        return min, max
+
+    def find_unique_values(self, arr, limit=2):
+        unique_values = set()
+        for value in np.nditer(arr):
+            unique_values.add(value.item())
+            if len(unique_values) > limit:
+                return False
+        return True
+
+    def check_binary_map(self, in_fn):
+        '''
+        Check if input image is binary map
+        :param in_fn: input image
+        :return: True if the file is a binary map, False otherwise
+        '''
+        file_extension = in_fn.split('.')[-1].lower()
+        file_name, _ = os.path.splitext(in_fn)
+        if file_extension == 'rst':
+            with open(file_name + '.rdc', 'r') as read_file:
+                rdc_content = read_file.read().lower()
+                byte_or_integer_binary = "data type   : byte" in rdc_content or (
+                        "data type   : integer" in rdc_content and "min. value  : 0" in rdc_content and "max. value  : 1" in rdc_content)
+                float_binary = "data type   : real" in rdc_content and "min. value  : 0.0000000" in rdc_content and "max. value  : 1.0000000" in rdc_content
+        elif file_extension == 'tif':
+            datatype = self.get_image_datatype(in_fn)
+            min_val, max_val = self.get_image_max_min(in_fn)
+            byte_or_integer_binary = datatype in ['Byte', 'CInt16', 'CInt32', 'Int16', 'Int32', 'UInt16',
+                                                      'UInt32'] and max_val == 1 and min_val == 0
+            float_binary = datatype in ['Float32', 'Float64', 'CFloat32', 'CFloat64'] and max_val == 1.0000000 and min_val == 0.0000000
+
+        if byte_or_integer_binary or (float_binary):
+            # For float_binary, use find_unique_values function to check if data only have two unique values [0.0000000, 1.0000000].
+            if float_binary:
+                in_ds = gdal.Open(in_fn)
+                in_band = in_ds.GetRasterBand(1)
+                arr = in_band.ReadAsArray()
+                # If more than two unique values are found, it's not a binary map, return False.
+                if not self.find_unique_values(arr, 2):
+                    return False
+            # Binary map: byte_or_integer_binary or float_binary with two unique values [0.0000000, 1.0000000], it returns True.
+            return True
+        # For any other scenario, it returns False.
+        return False
+
     def process_data2_nrt(self):
         images = [self.in_fn, self.deforestation_hrp, self.mask]
 
@@ -230,6 +286,16 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
         if not self.in_fn or not self.deforestation_hrp or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
+        if not self.check_binary_map(self.deforestation_hrp):
+            QMessageBox.critical(None, "Error",
+                                 "'MAP OF DEFORESTATION IN THE HRP' must be a binary map (0 and 1) where the 1’s indicate deforestation.")
+            return
+
+        if not self.check_binary_map(self.mask):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF THE JURISDICTION' must be a binary map (0 and 1) where the 1’s indicate jurisdiction.")
             return
 
         # Show "Processing" message
@@ -266,7 +332,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
     def process_data2(self):
         if not self.in_fn:
-            QMessageBox.critical(self, "Error", "Please select  the input file!")
+            QMessageBox.critical(self, "Error", "Please select the input file!")
             return
 
         NRT = self.nrt_entry.text()
@@ -369,6 +435,17 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         if not (out_fn_2.endswith('.tif') or out_fn_2.endswith('.rst')):
             QMessageBox.critical(self, "Error",
                                  "Please enter .rst or .tif extension in the name of Vulnerability Map in CAL!")
+            return
+
+
+        if not self.check_binary_map(self.fmask_2):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF FOREST AREAS IN THE CAL' must be a binary map (0 and 1) where the 1’s indicate forest areas.")
+            return
+
+        if not self.check_binary_map(self.mask_2):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF THE NON-EXCLUDED JURISDICTION' must be a binary map (0 and 1) where the 1’s indicate areas inside the jurisdiction.")
             return
 
         # Show "Processing" message
@@ -499,6 +576,62 @@ class AT_FIT_CAL_Screen(QDialog):
         rows = dataset.RasterYSize
         return rows, cols
 
+    def get_image_datatype(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        datatype = gdal.GetDataTypeName(in_band.DataType)
+        return datatype
+
+    def get_image_max_min(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        min, max= in_band.ComputeRasterMinMax()
+        return min, max
+
+    def find_unique_values(self, arr, limit=2):
+        unique_values = set()
+        for value in np.nditer(arr):
+            unique_values.add(value.item())
+            if len(unique_values) > limit:
+                return False
+        return True
+
+    def check_binary_map(self, in_fn):
+        '''
+        Check if input image is binary map
+        :param in_fn: input image
+        :return: True if the file is a binary map, False otherwise
+        '''
+        file_extension = in_fn.split('.')[-1].lower()
+        file_name, _ = os.path.splitext(in_fn)
+        if file_extension == 'rst':
+            with open(file_name + '.rdc', 'r') as read_file:
+                rdc_content = read_file.read().lower()
+                byte_or_integer_binary = "data type   : byte" in rdc_content or (
+                        "data type   : integer" in rdc_content and "min. value  : 0" in rdc_content and "max. value  : 1" in rdc_content)
+                float_binary = "data type   : real" in rdc_content and "min. value  : 0.0000000" in rdc_content and "max. value  : 1.0000000" in rdc_content
+        elif file_extension == 'tif':
+            datatype = self.get_image_datatype(in_fn)
+            min_val, max_val = self.get_image_max_min(in_fn)
+            byte_or_integer_binary = datatype in ['Byte', 'CInt16', 'CInt32', 'Int16', 'Int32', 'UInt16',
+                                                  'UInt32'] and max_val == 1 and min_val == 0
+            float_binary = datatype in ['Float32', 'Float64', 'CFloat32',
+                                        'CFloat64'] and max_val == 1.0000000 and min_val == 0.0000000
+
+        if byte_or_integer_binary or (float_binary):
+            # For float_binary, use find_unique_values function to check if data only have two unique values [0.0000000, 1.0000000].
+            if float_binary:
+                in_ds = gdal.Open(in_fn)
+                in_band = in_ds.GetRasterBand(1)
+                arr = in_band.ReadAsArray()
+                # If more than two unique values are found, it's not a binary map, return False.
+                if not self.find_unique_values(arr, 2):
+                    return False
+            # Binary map: byte_or_integer_binary or float_binary with two unique values [0.0000000, 1.0000000], it returns True.
+            return True
+        # For any other scenario, it returns False.
+        return False
+
     def process_data3(self):
         images = [self.risk30_hrp, self.municipality, self.deforestation_hrp]
 
@@ -549,6 +682,11 @@ class AT_FIT_CAL_Screen(QDialog):
         if not (out_fn2.endswith('.tif') or out_fn2.endswith('.rst')):
             QMessageBox.critical(self, "Error",
                                  "Please enter .rst or .tif extension in the name for Fitted Density Map in the CAL!")
+            return
+
+        if not self.check_binary_map(self.deforestation_hrp):
+            QMessageBox.critical(None, "Error",
+                                 "'MAP OF DEFORESTATION IN THE CAL' must be a binary map (0 and 1) where the 1’s indicate deforestation.")
             return
 
         # Show "Processing" message
@@ -680,6 +818,62 @@ class MCT_FIT_CAL_Screen(QDialog):
         rows = dataset.RasterYSize
         return rows, cols
 
+    def get_image_datatype(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        datatype = gdal.GetDataTypeName(in_band.DataType)
+        return datatype
+
+    def get_image_max_min(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        min, max= in_band.ComputeRasterMinMax()
+        return min, max
+
+    def find_unique_values(self, arr, limit=2):
+        unique_values = set()
+        for value in np.nditer(arr):
+            unique_values.add(value.item())
+            if len(unique_values) > limit:
+                return False
+        return True
+
+    def check_binary_map(self, in_fn):
+        '''
+        Check if input image is binary map
+        :param in_fn: input image
+        :return: True if the file is a binary map, False otherwise
+        '''
+        file_extension = in_fn.split('.')[-1].lower()
+        file_name, _ = os.path.splitext(in_fn)
+        if file_extension == 'rst':
+            with open(file_name + '.rdc', 'r') as read_file:
+                rdc_content = read_file.read().lower()
+                byte_or_integer_binary = "data type   : byte" in rdc_content or (
+                        "data type   : integer" in rdc_content and "min. value  : 0" in rdc_content and "max. value  : 1" in rdc_content)
+                float_binary = "data type   : real" in rdc_content and "min. value  : 0.0000000" in rdc_content and "max. value  : 1.0000000" in rdc_content
+        elif file_extension == 'tif':
+            datatype = self.get_image_datatype(in_fn)
+            min_val, max_val = self.get_image_max_min(in_fn)
+            byte_or_integer_binary = datatype in ['Byte', 'CInt16', 'CInt32', 'Int16', 'Int32', 'UInt16',
+                                                  'UInt32'] and max_val == 1 and min_val == 0
+            float_binary = datatype in ['Float32', 'Float64', 'CFloat32',
+                                        'CFloat64'] and max_val == 1.0000000 and min_val == 0.0000000
+
+        if byte_or_integer_binary or (float_binary):
+            # For float_binary, use find_unique_values function to check if data only have two unique values [0.0000000, 1.0000000].
+            if float_binary:
+                in_ds = gdal.Open(in_fn)
+                in_band = in_ds.GetRasterBand(1)
+                arr = in_band.ReadAsArray()
+                # If more than two unique values are found, it's not a binary map, return False.
+                if not self.find_unique_values(arr, 2):
+                    return False
+            # Binary map: byte_or_integer_binary or float_binary with two unique values [0.0000000, 1.0000000], it returns True.
+            return True
+        # For any other scenario, it returns False.
+        return False
+
     def process_data4(self):
         images = [self.mask, self.deforestation_hrp, self.density]
 
@@ -761,6 +955,16 @@ class MCT_FIT_CAL_Screen(QDialog):
         if not (raster_fn.endswith('.tif') or raster_fn.endswith('.rst')):
             QMessageBox.critical(self, "Error",
                                  "Please enter .rst or .tif extension in the name of Residual Map!")
+            return
+
+        if not self.check_binary_map(self.mask):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF THE NON-EXCLUDED JURISDICTION' must be a binary map (0 and 1) where the 1’s indicate areas inside the jurisdiction.")
+            return
+
+        if not self.check_binary_map(self.deforestation_hrp):
+            QMessageBox.critical(None, "Error",
+                                 "'MAP OF DEFORESTATION IN THE CAL' must be a binary map (0 and 1) where the 1’s indicate deforestation.")
             return
 
         # Show "Processing" message
@@ -926,6 +1130,63 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             self.fmask_2 = file_path
             self.fmask_entry_2.setText(file_path.split('/')[-1])
 
+
+    def get_image_datatype(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        datatype = gdal.GetDataTypeName(in_band.DataType)
+        return datatype
+
+    def get_image_max_min(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        min, max= in_band.ComputeRasterMinMax()
+        return min, max
+
+    def find_unique_values(self, arr, limit=2):
+        unique_values = set()
+        for value in np.nditer(arr):
+            unique_values.add(value.item())
+            if len(unique_values) > limit:
+                return False
+        return True
+
+    def check_binary_map(self, in_fn):
+        '''
+        Check if input image is binary map
+        :param in_fn: input image
+        :return: True if the file is a binary map, False otherwise
+        '''
+        file_extension = in_fn.split('.')[-1].lower()
+        file_name, _ = os.path.splitext(in_fn)
+        if file_extension == 'rst':
+            with open(file_name + '.rdc', 'r') as read_file:
+                rdc_content = read_file.read().lower()
+                byte_or_integer_binary = "data type   : byte" in rdc_content or (
+                        "data type   : integer" in rdc_content and "min. value  : 0" in rdc_content and "max. value  : 1" in rdc_content)
+                float_binary = "data type   : real" in rdc_content and "min. value  : 0.0000000" in rdc_content and "max. value  : 1.0000000" in rdc_content
+        elif file_extension == 'tif':
+            datatype = self.get_image_datatype(in_fn)
+            min_val, max_val = self.get_image_max_min(in_fn)
+            byte_or_integer_binary = datatype in ['Byte', 'CInt16', 'CInt32', 'Int16', 'Int32', 'UInt16',
+                                                  'UInt32'] and max_val == 1 and min_val == 0
+            float_binary = datatype in ['Float32', 'Float64', 'CFloat32',
+                                        'CFloat64'] and max_val == 1.0000000 and min_val == 0.0000000
+
+        if byte_or_integer_binary or (float_binary):
+            # For float_binary, use find_unique_values function to check if data only have two unique values [0.0000000, 1.0000000].
+            if float_binary:
+                in_ds = gdal.Open(in_fn)
+                in_band = in_ds.GetRasterBand(1)
+                arr = in_band.ReadAsArray()
+                # If more than two unique values are found, it's not a binary map, return False.
+                if not self.find_unique_values(arr, 2):
+                    return False
+            # Binary map: byte_or_integer_binary or float_binary with two unique values [0.0000000, 1.0000000], it returns True.
+            return True
+        # For any other scenario, it returns False.
+        return False
+
     def process_data2(self):
         if not self.in_fn:
             QMessageBox.critical(self, "Error", "Please select the input file!")
@@ -1042,6 +1303,16 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         if not (out_fn_2.endswith('.tif') or out_fn_2.endswith('.rst')):
             QMessageBox.critical(self, "Error",
                                  "Please enter .rst or .tif extension in the name of Vulnerability Map in CNF!")
+            return
+
+        if not self.check_binary_map(self.fmask_2):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF FOREST AREAS IN THE CNF' must be a binary map (0 and 1) where the 1’s indicate forest areas.")
+            return
+
+        if not self.check_binary_map(self.mask_2):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF THE NON-EXCLUDED JURISDICTION' must be a binary map (0 and 1) where the 1’s indicate areas inside the jurisdiction.")
             return
 
         # Show "Processing" message
@@ -1180,6 +1451,62 @@ class AT_PRE_CNF_Screen(QDialog):
         rows = dataset.RasterYSize
         return rows, cols
 
+    def get_image_datatype(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        datatype = gdal.GetDataTypeName(in_band.DataType)
+        return datatype
+
+    def get_image_max_min(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        min, max= in_band.ComputeRasterMinMax()
+        return min, max
+
+    def find_unique_values(self, arr, limit=2):
+        unique_values = set()
+        for value in np.nditer(arr):
+            unique_values.add(value.item())
+            if len(unique_values) > limit:
+                return False
+        return True
+
+    def check_binary_map(self, in_fn):
+        '''
+        Check if input image is binary map
+        :param in_fn: input image
+        :return: True if the file is a binary map, False otherwise
+        '''
+        file_extension = in_fn.split('.')[-1].lower()
+        file_name, _ = os.path.splitext(in_fn)
+        if file_extension == 'rst':
+            with open(file_name + '.rdc', 'r') as read_file:
+                rdc_content = read_file.read().lower()
+                byte_or_integer_binary = "data type   : byte" in rdc_content or (
+                        "data type   : integer" in rdc_content and "min. value  : 0" in rdc_content and "max. value  : 1" in rdc_content)
+                float_binary = "data type   : real" in rdc_content and "min. value  : 0.0000000" in rdc_content and "max. value  : 1.0000000" in rdc_content
+        elif file_extension == 'tif':
+            datatype = self.get_image_datatype(in_fn)
+            min_val, max_val = self.get_image_max_min(in_fn)
+            byte_or_integer_binary = datatype in ['Byte', 'CInt16', 'CInt32', 'Int16', 'Int32', 'UInt16',
+                                                  'UInt32'] and max_val == 1 and min_val == 0
+            float_binary = datatype in ['Float32', 'Float64', 'CFloat32',
+                                        'CFloat64'] and max_val == 1.0000000 and min_val == 0.0000000
+
+        if byte_or_integer_binary or (float_binary):
+            # For float_binary, use find_unique_values function to check if data only have two unique values [0.0000000, 1.0000000].
+            if float_binary:
+                in_ds = gdal.Open(in_fn)
+                in_band = in_ds.GetRasterBand(1)
+                arr = in_band.ReadAsArray()
+                # If more than two unique values are found, it's not a binary map, return False.
+                if not self.find_unique_values(arr, 2):
+                    return False
+            # Binary map: byte_or_integer_binary or float_binary with two unique values [0.0000000, 1.0000000], it returns True.
+            return True
+        # For any other scenario, it returns False.
+        return False
+
     def process_data3(self):
         images = [self.municipality, self.deforestation_cnf, self.risk30_vp]
 
@@ -1230,6 +1557,11 @@ class AT_PRE_CNF_Screen(QDialog):
             self.max_iterations = int(max_iterations)
         except ValueError:
             QMessageBox.critical(self, "Error", "Max iteration value should be a valid number!")
+            return
+
+        if not self.check_binary_map(self.deforestation_cnf):
+            QMessageBox.critical(None, "Error",
+                                 "'MAP OF DEFORESTATION IN THE CNF' must be a binary map (0 and 1) where the 1’s indicate deforestation.")
             return
 
         # Show "Processing" message
@@ -1381,6 +1713,62 @@ class MCT_PRE_CNF_Screen(QDialog):
         rows = dataset.RasterYSize
         return rows, cols
 
+    def get_image_datatype(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        datatype = gdal.GetDataTypeName(in_band.DataType)
+        return datatype
+
+    def get_image_max_min(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        min, max= in_band.ComputeRasterMinMax()
+        return min, max
+
+    def find_unique_values(self, arr, limit=2):
+        unique_values = set()
+        for value in np.nditer(arr):
+            unique_values.add(value.item())
+            if len(unique_values) > limit:
+                return False
+        return True
+
+    def check_binary_map(self, in_fn):
+        '''
+        Check if input image is binary map
+        :param in_fn: input image
+        :return: True if the file is a binary map, False otherwise
+        '''
+        file_extension = in_fn.split('.')[-1].lower()
+        file_name, _ = os.path.splitext(in_fn)
+        if file_extension == 'rst':
+            with open(file_name + '.rdc', 'r') as read_file:
+                rdc_content = read_file.read().lower()
+                byte_or_integer_binary = "data type   : byte" in rdc_content or (
+                        "data type   : integer" in rdc_content and "min. value  : 0" in rdc_content and "max. value  : 1" in rdc_content)
+                float_binary = "data type   : real" in rdc_content and "min. value  : 0.0000000" in rdc_content and "max. value  : 1.0000000" in rdc_content
+        elif file_extension == 'tif':
+            datatype = self.get_image_datatype(in_fn)
+            min_val, max_val = self.get_image_max_min(in_fn)
+            byte_or_integer_binary = datatype in ['Byte', 'CInt16', 'CInt32', 'Int16', 'Int32', 'UInt16',
+                                                  'UInt32'] and max_val == 1 and min_val == 0
+            float_binary = datatype in ['Float32', 'Float64', 'CFloat32',
+                                        'CFloat64'] and max_val == 1.0000000 and min_val == 0.0000000
+
+        if byte_or_integer_binary or (float_binary):
+            # For float_binary, use find_unique_values function to check if data only have two unique values [0.0000000, 1.0000000].
+            if float_binary:
+                in_ds = gdal.Open(in_fn)
+                in_band = in_ds.GetRasterBand(1)
+                arr = in_band.ReadAsArray()
+                # If more than two unique values are found, it's not a binary map, return False.
+                if not self.find_unique_values(arr, 2):
+                    return False
+            # Binary map: byte_or_integer_binary or float_binary with two unique values [0.0000000, 1.0000000], it returns True.
+            return True
+        # For any other scenario, it returns False.
+        return False
+
     def process_data4(self):
         images = [self.mask, self.fmask, self.deforestation_cal, self.deforestation_hrp, self.density]
 
@@ -1471,6 +1859,26 @@ class MCT_PRE_CNF_Screen(QDialog):
         if not (out_fn_def.endswith('.tif') or out_fn_def.endswith('.rst')):
             QMessageBox.critical(self, "Error",
                                  "Please enter .rst or .tif extension in the name of Combined Deforestation Reference Map!")
+            return
+
+        if not self.check_binary_map(self.mask):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF THE NON-EXCLUDED JURISDICTION' must be a binary map (0 and 1) where the 1’s indicate areas inside the jurisdiction.")
+            return
+
+        if not self.check_binary_map(self.deforestation_hrp):
+            QMessageBox.critical(None, "Error",
+                                 "'MAP OF DEFORESTATION IN THE CNF' must be a binary map (0 and 1) where the 1’s indicate deforestation.")
+            return
+
+        if not self.check_binary_map(self.deforestation_cal):
+            QMessageBox.critical(None, "Error",
+                                 "'MAP OF DEFORESTATION IN THE CAL' must be a binary map (0 and 1) where the 1’s indicate deforestation.")
+            return
+
+        if not self.check_binary_map(self.fmask):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF FOREST AREAS IN THE CAL' must be a binary map (0 and 1) where the 1’s indicate forest areas.")
             return
 
         # Show "Processing" message
@@ -1634,6 +2042,62 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             self.fmask_2 = file_path
             self.fmask_entry_2.setText(file_path.split('/')[-1])
 
+    def get_image_datatype(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        datatype = gdal.GetDataTypeName(in_band.DataType)
+        return datatype
+
+    def get_image_max_min(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        min, max= in_band.ComputeRasterMinMax()
+        return min, max
+
+    def find_unique_values(self, arr, limit=2):
+        unique_values = set()
+        for value in np.nditer(arr):
+            unique_values.add(value.item())
+            if len(unique_values) > limit:
+                return False
+        return True
+
+    def check_binary_map(self, in_fn):
+        '''
+        Check if input image is binary map
+        :param in_fn: input image
+        :return: True if the file is a binary map, False otherwise
+        '''
+        file_extension = in_fn.split('.')[-1].lower()
+        file_name, _ = os.path.splitext(in_fn)
+        if file_extension == 'rst':
+            with open(file_name + '.rdc', 'r') as read_file:
+                rdc_content = read_file.read().lower()
+                byte_or_integer_binary = "data type   : byte" in rdc_content or (
+                        "data type   : integer" in rdc_content and "min. value  : 0" in rdc_content and "max. value  : 1" in rdc_content)
+                float_binary = "data type   : real" in rdc_content and "min. value  : 0.0000000" in rdc_content and "max. value  : 1.0000000" in rdc_content
+        elif file_extension == 'tif':
+            datatype = self.get_image_datatype(in_fn)
+            min_val, max_val = self.get_image_max_min(in_fn)
+            byte_or_integer_binary = datatype in ['Byte', 'CInt16', 'CInt32', 'Int16', 'Int32', 'UInt16',
+                                                  'UInt32'] and max_val == 1 and min_val == 0
+            float_binary = datatype in ['Float32', 'Float64', 'CFloat32',
+                                        'CFloat64'] and max_val == 1.0000000 and min_val == 0.0000000
+
+        if byte_or_integer_binary or (float_binary):
+            # For float_binary, use find_unique_values function to check if data only have two unique values [0.0000000, 1.0000000].
+            if float_binary:
+                in_ds = gdal.Open(in_fn)
+                in_band = in_ds.GetRasterBand(1)
+                arr = in_band.ReadAsArray()
+                # If more than two unique values are found, it's not a binary map, return False.
+                if not self.find_unique_values(arr, 2):
+                    return False
+            # Binary map: byte_or_integer_binary or float_binary with two unique values [0.0000000, 1.0000000], it returns True.
+            return True
+        # For any other scenario, it returns False.
+        return False
+
     def process_data2(self):
         if not self.in_fn:
             QMessageBox.critical(self, "Error", "Please select the input file!")
@@ -1750,6 +2214,16 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         if not (out_fn_2.endswith('.tif') or out_fn_2.endswith('.rst')):
             QMessageBox.critical(self, "Error",
                                  "Please enter .rst or .tif extension in the name of Vulnerability Map in HRP!")
+            return
+
+        if not self.check_binary_map(self.mask_2):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF THE NON-EXCLUDED JURISDICTION' must be a binary map (0 and 1) where the 1’s indicate areas inside the jurisdiction.")
+            return
+
+        if not self.check_binary_map(self.fmask_2):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF FOREST AREAS IN THE HRP' must be a binary map (0 and 1) where the 1’s indicate forest areas.")
             return
 
         # Show "Processing" message
@@ -1874,6 +2348,62 @@ class AT_FIT_HRP_Screen(QDialog):
         rows = dataset.RasterYSize
         return rows, cols
 
+    def get_image_datatype(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        datatype = gdal.GetDataTypeName(in_band.DataType)
+        return datatype
+
+    def get_image_max_min(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        min, max= in_band.ComputeRasterMinMax()
+        return min, max
+
+    def find_unique_values(self, arr, limit=2):
+        unique_values = set()
+        for value in np.nditer(arr):
+            unique_values.add(value.item())
+            if len(unique_values) > limit:
+                return False
+        return True
+
+    def check_binary_map(self, in_fn):
+        '''
+        Check if input image is binary map
+        :param in_fn: input image
+        :return: True if the file is a binary map, False otherwise
+        '''
+        file_extension = in_fn.split('.')[-1].lower()
+        file_name, _ = os.path.splitext(in_fn)
+        if file_extension == 'rst':
+            with open(file_name + '.rdc', 'r') as read_file:
+                rdc_content = read_file.read().lower()
+                byte_or_integer_binary = "data type   : byte" in rdc_content or (
+                        "data type   : integer" in rdc_content and "min. value  : 0" in rdc_content and "max. value  : 1" in rdc_content)
+                float_binary = "data type   : real" in rdc_content and "min. value  : 0.0000000" in rdc_content and "max. value  : 1.0000000" in rdc_content
+        elif file_extension == 'tif':
+            datatype = self.get_image_datatype(in_fn)
+            min_val, max_val = self.get_image_max_min(in_fn)
+            byte_or_integer_binary = datatype in ['Byte', 'CInt16', 'CInt32', 'Int16', 'Int32', 'UInt16',
+                                                  'UInt32'] and max_val == 1 and min_val == 0
+            float_binary = datatype in ['Float32', 'Float64', 'CFloat32',
+                                        'CFloat64'] and max_val == 1.0000000 and min_val == 0.0000000
+
+        if byte_or_integer_binary or (float_binary):
+            # For float_binary, use find_unique_values function to check if data only have two unique values [0.0000000, 1.0000000].
+            if float_binary:
+                in_ds = gdal.Open(in_fn)
+                in_band = in_ds.GetRasterBand(1)
+                arr = in_band.ReadAsArray()
+                # If more than two unique values are found, it's not a binary map, return False.
+                if not self.find_unique_values(arr, 2):
+                    return False
+            # Binary map: byte_or_integer_binary or float_binary with two unique values [0.0000000, 1.0000000], it returns True.
+            return True
+        # For any other scenario, it returns False.
+        return False
+
     def process_data3(self):
         images = [self.risk30_hrp, self.municipality, self.deforestation_hrp]
 
@@ -1923,6 +2453,11 @@ class AT_FIT_HRP_Screen(QDialog):
         if not (out_fn2.endswith('.tif') or out_fn2.endswith('.rst')):
             QMessageBox.critical(self, "Error",
                                  "Please enter .rst or .tif extension in the name of Fitted Density Map in the HRP!")
+            return
+
+        if not self.check_binary_map(self.deforestation_hrp):
+            QMessageBox.critical(None, "Error",
+                                 "'MAP OF DEFORESTATION IN THE HRP' must be a binary map (0 and 1) where the 1’s indicate deforestation.")
             return
 
         # Show "Processing" message
@@ -2078,6 +2613,62 @@ class RMT_PRE_VP_SCREEN(QDialog):
             self.fmask_2 = file_path
             self.fmask_entry_2.setText(file_path.split('/')[-1])
 
+    def get_image_datatype(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        datatype = gdal.GetDataTypeName(in_band.DataType)
+        return datatype
+
+    def get_image_max_min(self, image):
+        in_ds = gdal.Open(image)
+        in_band = in_ds.GetRasterBand(1)
+        min, max= in_band.ComputeRasterMinMax()
+        return min, max
+
+    def find_unique_values(self, arr, limit=2):
+        unique_values = set()
+        for value in np.nditer(arr):
+            unique_values.add(value.item())
+            if len(unique_values) > limit:
+                return False
+        return True
+
+    def check_binary_map(self, in_fn):
+        '''
+        Check if input image is binary map
+        :param in_fn: input image
+        :return: True if the file is a binary map, False otherwise
+        '''
+        file_extension = in_fn.split('.')[-1].lower()
+        file_name, _ = os.path.splitext(in_fn)
+        if file_extension == 'rst':
+            with open(file_name + '.rdc', 'r') as read_file:
+                rdc_content = read_file.read().lower()
+                byte_or_integer_binary = "data type   : byte" in rdc_content or (
+                        "data type   : integer" in rdc_content and "min. value  : 0" in rdc_content and "max. value  : 1" in rdc_content)
+                float_binary = "data type   : real" in rdc_content and "min. value  : 0.0000000" in rdc_content and "max. value  : 1.0000000" in rdc_content
+        elif file_extension == 'tif':
+            datatype = self.get_image_datatype(in_fn)
+            min_val, max_val = self.get_image_max_min(in_fn)
+            byte_or_integer_binary = datatype in ['Byte', 'CInt16', 'CInt32', 'Int16', 'Int32', 'UInt16',
+                                                  'UInt32'] and max_val == 1 and min_val == 0
+            float_binary = datatype in ['Float32', 'Float64', 'CFloat32',
+                                        'CFloat64'] and max_val == 1.0000000 and min_val == 0.0000000
+
+        if byte_or_integer_binary or (float_binary):
+            # For float_binary, use find_unique_values function to check if data only have two unique values [0.0000000, 1.0000000].
+            if float_binary:
+                in_ds = gdal.Open(in_fn)
+                in_band = in_ds.GetRasterBand(1)
+                arr = in_band.ReadAsArray()
+                # If more than two unique values are found, it's not a binary map, return False.
+                if not self.find_unique_values(arr, 2):
+                    return False
+            # Binary map: byte_or_integer_binary or float_binary with two unique values [0.0000000, 1.0000000], it returns True.
+            return True
+        # For any other scenario, it returns False.
+        return False
+
     def process_data2(self):
         if not self.in_fn:
             QMessageBox.critical(self, "Error", "Please select the input file!")
@@ -2194,6 +2785,16 @@ class RMT_PRE_VP_SCREEN(QDialog):
         if not (out_fn_2.endswith('.tif') or out_fn_2.endswith('.rst')):
             QMessageBox.critical(self, "Error",
                                  "Please enter .rst or .tif extension in the name of Vulnerability Map in VP!")
+            return
+
+        if not self.check_binary_map(self.mask_2):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF THE NON-EXCLUDED JURISDICTION' must be a binary map (0 and 1) where the 1’s indicate areas inside the jurisdiction.")
+            return
+
+        if not self.check_binary_map(self.fmask_2):
+            QMessageBox.critical(None, "Error",
+                                 "'MASK OF FOREST AREAS IN THE VP' must be a binary map (0 and 1) where the 1’s indicate forest areas.")
             return
 
         # Show "Processing" message
