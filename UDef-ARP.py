@@ -2399,11 +2399,8 @@ class MapChecker:
         self.in_fn=None
 
     def get_image_resolution(self,image):
-        # Set up a GDAL dataset
         in_ds = gdal.Open(image)
-        # Set up a GDAL band
         P = in_ds.GetGeoTransform()[1]
-        # Create Numpy Array1
         return P
 
     def get_image_dimensions(self, image):
