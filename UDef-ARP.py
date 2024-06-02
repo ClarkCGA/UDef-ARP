@@ -669,7 +669,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         images = [self.mask, self.deforestation_hrp, self.density]
 
         # Check if all images have the same resolution
-        resolutions = [self.get_image_resolution(img) for img in images]
+        resolutions = [map_checker.get_image_resolution(img) for img in images]
         if len(set(resolutions)) != 1:
             QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
             return
