@@ -135,39 +135,12 @@ class ModelEvaluation(QObject):
         spatial_ref.ImportFromWkt(projection)
 
         # Create a temporary shapefile to store all polygons
-        temp_layername = "TEMP_POLYGONIZED"
+        temp_layername = "POLYGONIZED_MASK"
         driver = ogr.GetDriverByName("ESRI Shapefile")
         temp_ds = driver.CreateDataSource(temp_layername + ".shp")
         temp_layer = temp_ds.CreateLayer(temp_layername, srs=spatial_ref)
         gdal.Polygonize(in_band, in_band, temp_layer, -1, [], callback=None)
         self.progress_updated.emit(20)
-
-        features = [(feature.GetGeometryRef().GetArea(), feature) for feature in temp_layer]
-        largest_polygon = max(features, key=lambda item: item[0])[1]
-
-        # Fetch the geometry of the largest feature
-        largest_polygon_geom = largest_polygon.GetGeometryRef().Clone()
-
-        # Close the temporary data source
-        temp_ds.Destroy()
-
-        # Create the final shapefile to store the largest polygon
-        final_layername = "POLYGONIZED_MASK"
-        final_ds = driver.CreateDataSource(final_layername + ".shp")
-        final_layer = final_ds.CreateLayer(final_layername, srs=spatial_ref, geom_type=ogr.wkbPolygon)
-
-        # Create a new feature
-        feature_defn = final_layer.GetLayerDefn()
-        out_feature = ogr.Feature(feature_defn)
-        out_feature.SetGeometry(largest_polygon_geom)
-
-        # Add the feature to the final layer
-        final_layer.CreateFeature(out_feature)
-
-        # Cleanup
-        out_feature = None
-        final_ds.Destroy()
-
         return
 
     def bbox_to_pixel_offsets(self,gt, bbox):
@@ -382,8 +355,6 @@ class ModelEvaluation(QObject):
         coords = np.array(points_df['coords'].tolist())
 
         ## Create thiessen polygon
-        polygon = mask_df.geometry.unary_union
-
         vor = Voronoi(points=coords)
 
         # Polygonize the line ridge is not infinity
@@ -396,11 +367,8 @@ class ModelEvaluation(QObject):
         voronois = gpd.GeoDataFrame(geometry=gpd.GeoSeries(polys), crs=mask_df.crs)
         self.progress_updated.emit(30)
 
-        # Convert the study area to GeoDataFrame.
-        polydf = gpd.GeoDataFrame(geometry=[polygon], crs=mask_df.crs)
-
         # Ensure Thiessen Polygon cells retain 99.9% of maximum size after intersection with study area
-        thiessen_gdf = self.remove_edge_cells(voronois, polydf, 0.999)
+        thiessen_gdf = self.remove_edge_cells(voronois, mask_df, 0.999)
 
         self.progress_updated.emit(40)
 
