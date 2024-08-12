@@ -504,7 +504,7 @@ class ModelEvaluation(QObject):
         plt.figure(figsize=(8, 6))
 
         # Create a scatter plot
-        plt.scatter(clipped_gdf['ActualDef'], clipped_gdf['PredDef'], color='steelblue', edgecolors='white', linewidth=1.0, s=50)
+        plt.scatter(clipped_gdf['ActualDef'], clipped_gdf['PredDef'], color='steelblue', alpha=0.5, linewidth=1.0, s=50)
 
         # Add labels and title
         plt.xlabel('Actual Deforestation (ha)', color='black', fontweight='bold', labelpad=10)
