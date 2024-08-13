@@ -500,20 +500,6 @@ class ModelEvaluation(QObject):
         ## Calculate MedAE percent
         MedAE_percent = (MedAE / int(grid_area)) * 100
 
-        ## Theil-Sen Regressor
-        # Fit Theil-Sen Regressor
-        # Compute Theil-Sen estimator
-        ts_slope, ts_intercept, _, _ = stats.theilslopes(Y, X)
-
-        # Generate predictions
-        y_pred = ts_slope * X + ts_intercept
-
-        # Equation of the line
-        ts_equation = f'Y = {ts_slope:.4f} * X + {ts_intercept:.2f}'
-
-        # Plot Theil-Sen Line
-        plt.plot(X, y_pred, color='orange', linestyle='-', label='Theil-Sen Line')
-
         # Set the figure size
         plt.figure(figsize=(8, 6))
 
@@ -531,6 +517,20 @@ class ModelEvaluation(QObject):
         # Plot a 1-to-1 line
         plt.plot([0, max(clipped_gdf['ActualDef'])], [0, max(clipped_gdf['ActualDef'])], color='crimson', linestyle='--',
                  label='1:1 Line')
+
+        ## Theil-Sen Regressor
+        # Fit Theil-Sen Regressor
+        # Compute Theil-Sen estimator
+        ts_slope, ts_intercept, _, _ = stats.theilslopes(Y, X)
+
+        # Generate predictions
+        y_pred = ts_slope * X + ts_intercept
+
+        # Equation of the line
+        ts_equation = f'Y = {ts_slope:.4f} * X + {ts_intercept:.2f}'
+
+        # Plot Theil-Sen Line
+        plt.plot(X, y_pred, color='orange', linestyle='-', label='Theil-Sen Line')
 
         # Add a legend in the bottom right position
         plt.legend(loc='lower right')
