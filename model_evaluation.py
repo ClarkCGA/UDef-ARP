@@ -504,7 +504,7 @@ class ModelEvaluation(QObject):
         plt.figure(figsize=(8, 6))
 
         # Create a scatter plot
-        plt.scatter(clipped_gdf['ActualDef'], clipped_gdf['PredDef'], color='steelblue', edgecolors='white', linewidth=1.0, s=50)
+        plt.scatter(clipped_gdf['ActualDef'], clipped_gdf['PredDef'], color='steelblue', alpha=0.5, linewidth=1.0, s=50)
 
         # Add labels and title
         plt.xlabel('Actual Deforestation (ha)', color='black', fontweight='bold', labelpad=10)
@@ -512,11 +512,25 @@ class ModelEvaluation(QObject):
         plt.title(title, color='firebrick', fontweight='bold', fontsize=20, pad=20)
 
         # Plot the trend line
-        plt.plot(X, trend_line, color='mediumseagreen', linestyle='-', label='Best Fit Line')
+        plt.plot(X, trend_line, color='mediumseagreen', linestyle='-', label='OLS Line')
 
         # Plot a 1-to-1 line
         plt.plot([0, max(clipped_gdf['ActualDef'])], [0, max(clipped_gdf['ActualDef'])], color='crimson', linestyle='--',
                  label='1:1 Line')
+
+        ## Theil-Sen Regressor
+        # Fit Theil-Sen Regressor
+        # Compute Theil-Sen estimator
+        ts_slope, ts_intercept, _, _ = stats.theilslopes(Y, X)
+
+        # Generate predictions
+        y_pred = ts_slope * X + ts_intercept
+
+        # Equation of the line
+        ts_equation = f'Y = {ts_slope:.4f} * X + {ts_intercept:.2f}'
+
+        # Plot Theil-Sen Line
+        plt.plot(X, y_pred, color='orange', linestyle='-', label='Theil-Sen Line')
 
         # Add a legend in the bottom right position
         plt.legend(loc='lower right')
@@ -543,10 +557,12 @@ class ModelEvaluation(QObject):
         text_y_gap = ymax * 0.05
 
         # Adjust plt texts with the new calculated positions
-        plt.text(text_x_pos, text_y_start_pos, equation, fontsize=11, color='black')
-        plt.text(text_x_pos, text_y_start_pos - text_y_gap, f'Samples = {len(X)}', fontsize=11, color='black')
-        plt.text(text_x_pos, text_y_start_pos - 2 * text_y_gap, f'R^2 = {r_squared:.4f}', fontsize=11, color='black')
-        plt.text(text_x_pos, text_y_start_pos - 3 * text_y_gap, f'MedAE = {MedAE:.2f} ({MedAE_percent:.2f}%)',
+        plt.text(text_x_pos, text_y_start_pos, f'Theil-Sen : {ts_equation}', fontsize=11,
+                 color='black')
+        plt.text(text_x_pos, text_y_start_pos - text_y_gap, f'OLS : {equation}', fontsize=11, color='black')
+        plt.text(text_x_pos, text_y_start_pos - 2 * text_y_gap, f'Samples = {len(X)}', fontsize=11, color='black')
+        plt.text(text_x_pos, text_y_start_pos - 3 * text_y_gap, f'R^2 = {r_squared:.4f}', fontsize=11, color='black')
+        plt.text(text_x_pos, text_y_start_pos - 4 * text_y_gap, f'MedAE = {MedAE:.2f} ({MedAE_percent:.2f}%)',
                  fontsize=11, color='black')
 
         # x, yticks
