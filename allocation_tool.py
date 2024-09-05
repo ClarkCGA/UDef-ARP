@@ -438,6 +438,7 @@ class AllocationTool(QObject):
         while AR > 1.00001 and iteration_count <= max_iterations:
             new_prediction_density_arr = self.adjusted_prediction_density_array(prediction_density_arr, risk30_vp, AR)
             AR = self.calculate_adjustment_ratio_cnf(new_prediction_density_arr, deforestation_cnf)
+            prediction_density_arr=new_prediction_density_arr
             iteration_count += 1
         if iteration_count <= int(max_iterations):
             selected_density_arr = new_prediction_density_arr if new_prediction_density_arr is not None else prediction_density_arr
@@ -484,6 +485,7 @@ class AllocationTool(QObject):
         while AR > 1.00001 and iteration_count <= max_iterations:
             new_prediction_density_arr = self.adjusted_prediction_density_array(prediction_density_arr, risk30_vp, AR)
             AR = self.calculate_adjustment_ratio(new_prediction_density_arr, expected_deforestation)
+            prediction_density_arr = new_prediction_density_arr
             iteration_count += 1
             # Emitting progress based on the current iteration_count and max_iterations
         if iteration_count <= int(max_iterations):
