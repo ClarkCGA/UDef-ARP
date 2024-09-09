@@ -1231,7 +1231,7 @@ class AT_PRE_CNF_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            id_difference = self.allocation_tool.execute_workflow_cnf(directory,
+            id_difference,iteration_count = self.allocation_tool.execute_workflow_cnf(directory,
                                                             self.max_iterations, self.csv,
                                                             self.municipality,
                                                             self.deforestation_cnf,
@@ -1239,7 +1239,10 @@ class AT_PRE_CNF_Screen(QDialog):
                                                             out_fn2)
             if id_difference.size > 0:
                 QMessageBox.warning(self, " Warning ", f"Modeling Region ID {','.join(map(str, id_difference))} do not exist in the Calculation Period. A new CSV has been created for the CAL where relative frequencies for missing bins have been estimated from corresponding vulnerability zones over the entire jurisdiction.")
-            QMessageBox.information(self, "Processing Completed", "Processing completed!")
+            if iteration_count > int(max_iterations):
+                QMessageBox.warning(self, " Warning ", f"Maximum iterations limit reached. Please increase the Maximum Iterations and try running the tool again.")
+            else:
+                QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
         except Exception as e:
@@ -2365,7 +2368,7 @@ class AT_PRE_VP_Screen(QDialog):
         QApplication.processEvents()
 
         try:
-            id_difference = self.allocation_tool.execute_workflow_vp(directory, self.max_iterations,
+            id_difference,iteration_count = self.allocation_tool.execute_workflow_vp(directory, self.max_iterations,
                                                                            self.csv,
                                                                            self.municipality,
                                                                            self.expected_deforestation,
@@ -2374,8 +2377,11 @@ class AT_PRE_VP_Screen(QDialog):
 
             if id_difference.size > 0:
                 QMessageBox.warning(self, " Warning ", f"Modeling Region ID {','.join(map(str, id_difference))} do not exist in the Historical Reference Period. A new CSV has been created for the HRP where relative frequencies for missing bins have been estimated from corresponding vulnerability zones over the entire jurisdiction.")
-
-            QMessageBox.information(self, "Processing Completed", "Processing completed!")
+            if iteration_count > int(max_iterations):
+                QMessageBox.warning(self, " Warning ",
+                                    f"Maximum iterations limit reached. Please increase the Maximum Iterations and try running the tool again.")
+            else:
+                QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
         except Exception as e:

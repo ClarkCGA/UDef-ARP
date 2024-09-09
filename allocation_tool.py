@@ -450,7 +450,7 @@ class AllocationTool(QObject):
 
         self.progress_updated.emit(100)
 
-        return id_difference
+        return id_difference , iteration_count
 
     def execute_workflow_vp(self, directory,max_iterations, csv, municipality, expected_deforestation, risk30_vp, out_fn1, out_fn2, time):
         '''
@@ -497,7 +497,7 @@ class AllocationTool(QObject):
 
         self.progress_updated.emit(100)
 
-        return id_difference
+        return id_difference, iteration_count
 
     def check_modeling_region_ids(self, csv, out_fn):
         '''
