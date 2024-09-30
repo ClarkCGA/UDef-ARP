@@ -384,7 +384,6 @@ class AllocationTool(QObject):
 
                     # Move the temp file to replace the original
                     shutil.move(temp_file_path, write_file_name + '.rdc')
-                    self.progress_updated.emit(100)
 
             elif in_fn.split('.')[-1] == 'tif':
                 # Read projection information from the .tif file using GDAL
@@ -406,10 +405,6 @@ class AllocationTool(QObject):
                             write_file.write(line)
 
                 shutil.move(temp_file_path, write_file_name + '.rdc')
-                self.progress_updated.emit(100)
-            else:
-                self.progress_updated.emit(100)
-
 
     def execute_workflow_fit(self, directory,risk30_hrp,municipality, deforestation_hrp, csv_name, out_fn1, out_fn2):
         '''

@@ -98,7 +98,6 @@ class ModelEvaluation(QObject):
 
                     # Move the temp file to replace the original
                     shutil.move(temp_file_path, write_file_name + '.rdc')
-                    self.progress_updated.emit(100)
 
             elif in_fn.split('.')[-1] == 'tif':
                 # Read projection information from the .tif file using GDAL
@@ -120,9 +119,6 @@ class ModelEvaluation(QObject):
                             write_file.write(line)
 
                 shutil.move(temp_file_path, write_file_name + '.rdc')
-                self.progress_updated.emit(100)
-            else:
-                self.progress_updated.emit(100)
 
     def replace_legend(self, out_fn):
         '''
