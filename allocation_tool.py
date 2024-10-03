@@ -363,27 +363,48 @@ class AllocationTool(QObject):
          :param out_fn: rst raster file
         '''
         if out_fn.split('.')[-1] == 'rst':
-            read_file_name, _ = os.path.splitext(in_fn)
-            write_file_name, _ = os.path.splitext(out_fn)
-            temp_file_path = 'rdc_temp.rdc'
+            if in_fn.split('.')[-1] == 'rst':
+                read_file_name, _ = os.path.splitext(in_fn)
+                write_file_name, _ = os.path.splitext(out_fn)
+                temp_file_path = 'rdc_temp.rdc'
 
-            with open(read_file_name + '.rdc', 'r') as read_file:
-                for line in read_file:
-                    if line.startswith("ref. system :"):
-                        correct_name=line
-                        break
+                with open(read_file_name + '.rdc', 'r') as read_file:
+                    for line in read_file:
+                        if line.startswith("ref. system :"):
+                            correct_name = line
+                            break
 
-            if correct_name:
+                if correct_name:
+                    with open(write_file_name + '.rdc', 'r') as read_file, open(temp_file_path, 'w') as write_file:
+                        for line in read_file:
+                            if line.startswith("ref. system :"):
+                                write_file.write(correct_name)
+                            else:
+                                write_file.write(line)
+
+                    # Move the temp file to replace the original
+                    shutil.move(temp_file_path, write_file_name + '.rdc')
+
+            elif in_fn.split('.')[-1] == 'tif':
+                # Read projection information from the .tif file using GDAL
+                dataset = gdal.Open(in_fn)
+                projection = dataset.GetProjection()
+                dataset = None
+
+                # Extract the reference system name from the wkt projection
+                ref_system_name = projection.split('PROJCS["')[1].split('"')[0]
+
+                write_file_name, _ = os.path.splitext(out_fn)
+                temp_file_path = 'rdc_temp.rdc'
+
                 with open(write_file_name + '.rdc', 'r') as read_file, open(temp_file_path, 'w') as write_file:
                     for line in read_file:
                         if line.startswith("ref. system :"):
-                            write_file.write(correct_name)
+                            write_file.write(f"ref. system : {ref_system_name}\n")
                         else:
                             write_file.write(line)
 
-                # Move the temp file to replace the original
                 shutil.move(temp_file_path, write_file_name + '.rdc')
-
 
     def execute_workflow_fit(self, directory,risk30_hrp,municipality, deforestation_hrp, csv_name, out_fn1, out_fn2):
         '''
