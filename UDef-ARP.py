@@ -197,8 +197,16 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             self.fmask_2 = file_path
             self.fmask_entry_2.setText(file_path.split('/')[-1])
 
-
     def process_data2_nrt(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.in_fn or not self.deforestation_hrp or not self.mask:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.in_fn, self.deforestation_hrp, self.mask]
 
         # Check if all images have the same resolution
@@ -207,17 +215,11 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             QMessageBox.critical(None, "Error", "All the input raster images must have the same spatial resolution!")
             return
 
-        directory = self.folder_entry.text()
-
         # Check if all images have the same number of rows and columns
         dimensions = [map_checker.get_image_dimensions(img) for img in images]
         if len(set(dimensions)) != 1:
             QMessageBox.critical(None, "Error",
                                  "All the input raster images must have the same number of rows and columns!")
-            return
-
-        if not self.in_fn or not self.deforestation_hrp or not self.mask:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
         if not map_checker.check_binary_map(self.deforestation_hrp):
@@ -263,6 +265,11 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
 
     def process_data2(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
         if not self.in_fn:
             QMessageBox.critical(self, "Error", "Please select the input file!")
             return
@@ -279,8 +286,6 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         except ValueError:
             QMessageBox.critical(self, "Error", "NRT value should be a valid number!")
             return
-
-        directory = self.folder_entry.text()
 
         n_classes = int(29)
         if not n_classes:
@@ -338,6 +343,15 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
 
     def process_data2_2(self):
+        directory_2 = self.folder_entry_2.text()
+        if not directory_2 :
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.in_fn_2, self.mask_2, self.fmask_2]
 
         # Check if all images have the same resolution
@@ -353,11 +367,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
                                  "All the input raster images must have the same number of rows and columns!")
             return
 
-        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
-            QMessageBox.critical(self, "Error", "Please select  the input file!")
-            return
         n_classes_2 = int(30)
-        directory_2 = self.folder_entry_2.text()
         out_fn_2 = self.out_fn_entry_2.text()
         if not out_fn_2:
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in CAL!")
@@ -494,6 +504,15 @@ class AT_FIT_CAL_Screen(QDialog):
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
 
     def process_data3(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.risk30_hrp, self.municipality, self.deforestation_hrp]
 
         # Check if all images have the same resolution
@@ -508,12 +527,6 @@ class AT_FIT_CAL_Screen(QDialog):
             QMessageBox.critical(None, "Error",
                                  "All the input raster images must have the same number of rows and columns!")
             return
-
-        if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
-            return
-
-        directory = self.folder_entry.text()
 
         out_fn1 = self.image1_entry.text()
         if not out_fn1:
@@ -666,6 +679,15 @@ class MCT_FIT_CAL_Screen(QDialog):
             self.density_entry.setText(file_path.split('/')[-1])
 
     def process_data4(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.mask or not self.deforestation_hrp or not self.density :
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.mask, self.deforestation_hrp, self.density]
 
         # Check if all images have the same resolution
@@ -679,10 +701,6 @@ class MCT_FIT_CAL_Screen(QDialog):
         if len(set(dimensions)) != 1:
             QMessageBox.critical(None, "Error",
                                  "All the input raster images must have the same number of rows and columns!")
-            return
-
-        if not self.mask or not self.deforestation_hrp or not self.density :
-            QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
         grid_area = self.grid_area_entry.text()
@@ -723,8 +741,6 @@ class MCT_FIT_CAL_Screen(QDialog):
         if not title:
             QMessageBox.critical(self, "Error", "Please enter the title of plot!")
             return
-
-        directory = self.folder_entry.text()
 
         out_fn = self.out_fn_entry.text()
         if not out_fn:
@@ -922,6 +938,11 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             self.fmask_entry_2.setText(file_path.split('/')[-1])
 
     def process_data2(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
         if not self.in_fn:
             QMessageBox.critical(self, "Error", "Please select the input file!")
             return
@@ -951,8 +972,6 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         except ValueError:
             QMessageBox.critical(self, "Error", "Number of classes value should be a valid number!")
             return
-
-        directory = self.folder_entry.text()
 
         out_fn = self.out_fn_entry.text()
         if not out_fn:
@@ -994,6 +1013,15 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
 
     def process_data2_2(self):
+        directory_2 = self.folder_entry_2.text()
+        if not directory_2 :
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.in_fn_2, self.mask_2, self.fmask_2]
 
         # Check if all images have the same resolution
@@ -1009,11 +1037,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
                                  "All the input raster images must have the same number of rows and columns!")
             return
 
-        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
-            QMessageBox.critical(self, "Error", "Please select  the input file!")
-            return
         n_classes_2 = int(30)
-        directory_2 = self.folder_entry_2.text()
         out_fn_2 = self.out_fn_entry_2.text()
         if not out_fn_2:
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in CNF!")
@@ -1158,6 +1182,15 @@ class AT_PRE_CNF_Screen(QDialog):
             self.deforestation_cnf_entry.setText(file_path3.split('/')[-1])
 
     def process_data3(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.municipality or not self.csv or not self.deforestation_cnf or not self.risk30_vp:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.municipality, self.deforestation_cnf, self.risk30_vp]
 
         # Check if all images have the same resolution
@@ -1172,12 +1205,6 @@ class AT_PRE_CNF_Screen(QDialog):
             QMessageBox.critical(None, "Error",
                                  "All the input raster images must have the same number of rows and columns!")
             return
-
-        if not self.municipality or not self.csv or not self.deforestation_cnf or not self.risk30_vp:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
-            return
-
-        directory = self.folder_entry.text()
 
         out_fn1 = self.image1_entry.text()
         if not out_fn1:
@@ -1353,6 +1380,15 @@ class MCT_PRE_CNF_Screen(QDialog):
             self.density_entry.setText(file_path.split('/')[-1])
 
     def process_data4(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.mask or not self.fmask or not self.deforestation_cal or not self.deforestation_hrp or not self.density :
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.mask, self.fmask, self.deforestation_cal, self.deforestation_hrp, self.density]
 
         # Check if all images have the same resolution
@@ -1366,10 +1402,6 @@ class MCT_PRE_CNF_Screen(QDialog):
         if len(set(dimensions)) != 1:
             QMessageBox.critical(None, "Error",
                                  "All the input raster images must have the same number of rows and columns!")
-            return
-
-        if not self.mask or not self.fmask or not self.deforestation_cal or not self.deforestation_hrp or not self.density :
-            QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
         grid_area = self.grid_area_entry.text()
@@ -1409,8 +1441,6 @@ class MCT_PRE_CNF_Screen(QDialog):
         if not title:
             QMessageBox.critical(self, "Error", "Please enter the title of plot!")
             return
-
-        directory = self.folder_entry.text()
 
         out_fn = self.out_fn_entry.text()
         if not out_fn:
@@ -1626,6 +1656,11 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             self.fmask_entry_2.setText(file_path.split('/')[-1])
 
     def process_data2(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
         if not self.in_fn:
             QMessageBox.critical(self, "Error", "Please select the input file!")
             return
@@ -1655,8 +1690,6 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         except ValueError:
             QMessageBox.critical(self, "Error", "Number of classes value should be a valid number!")
             return
-
-        directory = self.folder_entry.text()
 
         out_fn = self.out_fn_entry.text()
         if not out_fn:
@@ -1698,6 +1731,15 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
 
     def process_data2_2(self):
+        directory_2 = self.folder_entry_2.text()
+        if not directory_2 :
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.in_fn_2, self.mask_2, self.fmask_2]
 
         # Check if all images have the same resolution
@@ -1713,11 +1755,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
                                  "All the input raster images must have the same number of rows and columns!")
             return
 
-        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
-            QMessageBox.critical(self, "Error", "Please select  the input file!")
-            return
         n_classes_2 = int(30)
-        directory_2 = self.folder_entry_2.text()
         out_fn_2 = self.out_fn_entry_2.text()
         if not out_fn_2:
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in HRP!")
@@ -1848,6 +1886,15 @@ class AT_FIT_HRP_Screen(QDialog):
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
 
     def process_data3(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.risk30_hrp, self.municipality, self.deforestation_hrp]
 
         # Check if all images have the same resolution
@@ -1862,11 +1909,6 @@ class AT_FIT_HRP_Screen(QDialog):
             QMessageBox.critical(None, "Error",
                                  "All the input raster images must have the same number of rows and columns!")
             return
-        if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
-            return
-
-        directory = self.folder_entry.text()
 
         out_fn1 = self.image1_entry.text()
         if not out_fn1:
@@ -2057,6 +2099,11 @@ class RMT_PRE_VP_SCREEN(QDialog):
             self.fmask_entry_2.setText(file_path.split('/')[-1])
 
     def process_data2(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
         if not self.in_fn:
             QMessageBox.critical(self, "Error", "Please select the input file!")
             return
@@ -2086,8 +2133,6 @@ class RMT_PRE_VP_SCREEN(QDialog):
         except ValueError:
             QMessageBox.critical(self, "Error", "Number of classes value should be a valid number!")
             return
-
-        directory = self.folder_entry.text()
 
         out_fn = self.out_fn_entry.text()
         if not out_fn:
@@ -2129,6 +2174,15 @@ class RMT_PRE_VP_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
 
     def process_data2_2(self):
+        directory_2 = self.folder_entry_2.text()
+        if not directory_2 :
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.in_fn_2, self.mask_2, self.fmask_2]
 
         # Check if all images have the same resolution
@@ -2144,11 +2198,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
                                  "All the input raster images must have the same number of rows and columns!")
             return
 
-        if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
-            QMessageBox.critical(self, "Error", "Please select  the input file!")
-            return
         n_classes_2 = int(30)
-        directory_2 = self.folder_entry_2.text()
         out_fn_2 = self.out_fn_entry_2.text()
         if not out_fn_2:
             QMessageBox.critical(self, "Error", "Please enter the name of Vulnerability Map in VP!")
@@ -2281,6 +2331,15 @@ class AT_PRE_VP_Screen(QDialog):
             self.risk30_vp_entry.setText(file_path2.split('/')[-1])
 
     def process_data3(self):
+        directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
+
+        if not self.csv or not self.municipality or not self.risk30_vp:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
+            return
+
         images = [self.municipality, self.risk30_vp]
 
         # Check if all images have the same resolution
@@ -2295,9 +2354,6 @@ class AT_PRE_VP_Screen(QDialog):
             QMessageBox.critical(None, "Error",
                                  "All the input raster images must have the same number of rows and columns!")
             return
-        if not self.csv or not self.municipality or not self.risk30_vp:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
-            return
 
         expected_deforestation = self.expected_entry.text()
         if not expected_deforestation:
@@ -2308,8 +2364,6 @@ class AT_PRE_VP_Screen(QDialog):
         except ValueError:
             QMessageBox.critical(self, "Error", "Expected deforestation value should be a valid number!")
             return
-
-        directory = self.folder_entry.text()
 
         out_fn1 = self.image1_entry.text()
         if not out_fn1:
