@@ -270,8 +270,8 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        if not self.in_fn:
-            QMessageBox.critical(self, "Error", "Please select the input file!")
+        if not self.in_fn or not self.mask:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
         NRT = self.nrt_entry.text()
@@ -329,7 +329,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
         try:
             self.vulnerability_map.set_working_directory(directory)
-            mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
+            mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes, self.mask)
             self.vulnerability_map.array_to_image(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
             self.vulnerability_map.replace_ref_system(self.in_fn, out_fn)
 
@@ -828,6 +828,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.doc_button = self.tab1.findChild(QWidget, "doc_button")
         self.select_folder_button = self.tab1.findChild(QWidget, "select_folder_button")
         self.fd_button = self.tab1.findChild(QWidget, "fd_button")
+        self.mask_button = self.tab1.findChild(QWidget, "mask_button")
         self.ok_button2 = self.tab1.findChild(QWidget, "ok_button2")
 
         self.doc_button_2 = self.tab2.findChild(QWidget, "doc_button_2")
@@ -840,6 +841,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.fd_button.clicked.connect(self.select_fd)
+        self.mask_button.clicked.connect(self.select_mask)
         self.ok_button2.clicked.connect(self.process_data2)
 
         self.doc_button_2.clicked.connect(self.openDocument_2)
@@ -854,6 +856,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.directory = None
         self.in_fn = None
         self.NRT = None
+        self.mask = None
         # Use NRT from the data store
         if central_data_store.NRT is not None:
             self.nrt_entry.setText(str(central_data_store.NRT))
@@ -910,6 +913,11 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         if file_path:
             self.in_fn = file_path
             self.in_fn_entry.setText(file_path.split('/')[-1])
+    def select_mask(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path:
+            self.mask = file_path
+            self.mask_entry.setText(file_path.split('/')[-1])
 
     def select_working_directory_2(self):
         data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -943,8 +951,8 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        if not self.in_fn:
-            QMessageBox.critical(self, "Error", "Please select the input file!")
+        if not self.in_fn or not self.mask:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
         NRT = self.nrt_entry.text()
@@ -1001,7 +1009,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
 
         try:
             self.vulnerability_map.set_working_directory(directory)
-            mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
+            mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes, self.mask)
             self.vulnerability_map.array_to_image(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
             self.vulnerability_map.replace_ref_system(self.in_fn, out_fn)
 
@@ -1553,6 +1561,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         self.doc_button = self.tab1.findChild(QWidget, "doc_button")
         self.select_folder_button = self.tab1.findChild(QWidget, "select_folder_button")
         self.fd_button = self.tab1.findChild(QWidget, "fd_button")
+        self.mask_button = self.tab1.findChild(QWidget, "mask_button")
         self.ok_button2 = self.tab1.findChild(QWidget, "ok_button2")
 
         self.doc_button_2 = self.tab2.findChild(QWidget, "doc_button_2")
@@ -1565,6 +1574,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.fd_button.clicked.connect(self.select_fd)
+        self.mask_button.clicked.connect(self.select_mask)
         self.ok_button2.clicked.connect(self.process_data2)
 
         self.doc_button_2.clicked.connect(self.openDocument_2)
@@ -1582,6 +1592,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         if central_data_store.NRT is not None:
             self.nrt_entry.setText(str(central_data_store.NRT))
         self.n_classes = None
+        self.mask = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_HRP.tif')
 
@@ -1628,7 +1639,11 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         if file_path:
             self.in_fn = file_path
             self.in_fn_entry.setText(file_path.split('/')[-1])
-
+    def select_mask(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path:
+            self.mask = file_path
+            self.mask_entry.setText(file_path.split('/')[-1])
     def select_working_directory_2(self):
         data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
         data_folder_path_2 = Path(data_folder_2)
@@ -1661,8 +1676,8 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        if not self.in_fn:
-            QMessageBox.critical(self, "Error", "Please select the input file!")
+        if not self.in_fn or not self.mask:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
         NRT = self.nrt_entry.text()
@@ -1719,7 +1734,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
 
         try:
             self.vulnerability_map.set_working_directory(directory)
-            mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
+            mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes, self.mask)
             self.vulnerability_map.array_to_image(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
             self.vulnerability_map.replace_ref_system(self.in_fn, out_fn)
 
@@ -1996,6 +2011,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         self.doc_button = self.tab1.findChild(QWidget, "doc_button")
         self.select_folder_button = self.tab1.findChild(QWidget, "select_folder_button")
         self.fd_button = self.tab1.findChild(QWidget, "fd_button")
+        self.mask_button = self.tab1.findChild(QWidget, "mask_button")
         self.ok_button2 = self.tab1.findChild(QWidget, "ok_button2")
 
         self.doc_button_2 = self.tab2.findChild(QWidget, "doc_button_2")
@@ -2008,6 +2024,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         self.doc_button.clicked.connect(self.openDocument)
         self.select_folder_button.clicked.connect(self.select_working_directory)
         self.fd_button.clicked.connect(self.select_fd)
+        self.mask_button.clicked.connect(self.select_mask)
         self.ok_button2.clicked.connect(self.process_data2)
 
         self.doc_button_2.clicked.connect(self.openDocument_2)
@@ -2025,6 +2042,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         if central_data_store.NRT is not None:
             self.nrt_entry.setText(str(central_data_store.NRT))
         self.n_classes = None
+        self.mask = None
         self.out_fn = None
         self.out_fn_entry.setPlaceholderText('e.g., Acre_Vulnerability_VP.tif')
 
@@ -2071,6 +2089,11 @@ class RMT_PRE_VP_SCREEN(QDialog):
         if file_path:
             self.in_fn = file_path
             self.in_fn_entry.setText(file_path.split('/')[-1])
+    def select_mask(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path:
+            self.mask = file_path
+            self.mask_entry.setText(file_path.split('/')[-1])
 
     def select_working_directory_2(self):
         data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -2104,8 +2127,8 @@ class RMT_PRE_VP_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        if not self.in_fn:
-            QMessageBox.critical(self, "Error", "Please select the input file!")
+        if not self.in_fn or not self.mask:
+            QMessageBox.critical(self, "Error", "Please select all input files!")
             return
 
         NRT = self.nrt_entry.text()
@@ -2162,7 +2185,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
 
         try:
             self.vulnerability_map.set_working_directory(directory)
-            mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes)
+            mask_arr = self.vulnerability_map.geometric_classification(self.in_fn, NRT, n_classes, self.mask)
             self.vulnerability_map.array_to_image(self.in_fn, out_fn, mask_arr, gdal.GDT_Int16, -1)
             self.vulnerability_map.replace_ref_system(self.in_fn, out_fn)
 
