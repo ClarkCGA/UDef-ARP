@@ -63,7 +63,7 @@
      <font>
       <family>AvenirNext LT Pro Cn</family>
       <pointsize>10</pointsize>
-      <weight>7</weight>
+      <weight>8</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -100,7 +100,7 @@ border-radius:20px;
      <font>
       <family>AvenirNext LT Pro Cn</family>
       <pointsize>10</pointsize>
-      <weight>7</weight>
+      <weight>8</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -330,7 +330,7 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Map of Distance from the Forest Edge in CAL (m)</string>
+              <string>Distance from forest edge at start of the CAL</string>
              </property>
             </widget>
             <widget class="QLabel" name="label_5">
@@ -346,7 +346,7 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Map of Deforestation in the HRP (binary map)</string>
+              <string>Deforestation in the HRP</string>
              </property>
             </widget>
             <widget class="QLabel" name="label_6">
@@ -362,7 +362,7 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Mask of the Non-Excluded Jurisdiction (binary map)</string>
+              <string>Mask of the non-excluded jurisdiction</string>
              </property>
             </widget>
             <widget class="QLineEdit" name="in_fn_entry">
@@ -500,7 +500,7 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Negligible Risk Threshold (NRT) in the HRP (m)</string>
+              <string>Negligible Risk Threshold (NRT) in the HRP</string>
              </property>
             </widget>
             <widget class="QLineEdit" name="nrt_entry">
@@ -560,7 +560,7 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Name for the Vulnerability Map for the CAL</string>
+              <string>Benchmark vulnerability for the CAL</string>
              </property>
             </widget>
             <widget class="QLineEdit" name="out_fn_entry">
@@ -807,7 +807,7 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Empirical transition potential [0,1] for the CAL</string>
+              <string>Empirical Transition Potential in the CAL</string>
              </property>
             </widget>
             <widget class="QLabel" name="label_11">
@@ -823,7 +823,7 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Mask of the Non-Excluded Jurisdiction (binary map)</string>
+              <string>Mask of the non-excluded jurisdiction</string>
              </property>
             </widget>
             <widget class="QLineEdit" name="in_fn_entry_2">
@@ -932,7 +932,7 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Name for the Vulnerability Map for the CAL</string>
+              <string>Alternative vulnerability for the CAL</string>
              </property>
             </widget>
             <widget class="QLineEdit" name="out_fn_entry_2">
@@ -1054,7 +1054,7 @@ font: 9pt;</string>
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Mask of the Forest Areas in CAL (binary map)</string>
+              <string>Forest Areas at start of CAL</string>
              </property>
             </widget>
             <zorder>groupBox_8</zorder>
