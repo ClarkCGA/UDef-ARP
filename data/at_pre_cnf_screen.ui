@@ -79,7 +79,7 @@
      <font>
       <family>AvenirNext LT Pro Cn</family>
       <pointsize>10</pointsize>
-      <weight>7</weight>
+      <weight>8</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -116,7 +116,7 @@ border-radius:20px;
      <font>
       <family>AvenirNext LT Pro Cn</family>
       <pointsize>10</pointsize>
-      <weight>7</weight>
+      <weight>8</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -303,7 +303,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Map of Administrative Divisions</string>
+         <string>Administrative Divisions image</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_4">
@@ -319,7 +319,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>CAL Relative Frequency Table (.csv)</string>
+         <string>CAL Relative Frequency Table</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_5">
@@ -335,7 +335,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Vulnerability Map for the CNF</string>
+         <string>Vulnerability for the CNF (previous step)</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="municipality_entry">
@@ -472,7 +472,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Map of Deforestation in the CNF (binary)</string>
+         <string>Deforestation in the CNF</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="deforestation_cnf_entry">
@@ -526,7 +526,7 @@ color: rgb(125, 169, 172);
          <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
         </property>
         <property name="text">
-         <string>5</string>
+         <string>3</string>
         </property>
        </widget>
        <widget class="QPushButton" name="deforestation_cnf_button">
@@ -558,7 +558,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Name for the Modeling Region Map in the CNF</string>
+         <string>Modeling Region in the CNF</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_9">
@@ -574,7 +574,7 @@ color: rgb(125, 169, 172);
          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
         </property>
         <property name="text">
-         <string>Name for the Predicted CNF Density Map</string>
+         <string>Predicted Density in CNF</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="image1_entry">
