@@ -79,7 +79,7 @@
      <font>
       <family>AvenirNext LT Pro Cn</family>
       <pointsize>10</pointsize>
-      <weight>7</weight>
+      <weight>8</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -116,7 +116,7 @@ border-radius:20px;
      <font>
       <family>AvenirNext LT Pro Cn</family>
       <pointsize>10</pointsize>
-      <weight>7</weight>
+      <weight>8</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -290,7 +290,7 @@ color: rgb(125, 169, 172);
           <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
          </property>
          <property name="text">
-          <string>Map of Administrative Divisions</string>
+          <string>Administrative Divisions image</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_4">
@@ -306,7 +306,7 @@ color: rgb(125, 169, 172);
           <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
          </property>
          <property name="text">
-          <string>HRP Relative Frequency Table (.csv)</string>
+          <string>HRP Relative Frequency Table</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_5">
@@ -322,7 +322,7 @@ color: rgb(125, 169, 172);
           <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
          </property>
          <property name="text">
-          <string>Vulnerability Map for the VP</string>
+          <string>Vulnerability for the VP (previous step)</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_7">
@@ -460,7 +460,7 @@ font: 9pt;</string>
           <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
          </property>
          <property name="text">
-          <string>5</string>
+          <string>3</string>
          </property>
         </widget>
         <widget class="QLineEdit" name="year_entry">
@@ -588,7 +588,7 @@ color: rgb(125, 169, 172);
            <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
           </property>
           <property name="text">
-           <string>Name for the Modeling Region Map in the VP</string>
+           <string>Modeling Regions in the VP</string>
           </property>
          </widget>
          <widget class="QLabel" name="label_9">
@@ -604,7 +604,7 @@ color: rgb(125, 169, 172);
            <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
           </property>
           <property name="text">
-           <string>Name for the Annual VP Density Map (ha/pixel/year)</string>
+           <string>Annual Density in the VP (ha/pixel/year)</string>
           </property>
          </widget>
          <widget class="QLineEdit" name="image1_entry">

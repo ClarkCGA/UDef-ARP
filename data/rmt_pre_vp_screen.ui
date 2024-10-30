@@ -78,7 +78,7 @@
       <font>
        <family>AvenirNext LT Pro Cn</family>
        <pointsize>10</pointsize>
-       <weight>7</weight>
+       <weight>8</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -115,7 +115,7 @@ border-radius:20px;
       <font>
        <family>AvenirNext LT Pro Cn</family>
        <pointsize>10</pointsize>
-       <weight>7</weight>
+       <weight>8</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -204,7 +204,7 @@ border-radius:20px;
            <x>20</x>
            <y>30</y>
            <width>1291</width>
-           <height>341</height>
+           <height>441</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
@@ -311,7 +311,7 @@ color: rgb(125, 169, 172);
                <x>0</x>
                <y>90</y>
                <width>1281</width>
-               <height>141</height>
+               <height>191</height>
               </rect>
              </property>
              <property name="frameShape">
@@ -349,14 +349,14 @@ color: rgb(125, 169, 172);
                <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
               </property>
               <property name="text">
-               <string>Map of Distance from the Forest Edge in VP (m)</string>
+               <string>Distance from forest edge at start of the VP</string>
               </property>
              </widget>
              <widget class="QLineEdit" name="nrt_entry">
               <property name="geometry">
                <rect>
                 <x>570</x>
-                <y>80</y>
+                <y>110</y>
                 <width>531</width>
                 <height>31</height>
                </rect>
@@ -383,7 +383,7 @@ font: 9pt;</string>
               <property name="geometry">
                <rect>
                 <x>20</x>
-                <y>80</y>
+                <y>110</y>
                 <width>531</width>
                 <height>31</height>
                </rect>
@@ -392,7 +392,7 @@ font: 9pt;</string>
                <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
               </property>
               <property name="text">
-               <string>Negligible Risk Threshold (NRT) in the HRP (m)</string>
+               <string>Negligible Risk Threshold (NRT) in the HRP</string>
               </property>
              </widget>
              <widget class="QGroupBox" name="groupBox_2">
@@ -401,7 +401,7 @@ font: 9pt;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>1281</width>
-                <height>141</height>
+                <height>171</height>
                </rect>
               </property>
               <property name="font">
@@ -439,9 +439,9 @@ color: rgb(125, 169, 172);
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>240</y>
+               <y>270</y>
                <width>1281</width>
-               <height>101</height>
+               <height>91</height>
               </rect>
              </property>
              <property name="frameShape">
@@ -463,7 +463,7 @@ color: rgb(125, 169, 172);
                <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
               </property>
               <property name="text">
-               <string>Name of Vulnerability Map in VP (per pixel)</string>
+               <string>Benchmark vulnerability for the VP</string>
               </property>
              </widget>
              <widget class="QLineEdit" name="out_fn_entry">
@@ -485,7 +485,7 @@ color: rgb(125, 169, 172);
                 <x>0</x>
                 <y>0</y>
                 <width>1131</width>
-                <height>91</height>
+                <height>81</height>
                </rect>
               </property>
               <property name="font">
@@ -573,6 +573,52 @@ color: rgb(125, 169, 172);
           </item>
          </layout>
         </widget>
+        <widget class="QLineEdit" name="mask_entry">
+         <property name="geometry">
+          <rect>
+           <x>590</x>
+           <y>190</y>
+           <width>531</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);
+font: 9pt;</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="mask_button">
+         <property name="geometry">
+          <rect>
+           <x>1210</x>
+           <y>190</y>
+           <width>41</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_7">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>190</y>
+           <width>531</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Mask of the non-excluded jurisdiction</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QWidget" name="tab2">
         <attribute name="title">
@@ -625,9 +671,9 @@ font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
             <widget class="QLineEdit" name="folder_entry_2">
              <property name="geometry">
               <rect>
-               <x>570</x>
+               <x>580</x>
                <y>30</y>
-               <width>541</width>
+               <width>531</width>
                <height>31</height>
               </rect>
              </property>
@@ -698,7 +744,7 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Empirical transition potential [0,1] for the VP</string>
+              <string>Empirical Transition Potential in the VP</string>
              </property>
             </widget>
             <widget class="QLabel" name="label_14">
@@ -714,15 +760,15 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Mask of the Non-Excluded Jurisdiction (binary map)</string>
+              <string>Mask of the non-excluded jurisdiction</string>
              </property>
             </widget>
             <widget class="QLineEdit" name="in_fn_entry_2">
              <property name="geometry">
               <rect>
-               <x>570</x>
+               <x>580</x>
                <y>120</y>
-               <width>541</width>
+               <width>531</width>
                <height>31</height>
               </rect>
              </property>
@@ -734,9 +780,9 @@ font: 9pt;</string>
             <widget class="QLineEdit" name="mask_entry_2">
              <property name="geometry">
               <rect>
-               <x>570</x>
+               <x>580</x>
                <y>160</y>
-               <width>541</width>
+               <width>531</width>
                <height>31</height>
               </rect>
              </property>
@@ -814,7 +860,7 @@ color: rgb(125, 169, 172);
              <property name="geometry">
               <rect>
                <x>30</x>
-               <y>290</y>
+               <y>300</y>
                <width>531</width>
                <height>31</height>
               </rect>
@@ -823,15 +869,15 @@ color: rgb(125, 169, 172);
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Name for the Vulnerability Map for the VP</string>
+              <string>Alternative vulnerability for the VP</string>
              </property>
             </widget>
             <widget class="QLineEdit" name="out_fn_entry_2">
              <property name="geometry">
               <rect>
-               <x>570</x>
-               <y>290</y>
-               <width>541</width>
+               <x>580</x>
+               <y>300</y>
+               <width>531</width>
                <height>31</height>
               </rect>
              </property>
@@ -845,7 +891,7 @@ color: rgb(125, 169, 172);
                <x>10</x>
                <y>270</y>
                <width>1131</width>
-               <height>71</height>
+               <height>81</height>
               </rect>
              </property>
              <property name="font">
@@ -873,9 +919,9 @@ color: rgb(125, 169, 172);
             <widget class="QPushButton" name="doc_button_2">
              <property name="geometry">
               <rect>
-               <x>1160</x>
+               <x>1170</x>
                <y>270</y>
-               <width>131</width>
+               <width>121</width>
                <height>41</height>
               </rect>
              </property>
@@ -889,9 +935,9 @@ color: rgb(125, 169, 172);
             <widget class="QPushButton" name="ok_button2_2">
              <property name="geometry">
               <rect>
-               <x>1160</x>
+               <x>1170</x>
                <y>320</y>
-               <width>131</width>
+               <width>121</width>
                <height>41</height>
               </rect>
              </property>
@@ -905,9 +951,9 @@ color: rgb(125, 169, 172);
             <widget class="QLineEdit" name="fmask_entry_2">
              <property name="geometry">
               <rect>
-               <x>570</x>
+               <x>580</x>
                <y>200</y>
-               <width>541</width>
+               <width>531</width>
                <height>31</height>
               </rect>
              </property>
@@ -945,7 +991,7 @@ font: 9pt;</string>
               <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
              </property>
              <property name="text">
-              <string>Mask of the Forest Areas in VP (binary map)</string>
+              <string>Forest Areas at start of VP</string>
              </property>
             </widget>
             <zorder>groupBox_9</zorder>
