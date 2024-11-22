@@ -497,8 +497,25 @@ class ModelEvaluation(QObject):
         sns.set()
 
         # prepare the X/Y data
-        X = np.array(clipped_gdf['ActualDef'], dtype=np.float64)
-        Y = np.array(clipped_gdf['PredDef'], dtype=np.float64)
+        X = np.array(clipped_gdf['ActualDef'], dtype=np.float32)
+        Y = np.array(clipped_gdf['PredDef'], dtype=np.float32)
+
+        # Set a proportion to extend the limits
+        extension_f = 0.1
+
+        # Check if lim is string and "default"
+        if isinstance(xmax, str) and xmax.lower() == "default":
+            xmax = max(X) * (1 + extension_f)
+        else:
+            xmax = float(xmax)
+
+        if isinstance(ymax, str) and ymax.lower() == "default":
+            ymax = max(Y) * (1 + extension_f)
+        else:
+            ymax = float(ymax)
+
+        # Set a new X range from 0 to the xmax
+        X_extended = np.linspace(0, xmax, 500)
 
         ## Perform linear regression
         slope, intercept, _, _, _ = stats.linregress(X, Y)
@@ -507,7 +524,10 @@ class ModelEvaluation(QObject):
         equation = f'Y = {slope:.4f} * X + {intercept:.2f}'
 
         # Calculate the trend line
-        trend_line = slope * X + intercept
+        trend_line = slope * X_extended + intercept
+
+        # 1-to-1 Line
+        one_to_one_line = X_extended
 
         ## Calculate R square
         # Get the correlation coefficient
@@ -534,11 +554,10 @@ class ModelEvaluation(QObject):
         plt.title(title, color='firebrick', fontweight='bold', fontsize=20, pad=20)
 
         # Plot the trend line
-        plt.plot(X, trend_line, color='mediumseagreen', linestyle='-', label='OLS Line')
+        plt.plot(X_extended, trend_line, color='mediumseagreen', linestyle='-', label='OLS Line')
 
         # Plot a 1-to-1 line
-        plt.plot([0, max(clipped_gdf['ActualDef'])], [0, max(clipped_gdf['ActualDef'])], color='crimson', linestyle='--',
-                 label='1:1 Line')
+        plt.plot(X_extended, one_to_one_line, color='crimson', linestyle='--',label='1:1 Line')
 
         ## Theil-Sen Regressor
         # Fit Theil-Sen Regressor
@@ -546,30 +565,16 @@ class ModelEvaluation(QObject):
         ts_slope, ts_intercept, _, _ = stats.theilslopes(Y, X)
 
         # Generate predictions
-        y_pred = ts_slope * X + ts_intercept
+        y_pred = ts_slope * X_extended + ts_intercept
 
         # Equation of the line
         ts_equation = f'Y = {ts_slope:.4f} * X + {ts_intercept:.2f}'
 
         # Plot Theil-Sen Line
-        plt.plot(X, y_pred, color='orange', linestyle='-', label='Theil-Sen Line')
+        plt.plot(X_extended, y_pred, color='orange', linestyle='-', label='Theil-Sen Line')
 
         # Add a legend in the bottom right position
         plt.legend(loc='lower right')
-
-        # Set a proportion to extend the limits
-        extension_f = 0.1
-
-        # Check if lim is string and "default"
-        if isinstance(xmax, str) and xmax.lower() == "default":
-            xmax = max(X) * (1 + extension_f)
-        else:
-            xmax = float(xmax)
-
-        if isinstance(ymax, str) and ymax.lower() == "default":
-            ymax = max(Y) * (1 + extension_f)
-        else:
-            ymax = float(ymax)
 
         plt.xlim([0, xmax])
         plt.ylim([0, ymax])
