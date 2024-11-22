@@ -500,6 +500,20 @@ class ModelEvaluation(QObject):
         X = np.array(clipped_gdf['ActualDef'], dtype=np.float64)
         Y = np.array(clipped_gdf['PredDef'], dtype=np.float64)
 
+        # Set a proportion to extend the limits
+        extension_f = 0.1
+
+        # Check if lim is string and "default"
+        if isinstance(xmax, str) and xmax.lower() == "default":
+            xmax = max(X) * (1 + extension_f)
+        else:
+            xmax = float(xmax)
+
+        if isinstance(ymax, str) and ymax.lower() == "default":
+            ymax = max(Y) * (1 + extension_f)
+        else:
+            ymax = float(ymax)
+
         # Set a new X range from 0 to the xmax
         X_extended = np.linspace(0, xmax, 500)
 
@@ -561,20 +575,6 @@ class ModelEvaluation(QObject):
 
         # Add a legend in the bottom right position
         plt.legend(loc='lower right')
-
-        # Set a proportion to extend the limits
-        extension_f = 0.1
-
-        # Check if lim is string and "default"
-        if isinstance(xmax, str) and xmax.lower() == "default":
-            xmax = max(X) * (1 + extension_f)
-        else:
-            xmax = float(xmax)
-
-        if isinstance(ymax, str) and ymax.lower() == "default":
-            ymax = max(Y) * (1 + extension_f)
-        else:
-            ymax = float(ymax)
 
         plt.xlim([0, xmax])
         plt.ylim([0, ymax])
