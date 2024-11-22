@@ -497,8 +497,8 @@ class ModelEvaluation(QObject):
         sns.set()
 
         # prepare the X/Y data
-        X = np.array(clipped_gdf['ActualDef'], dtype=np.float64)
-        Y = np.array(clipped_gdf['PredDef'], dtype=np.float64)
+        X = np.array(clipped_gdf['ActualDef'], dtype=np.float32)
+        Y = np.array(clipped_gdf['PredDef'], dtype=np.float32)
 
         # Set a proportion to extend the limits
         extension_f = 0.1
