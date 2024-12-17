@@ -156,21 +156,22 @@ class RMT_FIT_CAL_SCREEN(QDialog):
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CAL')
         if file_path:
-            self.in_fn = file_path
+            self.in_fn = Path(PureWindowsPath(file_path))
             self.in_fn_entry.setText(file_path.split('/')[-1])
+            self.file_path_directory = '\\'.join(file_path.split('/')[:-1])
 
     def select_deforestation_hrp(self):
         file_path3, _ = QFileDialog.getOpenFileName(self, "Map of Deforestation in the CAL")
         if file_path3:
-            self.deforestation_hrp = file_path3
+            self.deforestation_hrp = Path(PureWindowsPath(file_path3))
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
-
+            self.file_path3_directory = '\\'.join(file_path3.split('/')[:-1])
     def select_mask(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
-        if file_path:
-            self.mask = file_path
-            self.mask_entry.setText(file_path.split('/')[-1])
-
+        file_path2, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path2:
+            self.mask = Path(PureWindowsPath(file_path2))
+            self.mask_entry.setText(file_path2.split('/')[-1])
+            self.file_path2_directory = '\\'.join(file_path2.split('/')[:-1])
     def select_working_directory_2(self):
         data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
         data_folder_path_2 = Path(data_folder_2)
@@ -180,28 +181,35 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         central_data_store.directory = self.directory_2
 
     def select_fd_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CAL')
-        if file_path:
-            self.in_fn_2 = file_path
-            self.in_fn_entry_2.setText(file_path.split('/')[-1])
+        file_path4, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CAL')
+        if file_path4:
+            self.in_fn_2 = Path(PureWindowsPath(file_path4))
+            self.in_fn_entry_2.setText(file_path4.split('/')[-1])
+            self.file_path4_directory = '\\'.join(file_path4.split('/')[:-1])
 
     def select_mask_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
-        if file_path:
-            self.mask_2 = file_path
-            self.mask_entry_2.setText(file_path.split('/')[-1])
+        file_path5, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path5:
+            self.mask_2 = Path(PureWindowsPath(file_path5))
+            self.mask_entry_2.setText(file_path5.split('/')[-1])
+            self.file_path5_directory = '\\'.join(file_path5.split('/')[:-1])
 
     def select_fmask_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
-        if file_path:
-            self.fmask_2 = file_path
-            self.fmask_entry_2.setText(file_path.split('/')[-1])
+        file_path6, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
+        if file_path6:
+            self.fmask_2 = file_path6
+            self.fmask_entry_2.setText(file_path6.split('/')[-1])
+            self.file_path6_directory = '\\'.join(file_path6.split('/')[:-1])
 
     def process_data2_nrt(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.in_fn = f"{self.file_path_directory}\\{self.in_fn_entry.text()}"
+        self.mask = f"{self.file_path2_directory}\\{self.mask_entry.text()}"
+        self.deforestation_hrp = f"{self.file_path3_directory}\\{self.deforestation_hrp_entry.text()}"
 
         if not self.in_fn or not self.deforestation_hrp or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -269,6 +277,9 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.in_fn = f"{self.file_path_directory}\\{self.in_fn_entry.text()}"
+        self.mask = f"{self.file_path2_directory}\\{self.mask_entry.text()}"
 
         if not self.in_fn or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -347,6 +358,10 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         if not directory_2 :
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.in_fn_2 = f"{self.file_path4_directory}\\{self.in_fn_entry_2.text()}"
+        self.mask_2 = f"{self.file_path5_directory}\\{self.mask_entry_2.text()}"
+        self.fmask_2 = f"{self.file_path6_directory}\\{self.fmask_entry_2.text()}"
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -488,26 +503,34 @@ class AT_FIT_CAL_Screen(QDialog):
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
         if file_path:
-            self.municipality = file_path
+            self.municipality = Path(PureWindowsPath(file_path))
             self.municipality_entry.setText(file_path.split('/')[-1])
+            self.file_path_directory = '\\'.join(file_path.split('/')[:-1])
 
     def select_risk30_hrp(self):
         file_path1, _ = QFileDialog.getOpenFileName(self, "Vulnerability Map in CAL")
         if file_path1:
-            self.risk30_hrp = file_path1
+            self.risk30_hrp = Path(file_path1)
             self.risk30_hrp_entry.setText(file_path1.split('/')[-1])
+            self.file_path1_directory = '\\'.join(file_path1.split('/')[:-1])
 
     def select_deforestation_hrp(self):
         file_path3, _ = QFileDialog.getOpenFileName(self, "Map of Deforestation in the CAL")
         if file_path3:
-            self.deforestation_hrp = file_path3
+            self.deforestation_hrp = Path(file_path3)
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
+            self.file_path3_directory = '\\'.join(file_path3.split('/')[:-1])
 
     def process_data3(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        # Read values from QLineEdits
+        self.municipality = f"{self.file_path_directory}\\{self.municipality_entry.text()}"
+        self.risk30_hrp = f"{self.file_path1_directory}\\{self.risk30_hrp_entry.text()}"
+        self.deforestation_hrp = f"{self.file_path3_directory}\\{self.deforestation_hrp_entry.text()}"
 
         if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -663,26 +686,33 @@ class MCT_FIT_CAL_Screen(QDialog):
     def select_mask(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
         if file_path:
-            self.mask = file_path
+            self.mask = Path(PureWindowsPath(file_path))
             self.mask_entry.setText(file_path.split('/')[-1])
+            self.file_path_directory = '\\'.join(file_path.split('/')[:-1])
 
     def select_deforestation_hrp(self):
         file_path3, _ = QFileDialog.getOpenFileName(self, "Map of Deforestation in the HRP")
         if file_path3:
-            self.deforestation_hrp = file_path3
+            self.deforestation_hrp = Path(PureWindowsPath(file_path3))
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
+            self.file_path3_directory = '\\'.join(file_path3.split('/')[:-1])
 
     def select_density(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Deforestation Density Map')
-        if file_path:
-            self.density = file_path
-            self.density_entry.setText(file_path.split('/')[-1])
+        file_path2, _ = QFileDialog.getOpenFileName(self, 'Deforestation Density Map')
+        if file_path2:
+            self.density = Path(PureWindowsPath(file_path2))
+            self.density_entry.setText(file_path2.split('/')[-1])
+            self.file_path2_directory = '\\'.join(file_path2.split('/')[:-1])
 
     def process_data4(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.mask = f"{self.file_path_directory}\\{self.mask_entry.text()}"
+        self.deforestation_hrp = f"{self.file_path3_directory}\\{self.deforestation_hrp_entry.text()}"
+        self.density = f"{self.file_path2_directory}\\{self.density_entry.text()}"
 
         if not self.mask or not self.deforestation_hrp or not self.density :
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -911,13 +941,16 @@ class RMT_PRE_CNF_SCREEN(QDialog):
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CNF')
         if file_path:
-            self.in_fn = file_path
+            self.in_fn = Path(PureWindowsPath(file_path))
             self.in_fn_entry.setText(file_path.split('/')[-1])
+            self.file_path_directory = '\\'.join(file_path.split('/')[:-1])
+
     def select_mask(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
-        if file_path:
-            self.mask = file_path
-            self.mask_entry.setText(file_path.split('/')[-1])
+        file_path2, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path2:
+            self.mask = Path(PureWindowsPath(file_path2))
+            self.mask_entry.setText(file_path2.split('/')[-1])
+            self.file_path2_directory = '\\'.join(file_path2.split('/')[:-1])
 
     def select_working_directory_2(self):
         data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
@@ -926,30 +959,35 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.folder_entry_2.setText(self.directory_2)
         self.folder_entry.setText(self.directory_2)
         central_data_store.directory = self.directory_2
-
     def select_fd_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CNF')
-        if file_path:
-            self.in_fn_2 = file_path
-            self.in_fn_entry_2.setText(file_path.split('/')[-1])
+        file_path4, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in CNF')
+        if file_path4:
+            self.in_fn_2 = Path(PureWindowsPath(file_path4))
+            self.in_fn_entry_2.setText(file_path4.split('/')[-1])
+            self.file_path4_directory = '\\'.join(file_path4.split('/')[:-1])
 
     def select_mask_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
-        if file_path:
-            self.mask_2 = file_path
-            self.mask_entry_2.setText(file_path.split('/')[-1])
+        file_path5, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path5:
+            self.mask_2 = Path(PureWindowsPath(file_path5))
+            self.mask_entry_2.setText(file_path5.split('/')[-1])
+            self.file_path5_directory = '\\'.join(file_path5.split('/')[:-1])
 
     def select_fmask_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
-        if file_path:
-            self.fmask_2 = file_path
-            self.fmask_entry_2.setText(file_path.split('/')[-1])
+        file_path6, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
+        if file_path6:
+            self.fmask_2 = file_path6
+            self.fmask_entry_2.setText(file_path6.split('/')[-1])
+            self.file_path6_directory = '\\'.join(file_path6.split('/')[:-1])
 
     def process_data2(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.in_fn = f"{self.file_path_directory}\\{self.in_fn_entry.text()}"
+        self.mask = f"{self.file_path2_directory}\\{self.mask_entry.text()}"
 
         if not self.in_fn or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1025,6 +1063,10 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         if not directory_2 :
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.in_fn_2 = f"{self.file_path4_directory}\\{self.in_fn_entry_2.text()}"
+        self.mask_2 = f"{self.file_path5_directory}\\{self.mask_entry_2.text()}"
+        self.fmask_2 = f"{self.file_path6_directory}\\{self.fmask_entry_2.text()}"
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1168,32 +1210,40 @@ class AT_PRE_CNF_Screen(QDialog):
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
         if file_path:
-            self.municipality = file_path
+            self.municipality = Path(PureWindowsPath(file_path))
             self.municipality_entry.setText(file_path.split('/')[-1])
-
+            self.file_path_directory = '\\'.join(file_path.split('/')[:-1])
     def select_csv(self):
         file_path1, _ = QFileDialog.getOpenFileName(self, "CAL Relative Frequency Table (.csv)")
         if file_path1:
-            self.csv = file_path1
+            self.csv = Path(PureWindowsPath(file_path1))
             self.csv_entry.setText(file_path1.split('/')[-1])
+            self.file_path1_directory = '\\'.join(file_path1.split('/')[:-1])
 
     def select_risk30_vp(self):
         file_path2, _ = QFileDialog.getOpenFileName(self, "Vulnerability Map in CNF")
         if file_path2:
-            self.risk30_vp = file_path2
+            self.risk30_vp = Path(PureWindowsPath(file_path2))
             self.risk30_vp_entry.setText(file_path2.split('/')[-1])
+            self.file_path2_directory = '\\'.join(file_path2.split('/')[:-1])
 
     def select_deforestation_cnf(self):
         file_path3, _ = QFileDialog.getOpenFileName(self, "Map of Deforestation in CNF")
         if file_path3:
-            self.deforestation_cnf = file_path3
+            self.deforestation_cnf = Path(PureWindowsPath(file_path3))
             self.deforestation_cnf_entry.setText(file_path3.split('/')[-1])
+            self.file_path3_directory = '\\'.join(file_path3.split('/')[:-1])
 
     def process_data3(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.municipality = f"{self.file_path_directory}\\{self.municipality_entry.text()}"
+        self.csv = f"{self.file_path1_directory}\\{self.csv_entry.text()}"
+        self.deforestation_cnf = f"{self.file_path2_directory}\\{self.deforestation_cnf_entry.text()}"
+        self.risk30_vp = f"{self.file_path3_directory}\\{self.risk30_vp_entry.text()}"
 
         if not self.municipality or not self.csv or not self.deforestation_cnf or not self.risk30_vp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1360,38 +1410,47 @@ class MCT_PRE_CNF_Screen(QDialog):
     def select_mask(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
         if file_path:
-            self.mask = file_path
+            self.mask = Path(PureWindowsPath(file_path))
             self.mask_entry.setText(file_path.split('/')[-1])
-
+            self.file_path_directory = '\\'.join(file_path.split('/')[:-1])
     def select_fmask(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
-        if file_path:
-            self.fmask = file_path
-            self.fmask_entry.setText(file_path.split('/')[-1])
+        file_path1, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
+        if file_path1:
+            self.fmask = Path(PureWindowsPath(file_path1))
+            self.fmask_entry.setText(file_path1.split('/')[-1])
+            self.file_path1_directory = '\\'.join(file_path1.split('/')[:-1])
 
     def select_deforestation_cal(self):
-        file_path3, _ = QFileDialog.getOpenFileName(self, "Actual Deforestation Map in CAL")
-        if file_path3:
-            self.deforestation_cal = file_path3
-            self.deforestation_cal_entry.setText(file_path3.split('/')[-1])
+        file_path2, _ = QFileDialog.getOpenFileName(self, "Actual Deforestation Map in CAL")
+        if file_path2:
+            self.deforestation_cal = Path(PureWindowsPath(file_path2))
+            self.deforestation_cal_entry.setText(file_path2.split('/')[-1])
+            self.file_path2_directory = '\\'.join(file_path2.split('/')[:-1])
 
     def select_deforestation_hrp(self):
         file_path3, _ = QFileDialog.getOpenFileName(self, "Actual Deforestation Map in CNF")
         if file_path3:
-            self.deforestation_hrp = file_path3
+            self.deforestation_hrp = Path(PureWindowsPath(file_path3))
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
-
+            self.file_path3_directory = '\\'.join(file_path3.split('/')[:-1])
     def select_density(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Adjusted Prediction Density Map in CNF')
-        if file_path:
-            self.density = file_path
-            self.density_entry.setText(file_path.split('/')[-1])
+        file_path4, _ = QFileDialog.getOpenFileName(self, 'Adjusted Prediction Density Map in CNF')
+        if file_path4:
+            self.density = Path(PureWindowsPath(file_path4))
+            self.density_entry.setText(file_path4.split('/')[-1])
+            self.file_path4_directory = '\\'.join(file_path4.split('/')[:-1])
 
     def process_data4(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.mask = f"{self.file_path_directory}\\{self.mask_entry.text()}"
+        self.fmask = f"{self.file_path1_directory}\\{self.fmask_entry.text()}"
+        self.deforestation_cal = f"{self.file_path2_directory}\\{self.deforestation_cal_entry.text()}"
+        self.deforestation_hrp = f"{self.file_path3_directory}\\{self.deforestation_hrp_entry.text()}"
+        self.density = f"{self.file_path4_directory}\\{self.density_entry.text()}"
 
         if not self.mask or not self.fmask or not self.deforestation_cal or not self.deforestation_hrp or not self.density :
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1637,13 +1696,17 @@ class RMT_FIT_HRP_SCREEN(QDialog):
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in HRP')
         if file_path:
-            self.in_fn = file_path
+            self.in_fn = Path(PureWindowsPath(file_path))
             self.in_fn_entry.setText(file_path.split('/')[-1])
+            self.file_path_directory = '\\'.join(file_path.split('/')[:-1])
+
     def select_mask(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
-        if file_path:
-            self.mask = file_path
-            self.mask_entry.setText(file_path.split('/')[-1])
+        file_path2, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path2:
+            self.mask = Path(PureWindowsPath(file_path2))
+            self.mask_entry.setText(file_path2.split('/')[-1])
+            self.file_path2_directory = '\\'.join(file_path2.split('/')[:-1])
+
     def select_working_directory_2(self):
         data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
         data_folder_path_2 = Path(data_folder_2)
@@ -1653,28 +1716,34 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         central_data_store.directory = self.directory_2
 
     def select_fd_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in HRP')
-        if file_path:
-            self.in_fn_2 = file_path
-            self.in_fn_entry_2.setText(file_path.split('/')[-1])
+        file_path4, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in HRP')
+        if file_path4:
+            self.in_fn_2 = Path(PureWindowsPath(file_path4))
+            self.in_fn_entry_2.setText(file_path4.split('/')[-1])
+            self.file_path4_directory = '\\'.join(file_path4.split('/')[:-1])
 
     def select_mask_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
-        if file_path:
-            self.mask_2 = file_path
-            self.mask_entry_2.setText(file_path.split('/')[-1])
+        file_path5, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path5:
+            self.mask_2 = Path(PureWindowsPath(file_path5))
+            self.mask_entry_2.setText(file_path5.split('/')[-1])
+            self.file_path5_directory = '\\'.join(file_path5.split('/')[:-1])
 
     def select_fmask_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
-        if file_path:
-            self.fmask_2 = file_path
-            self.fmask_entry_2.setText(file_path.split('/')[-1])
+        file_path6, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
+        if file_path6:
+            self.fmask_2 = file_path6
+            self.fmask_entry_2.setText(file_path6.split('/')[-1])
+            self.file_path6_directory = '\\'.join(file_path6.split('/')[:-1])
 
     def process_data2(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.in_fn = f"{self.file_path_directory}\\{self.in_fn_entry.text()}"
+        self.mask = f"{self.file_path2_directory}\\{self.mask_entry.text()}"
 
         if not self.in_fn or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1750,6 +1819,10 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         if not directory_2 :
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.in_fn_2 = f"{self.file_path4_directory}\\{self.in_fn_entry_2.text()}"
+        self.mask_2 = f"{self.file_path5_directory}\\{self.mask_entry_2.text()}"
+        self.fmask_2 = f"{self.file_path6_directory}\\{self.fmask_entry_2.text()}"
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1885,26 +1958,31 @@ class AT_FIT_HRP_Screen(QDialog):
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
         if file_path:
-            self.municipality = file_path
+            self.municipality = Path(PureWindowsPath(file_path))
             self.municipality_entry.setText(file_path.split('/')[-1])
+            self.file_path_directory = '\\'.join(file_path.split('/')[:-1])
 
     def select_risk30_hrp(self):
         file_path1, _ = QFileDialog.getOpenFileName(self, "Vulnerability Map in HRP")
         if file_path1:
-            self.risk30_hrp = file_path1
+            self.risk30_hrp = Path(file_path1)
             self.risk30_hrp_entry.setText(file_path1.split('/')[-1])
-
+            self.file_path1_directory = '\\'.join(file_path1.split('/')[:-1])
     def select_deforestation_hrp(self):
         file_path3, _ = QFileDialog.getOpenFileName(self, "Map of Deforestation in the HRP")
         if file_path3:
-            self.deforestation_hrp = file_path3
+            self.deforestation_hrp = Path(file_path3)
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
-
+            self.file_path3_directory = '\\'.join(file_path3.split('/')[:-1])
     def process_data3(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.municipality = f"{self.file_path_directory}\\{self.municipality_entry.text()}"
+        self.risk30_hrp = f"{self.file_path1_directory}\\{self.risk30_hrp_entry.text()}"
+        self.deforestation_hrp = f"{self.file_path3_directory}\\{self.deforestation_hrp_entry.text()}"
 
         if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -2087,14 +2165,16 @@ class RMT_PRE_VP_SCREEN(QDialog):
     def select_fd(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in VP')
         if file_path:
-            self.in_fn = file_path
+            self.in_fn = Path(PureWindowsPath(file_path))
             self.in_fn_entry.setText(file_path.split('/')[-1])
-    def select_mask(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
-        if file_path:
-            self.mask = file_path
-            self.mask_entry.setText(file_path.split('/')[-1])
+            self.file_path_directory = '\\'.join(file_path.split('/')[:-1])
 
+    def select_mask(self):
+        file_path2, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path2:
+            self.mask = Path(PureWindowsPath(file_path2))
+            self.mask_entry.setText(file_path2.split('/')[-1])
+            self.file_path2_directory = '\\'.join(file_path2.split('/')[:-1])
     def select_working_directory_2(self):
         data_folder_2 = QFileDialog.getExistingDirectory(self, "Working Directory")
         data_folder_path_2 = Path(data_folder_2)
@@ -2104,28 +2184,34 @@ class RMT_PRE_VP_SCREEN(QDialog):
         central_data_store.directory = self.directory_2
 
     def select_fd_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in VP')
-        if file_path:
-            self.in_fn_2 = file_path
-            self.in_fn_entry_2.setText(file_path.split('/')[-1])
+        file_path4, _ = QFileDialog.getOpenFileName(self, 'Map of Distance from the Forest Edge in VP')
+        if file_path4:
+            self.in_fn_2 = Path(PureWindowsPath(file_path4))
+            self.in_fn_entry_2.setText(file_path4.split('/')[-1])
+            self.file_path4_directory = '\\'.join(file_path4.split('/')[:-1])
 
     def select_mask_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
-        if file_path:
-            self.mask_2 = file_path
-            self.mask_entry_2.setText(file_path.split('/')[-1])
+        file_path5, _ = QFileDialog.getOpenFileName(self, 'Mask of Study Area')
+        if file_path5:
+            self.mask_2 = Path(PureWindowsPath(file_path5))
+            self.mask_entry_2.setText(file_path5.split('/')[-1])
+            self.file_path5_directory = '\\'.join(file_path5.split('/')[:-1])
 
     def select_fmask_2(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
-        if file_path:
-            self.fmask_2 = file_path
-            self.fmask_entry_2.setText(file_path.split('/')[-1])
+        file_path6, _ = QFileDialog.getOpenFileName(self, 'Mask of Forest Area')
+        if file_path6:
+            self.fmask_2 = file_path6
+            self.fmask_entry_2.setText(file_path6.split('/')[-1])
+            self.file_path6_directory = '\\'.join(file_path6.split('/')[:-1])
 
     def process_data2(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.in_fn = f"{self.file_path_directory}\\{self.in_fn_entry.text()}"
+        self.mask = f"{self.file_path2_directory}\\{self.mask_entry.text()}"
 
         if not self.in_fn or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -2201,6 +2287,10 @@ class RMT_PRE_VP_SCREEN(QDialog):
         if not directory_2 :
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.in_fn_2 = f"{self.file_path4_directory}\\{self.in_fn_entry_2.text()}"
+        self.mask_2 = f"{self.file_path5_directory}\\{self.mask_entry_2.text()}"
+        self.fmask_2 = f"{self.file_path6_directory}\\{self.fmask_entry_2.text()}"
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -2338,26 +2428,33 @@ class AT_PRE_VP_Screen(QDialog):
     def select_municipality(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Map of Administrative Divisions')
         if file_path:
-            self.municipality = file_path
+            self.municipality = Path(PureWindowsPath(file_path))
             self.municipality_entry.setText(file_path.split('/')[-1])
+            self.file_path_directory = '\\'.join(file_path.split('/')[:-1])
 
     def select_csv(self):
-        file_path1, _ = QFileDialog.getOpenFileName(self, "HRP Relative Frequency Table (.csv)")
+        file_path1, _ = QFileDialog.getOpenFileName(self, "VP Relative Frequency Table (.csv)")
         if file_path1:
-            self.csv = file_path1
+            self.csv = Path(PureWindowsPath(file_path1))
             self.csv_entry.setText(file_path1.split('/')[-1])
+            self.file_path1_directory = '\\'.join(file_path1.split('/')[:-1])
 
     def select_risk30_vp(self):
         file_path2, _ = QFileDialog.getOpenFileName(self, "Vulnerability Map in VP")
         if file_path2:
-            self.risk30_vp = file_path2
+            self.risk30_vp = Path(PureWindowsPath(file_path2))
             self.risk30_vp_entry.setText(file_path2.split('/')[-1])
+            self.file_path2_directory = '\\'.join(file_path2.split('/')[:-1])
 
     def process_data3(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+
+        self.municipality = f"{self.file_path_directory}\\{self.municipality_entry.text()}"
+        self.csv = f"{self.file_path1_directory}\\{self.csv_entry.text()}"
+        self.risk30_vp = f"{self.file_path2_directory}\\{self.risk30_vp_entry.text()}"
 
         if not self.csv or not self.municipality or not self.risk30_vp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
