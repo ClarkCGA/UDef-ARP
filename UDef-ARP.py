@@ -116,6 +116,12 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         self.in_fn_2 = None
         self.out_fn_2 = None
         self.n_classes_2 = None
+        self.file_path_directory = None
+        self.file_path2_directory = None
+        self.file_path3_directory = None
+        self.file_path4_directory = None
+        self.file_path5_directory = None
+        self.file_path6_directory = None
         self.out_fn_entry_2.setPlaceholderText('e.g., Acre_Vulnerability_CAL.tif')
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
@@ -201,15 +207,27 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             self.fmask_entry_2.setText(file_path6.split('/')[-1])
             self.file_path6_directory = '\\'.join(file_path6.split('/')[:-1])
 
+    def get_full_path(self,base_dir, user_input):
+        if os.path.isabs(user_input):
+            return user_input
+        else:
+            return f"{base_dir}\\{user_input}"
     def process_data2_nrt(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        self.in_fn = f"{self.file_path_directory}\\{self.in_fn_entry.text()}"
-        self.mask = f"{self.file_path2_directory}\\{self.mask_entry.text()}"
-        self.deforestation_hrp = f"{self.file_path3_directory}\\{self.deforestation_hrp_entry.text()}"
+        if not self.file_path_directory:
+            self.file_path_directory=directory
+        if not self.file_path2_directory:
+            self.file_path2_directory=directory
+        if not self.file_path3_directory:
+            self.file_path3_directory=directory
+
+        self.in_fn = self.get_full_path(self.file_path_directory, self.in_fn_entry.text())
+        self.mask = self.get_full_path(self.file_path2_directory,self.mask_entry.text())
+        self.deforestation_hrp = self.get_full_path(self.file_path3_directory,self.deforestation_hrp_entry.text())
 
         if not self.in_fn or not self.deforestation_hrp or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -274,12 +292,16 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
     def process_data2(self):
         directory = self.folder_entry.text()
+        if not self.file_path_directory:
+            self.file_path_directory = directory
+        if not self.file_path2_directory:
+            self.file_path2_directory = directory
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        self.in_fn = f"{self.file_path_directory}\\{self.in_fn_entry.text()}"
-        self.mask = f"{self.file_path2_directory}\\{self.mask_entry.text()}"
+        self.in_fn = self.get_full_path(self.file_path_directory, self.in_fn_entry.text())
+        self.mask = self.get_full_path(self.file_path2_directory, self.mask_entry.text())
 
         if not self.in_fn or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -358,10 +380,16 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         if not directory_2 :
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+        if not self.file_path4_directory:
+            self.file_path4_directory = directory_2
+        if not self.file_path5_directory:
+            self.file_path5_directory = directory_2
+        if not self.file_path6_directory:
+            self.file_path6_directory = directory_2
 
-        self.in_fn_2 = f"{self.file_path4_directory}\\{self.in_fn_entry_2.text()}"
-        self.mask_2 = f"{self.file_path5_directory}\\{self.mask_entry_2.text()}"
-        self.fmask_2 = f"{self.file_path6_directory}\\{self.fmask_entry_2.text()}"
+        self.in_fn_2 = self.get_full_path(self.file_path4_directory, self.in_fn_entry_2.text())
+        self.mask_2 = self.get_full_path(self.file_path5_directory, self.mask_entry_2.text())
+        self.fmask_2 = self.get_full_path(self.file_path6_directory, self.fmask_entry_2.text())
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -466,6 +494,9 @@ class AT_FIT_CAL_Screen(QDialog):
         self.out_fn1 = None
         self.out_fn2 = None
         self.csv_name = None
+        self.file_path_directory = None
+        self.file_path1_directory = None
+        self.file_path3_directory = None
         self.image1_entry.setPlaceholderText('e.g., Acre_Modeling_Region_CAL.tif')
         self.csv_entry.setPlaceholderText('e.g., Relative_Frequency_Table_CAL.csv')
         self.image2_entry.setPlaceholderText('e.g., Acre_Fitted_Density_Map_CAL.tif')
@@ -520,17 +551,26 @@ class AT_FIT_CAL_Screen(QDialog):
             self.deforestation_hrp = Path(file_path3)
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
             self.file_path3_directory = '\\'.join(file_path3.split('/')[:-1])
-
+    def get_full_path(self, base_dir, user_input):
+        if os.path.isabs(user_input):
+            return user_input
+        else:
+            return f"{base_dir}\\{user_input}"
     def process_data3(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+        if not self.file_path_directory:
+            self.file_path_directory = directory
+        if not self.file_path1_directory:
+            self.file_path1_directory = directory
+        if not self.file_path3_directory:
+            self.file_path3_directory = directory
 
-        # Read values from QLineEdits
-        self.municipality = f"{self.file_path_directory}\\{self.municipality_entry.text()}"
-        self.risk30_hrp = f"{self.file_path1_directory}\\{self.risk30_hrp_entry.text()}"
-        self.deforestation_hrp = f"{self.file_path3_directory}\\{self.deforestation_hrp_entry.text()}"
+        self.municipality = self.get_full_path(self.file_path_directory, self.municipality_entry.text())
+        self.risk30_hrp = self.get_full_path(self.file_path1_directory, self.risk30_hrp_entry.text())
+        self.deforestation_hrp = self.get_full_path(self.file_path3_directory, self.deforestation_hrp_entry.text())
 
         if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -652,6 +692,9 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.raster_fn_entry.setPlaceholderText('e.g., Acre_Residuals_CAL.tif')
         self.xmax = None
         self.xmax = None
+        self.file_path_directory = None
+        self.file_path2_directory = None
+        self.file_path3_directory = None
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat4(self):
@@ -703,16 +746,26 @@ class MCT_FIT_CAL_Screen(QDialog):
             self.density = Path(PureWindowsPath(file_path2))
             self.density_entry.setText(file_path2.split('/')[-1])
             self.file_path2_directory = '\\'.join(file_path2.split('/')[:-1])
-
+    def get_full_path(self, base_dir, user_input):
+        if os.path.isabs(user_input):
+            return user_input
+        else:
+            return f"{base_dir}\\{user_input}"
     def process_data4(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+        if not self.file_path_directory:
+            self.file_path_directory = directory
+        if not self.file_path2_directory:
+            self.file_path2_directory = directory
+        if not self.file_path3_directory:
+            self.file_path3_directory = directory
 
-        self.mask = f"{self.file_path_directory}\\{self.mask_entry.text()}"
-        self.deforestation_hrp = f"{self.file_path3_directory}\\{self.deforestation_hrp_entry.text()}"
-        self.density = f"{self.file_path2_directory}\\{self.density_entry.text()}"
+        self.mask = self.get_full_path(self.file_path_directory, self.mask_entry.text())
+        self.density = self.get_full_path(self.file_path2_directory, self.density_entry.text())
+        self.deforestation_hrp = self.get_full_path(self.file_path3_directory, self.deforestation_hrp_entry.text())
 
         if not self.mask or not self.deforestation_hrp or not self.density :
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -901,7 +954,11 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.out_fn_2 = None
         self.n_classes_2 = None
         self.out_fn_entry_2.setPlaceholderText('e.g., Acre_Vulnerability_CNF.tif')
-
+        self.file_path_directory = None
+        self.file_path2_directory = None
+        self.file_path4_directory = None
+        self.file_path5_directory = None
+        self.file_path6_directory = None
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat2(self):
@@ -979,15 +1036,24 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             self.fmask_2 = file_path6
             self.fmask_entry_2.setText(file_path6.split('/')[-1])
             self.file_path6_directory = '\\'.join(file_path6.split('/')[:-1])
-
+    def get_full_path(self, base_dir, user_input):
+        if os.path.isabs(user_input):
+            return user_input
+        else:
+            return f"{base_dir}\\{user_input}"
     def process_data2(self):
         directory = self.folder_entry.text()
+        if not self.file_path_directory:
+            self.file_path_directory = directory
+        if not self.file_path2_directory:
+            self.file_path2_directory = directory
+
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        self.in_fn = f"{self.file_path_directory}\\{self.in_fn_entry.text()}"
-        self.mask = f"{self.file_path2_directory}\\{self.mask_entry.text()}"
+        self.in_fn = self.get_full_path(self.file_path_directory, self.in_fn_entry.text())
+        self.mask = self.get_full_path(self.file_path2_directory, self.mask_entry.text())
 
         if not self.in_fn or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1063,10 +1129,16 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         if not directory_2 :
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+        if not self.file_path4_directory:
+            self.file_path4_directory = directory_2
+        if not self.file_path5_directory:
+            self.file_path5_directory = directory_2
+        if not self.file_path6_directory:
+            self.file_path6_directory = directory_2
 
-        self.in_fn_2 = f"{self.file_path4_directory}\\{self.in_fn_entry_2.text()}"
-        self.mask_2 = f"{self.file_path5_directory}\\{self.mask_entry_2.text()}"
-        self.fmask_2 = f"{self.file_path6_directory}\\{self.fmask_entry_2.text()}"
+        self.in_fn_2 = self.get_full_path(self.file_path4_directory, self.in_fn_entry_2.text())
+        self.mask_2 = self.get_full_path(self.file_path5_directory, self.mask_entry_2.text())
+        self.fmask_2 = self.get_full_path(self.file_path6_directory, self.fmask_entry_2.text())
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1173,6 +1245,10 @@ class AT_PRE_CNF_Screen(QDialog):
         self.max_iterations = None
         self.image1 = None
         self.image2 = None
+        self.file_path_directory = None
+        self.file_path1_directory = None
+        self.file_path2_directory = None
+        self.file_path3_directory = None
         self.iteration_entry.setPlaceholderText('The suggestion max iteration number is 5')
         self.image1_entry.setPlaceholderText('e.g., Acre_Prediction_Modeling_Region_CNF.tif')
         self.image2_entry.setPlaceholderText('e.g., Acre_Adjucted_Density_Map_CNF.tif')
@@ -1233,6 +1309,11 @@ class AT_PRE_CNF_Screen(QDialog):
             self.deforestation_cnf = Path(PureWindowsPath(file_path3))
             self.deforestation_cnf_entry.setText(file_path3.split('/')[-1])
             self.file_path3_directory = '\\'.join(file_path3.split('/')[:-1])
+    def get_full_path(self, base_dir, user_input):
+        if os.path.isabs(user_input):
+            return user_input
+        else:
+            return f"{base_dir}\\{user_input}"
 
     def process_data3(self):
         directory = self.folder_entry.text()
@@ -1240,10 +1321,20 @@ class AT_PRE_CNF_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        self.municipality = f"{self.file_path_directory}\\{self.municipality_entry.text()}"
-        self.csv = f"{self.file_path1_directory}\\{self.csv_entry.text()}"
-        self.deforestation_cnf = f"{self.file_path2_directory}\\{self.deforestation_cnf_entry.text()}"
-        self.risk30_vp = f"{self.file_path3_directory}\\{self.risk30_vp_entry.text()}"
+        if not self.file_path_directory:
+            self.file_path_directory = directory
+        if not self.file_path1_directory:
+            self.file_path1_directory = directory
+        if not self.file_path2_directory:
+            self.file_path2_directory = directory
+        if not self.file_path3_directory:
+            self.file_path3_directory = directory
+
+        self.municipality = self.get_full_path(self.file_path_directory, self.municipality_entry.text())
+        self.csv = self.get_full_path(self.file_path1_directory, self.csv_entry.text())
+        self.risk30_vp = self.get_full_path(self.file_path2_directory, self.risk30_vp_entry.text())
+        self.deforestation_cnf = self.get_full_path(self.file_path3_directory, self.deforestation_cnf_entry.text())
+
 
         if not self.municipality or not self.csv or not self.deforestation_cnf or not self.risk30_vp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1373,6 +1464,11 @@ class MCT_PRE_CNF_Screen(QDialog):
         self.out_fn = None
         self.out_fn_def = None
         self.raster_fn = None
+        self.file_path_directory = None
+        self.file_path1_directory = None
+        self.file_path2_directory = None
+        self.file_path3_directory = None
+        self.file_path4_directory = None
         self.out_fn_entry.setPlaceholderText('e.g., Plot_CNF.png')
         self.out_fn_def_entry.setPlaceholderText('e.g., Acre_Def_Review.tif')
         self.raster_fn_entry.setPlaceholderText('e.g., Acre_Residuals_CNF.tif')
@@ -1440,17 +1536,34 @@ class MCT_PRE_CNF_Screen(QDialog):
             self.density_entry.setText(file_path4.split('/')[-1])
             self.file_path4_directory = '\\'.join(file_path4.split('/')[:-1])
 
+    def get_full_path(self, base_dir, user_input):
+        if os.path.isabs(user_input):
+            return user_input
+        else:
+            return f"{base_dir}\\{user_input}"
+
     def process_data4(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        self.mask = f"{self.file_path_directory}\\{self.mask_entry.text()}"
-        self.fmask = f"{self.file_path1_directory}\\{self.fmask_entry.text()}"
-        self.deforestation_cal = f"{self.file_path2_directory}\\{self.deforestation_cal_entry.text()}"
-        self.deforestation_hrp = f"{self.file_path3_directory}\\{self.deforestation_hrp_entry.text()}"
-        self.density = f"{self.file_path4_directory}\\{self.density_entry.text()}"
+        if not self.file_path_directory:
+            self.file_path_directory = directory
+        if not self.file_path1_directory:
+            self.file_path1_directory = directory
+        if not self.file_path2_directory:
+            self.file_path2_directory = directory
+        if not self.file_path3_directory:
+            self.file_path3_directory = directory
+        if not self.file_path4_directory:
+            self.file_path4_directory = directory
+
+        self.mask = self.get_full_path(self.file_path_directory, self.mask_entry.text())
+        self.fmask = self.get_full_path(self.file_path1_directory, self.fmask_entry.text())
+        self.deforestation_cal = self.get_full_path(self.file_path2_directory, self.deforestation_cal_entry.text())
+        self.deforestation_hrp = self.get_full_path(self.file_path3_directory, self.deforestation_hrp_entry.text())
+        self.density = self.get_full_path(self.file_path4_directory, self.density_entry.text())
 
         if not self.mask or not self.fmask or not self.deforestation_cal or not self.deforestation_hrp or not self.density :
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1662,7 +1775,11 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         self.out_fn_2 = None
         self.n_classes_2 = None
         self.out_fn_entry_2.setPlaceholderText('e.g., Acre_Vulnerability_HRP.tif')
-
+        self.file_path_directory = None
+        self.file_path2_directory = None
+        self.file_path4_directory = None
+        self.file_path5_directory = None
+        self.file_path6_directory = None
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
 
     def gotoat2(self):
@@ -1735,15 +1852,22 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             self.fmask_2 = file_path6
             self.fmask_entry_2.setText(file_path6.split('/')[-1])
             self.file_path6_directory = '\\'.join(file_path6.split('/')[:-1])
-
+    def get_full_path(self, base_dir, user_input):
+        if os.path.isabs(user_input):
+            return user_input
+        else:
+            return f"{base_dir}\\{user_input}"
     def process_data2(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
-
-        self.in_fn = f"{self.file_path_directory}\\{self.in_fn_entry.text()}"
-        self.mask = f"{self.file_path2_directory}\\{self.mask_entry.text()}"
+        if not self.file_path_directory:
+            self.file_path_directory = directory
+        if not self.file_path2_directory:
+            self.file_path2_directory = directory
+        self.in_fn = self.get_full_path(self.file_path_directory, self.in_fn_entry.text())
+        self.mask = self.get_full_path(self.file_path2_directory, self.mask_entry.text())
 
         if not self.in_fn or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1820,9 +1944,16 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        self.in_fn_2 = f"{self.file_path4_directory}\\{self.in_fn_entry_2.text()}"
-        self.mask_2 = f"{self.file_path5_directory}\\{self.mask_entry_2.text()}"
-        self.fmask_2 = f"{self.file_path6_directory}\\{self.fmask_entry_2.text()}"
+        if not self.file_path4_directory:
+            self.file_path4_directory = directory_2
+        if not self.file_path5_directory:
+            self.file_path5_directory = directory_2
+        if not self.file_path6_directory:
+            self.file_path6_directory = directory_2
+
+        self.in_fn_2 = self.get_full_path(self.file_path4_directory, self.in_fn_entry_2.text())
+        self.mask_2 = self.get_full_path(self.file_path5_directory, self.mask_entry_2.text())
+        self.fmask_2 = self.get_full_path(self.file_path6_directory, self.fmask_entry_2.text())
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -1926,6 +2057,9 @@ class AT_FIT_HRP_Screen(QDialog):
         self.out_fn1 = None
         self.out_fn2 = None
         self.csv_name = None
+        self.file_path_directory = None
+        self.file_path1_directory = None
+        self.file_path3_directory = None
         self.image1_entry.setPlaceholderText('e.g., Acre_Modeling_Region_HRP.tif')
         self.csv_entry.setPlaceholderText('e.g., Relative_Frequency_Table_HRP.csv')
         self.image2_entry.setPlaceholderText('e.g., Acre_Fitted_Density_Map_HRP.tif')
@@ -1974,15 +2108,26 @@ class AT_FIT_HRP_Screen(QDialog):
             self.deforestation_hrp = Path(file_path3)
             self.deforestation_hrp_entry.setText(file_path3.split('/')[-1])
             self.file_path3_directory = '\\'.join(file_path3.split('/')[:-1])
+    def get_full_path(self, base_dir, user_input):
+        if os.path.isabs(user_input):
+            return user_input
+        else:
+            return f"{base_dir}\\{user_input}"
     def process_data3(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+        if not self.file_path_directory:
+            self.file_path_directory = directory
+        if not self.file_path1_directory:
+            self.file_path1_directory = directory
+        if not self.file_path3_directory:
+            self.file_path3_directory = directory
 
-        self.municipality = f"{self.file_path_directory}\\{self.municipality_entry.text()}"
-        self.risk30_hrp = f"{self.file_path1_directory}\\{self.risk30_hrp_entry.text()}"
-        self.deforestation_hrp = f"{self.file_path3_directory}\\{self.deforestation_hrp_entry.text()}"
+        self.municipality = self.get_full_path(self.file_path_directory, self.municipality_entry.text())
+        self.risk30_hrp = self.get_full_path(self.file_path1_directory, self.risk30_hrp_entry.text())
+        self.deforestation_hrp = self.get_full_path(self.file_path3_directory, self.deforestation_hrp_entry.text())
 
         if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -2130,6 +2275,14 @@ class RMT_PRE_VP_SCREEN(QDialog):
         self.in_fn_2 = None
         self.out_fn_2 = None
         self.n_classes_2 = None
+        self.file_path_directory = None
+        self.file_path2_directory = None
+        self.file_path4_directory = None
+        self.file_path5_directory = None
+        self.file_path6_directory = None
+        self.file_path_directory = None
+        self.file_path1_directory = None
+        self.file_path3_directory = None
         self.out_fn_entry_2.setPlaceholderText('e.g., Acre_Vulnerability_VP.tif')
 
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
@@ -2203,15 +2356,24 @@ class RMT_PRE_VP_SCREEN(QDialog):
             self.fmask_2 = file_path6
             self.fmask_entry_2.setText(file_path6.split('/')[-1])
             self.file_path6_directory = '\\'.join(file_path6.split('/')[:-1])
-
+    def get_full_path(self, base_dir, user_input):
+        if os.path.isabs(user_input):
+            return user_input
+        else:
+            return f"{base_dir}\\{user_input}"
     def process_data2(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        self.in_fn = f"{self.file_path_directory}\\{self.in_fn_entry.text()}"
-        self.mask = f"{self.file_path2_directory}\\{self.mask_entry.text()}"
+        if not self.file_path_directory:
+            self.file_path_directory = directory
+        if not self.file_path2_directory:
+            self.file_path2_directory = directory
+
+        self.in_fn = self.get_full_path(self.file_path_directory, self.in_fn_entry.text())
+        self.mask = self.get_full_path(self.file_path2_directory, self.mask_entry.text())
 
         if not self.in_fn or not self.mask:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -2288,9 +2450,16 @@ class RMT_PRE_VP_SCREEN(QDialog):
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
 
-        self.in_fn_2 = f"{self.file_path4_directory}\\{self.in_fn_entry_2.text()}"
-        self.mask_2 = f"{self.file_path5_directory}\\{self.mask_entry_2.text()}"
-        self.fmask_2 = f"{self.file_path6_directory}\\{self.fmask_entry_2.text()}"
+        if not self.file_path4_directory:
+            self.file_path4_directory = directory_2
+        if not self.file_path5_directory:
+            self.file_path5_directory = directory_2
+        if not self.file_path6_directory:
+            self.file_path6_directory = directory_2
+
+        self.in_fn_2 = self.get_full_path(self.file_path4_directory, self.in_fn_entry_2.text())
+        self.mask_2 = self.get_full_path(self.file_path5_directory, self.mask_entry_2.text())
+        self.fmask_2 = self.get_full_path(self.file_path6_directory, self.fmask_entry_2.text())
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -2397,6 +2566,9 @@ class AT_PRE_VP_Screen(QDialog):
         self.time = None
         self.image1 = None
         self.image2 = None
+        self.file_path_directory = None
+        self.file_path1_directory = None
+        self.file_path2_directory = None
         self.iteration_entry.setPlaceholderText('The suggestion max iteration number is 5')
         self.image1_entry.setPlaceholderText('e.g., Acre_Prediction_Modeling_Region_VP.tif')
         self.image2_entry.setPlaceholderText('e.g., Acre_Adjucted_Density_Map_VP.tif')
@@ -2445,16 +2617,26 @@ class AT_PRE_VP_Screen(QDialog):
             self.risk30_vp = Path(PureWindowsPath(file_path2))
             self.risk30_vp_entry.setText(file_path2.split('/')[-1])
             self.file_path2_directory = '\\'.join(file_path2.split('/')[:-1])
-
+    def get_full_path(self, base_dir, user_input):
+        if os.path.isabs(user_input):
+            return user_input
+        else:
+            return f"{base_dir}\\{user_input}"
     def process_data3(self):
         directory = self.folder_entry.text()
         if not directory:
             QMessageBox.critical(self, "Error", "Please select the working directory!")
             return
+        if not self.file_path_directory:
+            self.file_path_directory = directory
+        if not self.file_path1_directory:
+            self.file_path1_directory = directory
+        if not self.file_path2_directory:
+            self.file_path2_directory = directory
 
-        self.municipality = f"{self.file_path_directory}\\{self.municipality_entry.text()}"
-        self.csv = f"{self.file_path1_directory}\\{self.csv_entry.text()}"
-        self.risk30_vp = f"{self.file_path2_directory}\\{self.risk30_vp_entry.text()}"
+        self.municipality = self.get_full_path(self.file_path_directory, self.municipality_entry.text())
+        self.csv = self.get_full_path(self.file_path1_directory, self.csv_entry.text())
+        self.risk30_vp = self.get_full_path(self.file_path2_directory, self.risk30_vp_entry.text())
 
         if not self.csv or not self.municipality or not self.risk30_vp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
