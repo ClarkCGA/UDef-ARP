@@ -1,14 +1,30 @@
 
 # Unplanned Deforestation Allocated Risk Modeling and Mapping Procedure (UDef-ARP)
 
-UDef-ARP was developed by Clark Labs, in collaboration with TerraCarbon, to facilitate implementation of the Verra tool, VT0007 Unplanned Deforestation Allocation (UDef-A). It is used in conjunction with a raster-capable GIS for input data preparation and output display. Tools are provided for the development of models using the Calibration Period (CAL) and subsequent testing during the Confirmation Period (CNF). Based on these evaluations, the selected procedure uses the full Historical Reference Period (HRP) to build a model and prediction for the Validity Period (VP). The final output is a map expressed in hectares/pixel/year of expected forest loss.
+UDef-ARP was developed by Clark Labs, in collaboration with TerraCarbon, to facilitate
+implementation of the Verra tool, VT0007 Unplanned Deforestation Allocation (UDef-A). It is used in
+conjunction with a raster-capable GIS for input data preparation and output display. Tools are
+provided for the development of models using the Calibration Period (CAL) and subsequent testing
+during the Confirmation Period (CNF). Based on these evaluations, the selected procedure uses the
+full Historical Reference Period (HRP) to build a model and prediction for the Validity Period (VP).
+The final output is a map expressed in hectares/pixel/year of expected forest loss.
 
-UDef-ARP provides the basis for developing a benchmark model as well as tools for comparative testing against alternative empirical models. The benchmark is intentionally simple – it requires only two inputs, distance from the forest edge (non-forest) and a map of administrative divisions that are fully nested within the jurisdiction. Based on these, it uses a relative frequency approach to determine the density of expected deforestation. In testing, this was found to provide a strong benchmark. However, it is intended that users incorporate more sophisticated empirical models, which may be used in UDef-A if they can be shown to be superior to the benchmark for both the fitted model in the Calibration Period and the prediction model in the Confirmation Period. Note that the manner in which alternative models are incorporated and tested is very specifically defined by the UDef-A protocol. UDef-ARP facilitates this testing process.
+UDef-ARP provides the basis for developing a benchmark model as well as tools for comparative
+testing against alternative empirical models. The benchmark is intentionally simple – it requires
+only two inputs, distance from the forest edge (non-forest) and a map of administrative divisions
+that are fully nested within the jurisdiction. Based on these, it uses a relative frequency approach to
+determine the density of expected deforestation. In testing, this was found to provide a strong
+benchmark. However, it is intended that users incorporate more sophisticated empirical models,
+which may be used in UDef-A if they can be shown to be superior to the benchmark for both the
+fitted model in the Calibration Period and the prediction model in the Confirmation Period. Note
+that the manner in which alternative models are incorporated and tested is very specifically defined
+by the UDef-A protocol. UDef-ARP facilitates this testing process.
 
 #### Some important points:
 1. At present, UDef-ARP only supports Windows platforms.
-2. At present, only limited bulletproofing has been done. Please read the UDef-A document carefully regarding required inputs.
-3. UDef-ARP is still under development. Frequent updates are expected.
+2. A Windows installer is available as an alternative to working with the Python code.
+3. At present, only limited bulletproofing has been done. Please read the UDef-A document carefully regarding required inputs.
+4. UDef-ARP is still under development. Frequent updates are expected.
 
 ## Requirements
 ### Operating System
@@ -61,7 +77,7 @@ Then, open the UDef-ARP.py file:
 Python UDef-ARP.py
 ```
 ### Step 3: Prepare Your Data
-UDef-ARP accepts raster map data is either a Geotiff “.tif” or TerrSet “.rst” (binary flat raster ) format. Similarly, outputs can be in either format. All map data are required to be on an equal area projection. All map inputs must be co-registered and have the same resolution and the same number of rows and columns.
+UDef-ARP accepts raster map data is either a Geotiff “.tif” or TerrSet “.rst” (binary flat raster ) format. Similarly, outputs can be in either format. **All map data are required to be on an Equal Area Projection**. All map inputs must be co-registered and have the same resolution and the same number of rows and columns.
 
 <p align="center">
   <img src="data/intro_screen.png" alt="GUI Image">
