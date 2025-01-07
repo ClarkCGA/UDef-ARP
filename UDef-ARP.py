@@ -230,7 +230,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         self.deforestation_hrp = self.get_full_path(self.file_path3_directory,self.deforestation_hrp_entry.text())
 
         if not self.in_fn or not self.deforestation_hrp or not self.mask:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.in_fn, self.deforestation_hrp, self.mask]
@@ -303,7 +303,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         self.mask = self.get_full_path(self.file_path2_directory, self.mask_entry.text())
 
         if not self.in_fn or not self.mask:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         NRT = self.nrt_entry.text()
@@ -391,7 +391,7 @@ class RMT_FIT_CAL_SCREEN(QDialog):
         self.fmask_2 = self.get_full_path(self.file_path6_directory, self.fmask_entry_2.text())
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.in_fn_2, self.mask_2, self.fmask_2]
@@ -572,7 +572,7 @@ class AT_FIT_CAL_Screen(QDialog):
         self.deforestation_hrp = self.get_full_path(self.file_path3_directory, self.deforestation_hrp_entry.text())
 
         if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.risk30_hrp, self.municipality, self.deforestation_hrp]
@@ -767,7 +767,7 @@ class MCT_FIT_CAL_Screen(QDialog):
         self.deforestation_hrp = self.get_full_path(self.file_path3_directory, self.deforestation_hrp_entry.text())
 
         if not self.mask or not self.deforestation_hrp or not self.density :
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.mask, self.deforestation_hrp, self.density]
@@ -1053,7 +1053,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.mask = self.get_full_path(self.file_path2_directory, self.mask_entry.text())
 
         if not self.in_fn or not self.mask:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         NRT = self.nrt_entry.text()
@@ -1138,7 +1138,7 @@ class RMT_PRE_CNF_SCREEN(QDialog):
         self.fmask_2 = self.get_full_path(self.file_path6_directory, self.fmask_entry_2.text())
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.in_fn_2, self.mask_2, self.fmask_2]
@@ -1333,7 +1333,7 @@ class AT_PRE_CNF_Screen(QDialog):
         self.deforestation_cnf = self.get_full_path(self.file_path3_directory, self.deforestation_cnf_entry.text())
 
         if not self.municipality or not self.csv or not self.deforestation_cnf or not self.risk30_vp:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.municipality, self.deforestation_cnf, self.risk30_vp]
@@ -1562,7 +1562,7 @@ class MCT_PRE_CNF_Screen(QDialog):
         self.density = self.get_full_path(self.file_path4_directory, self.density_entry.text())
 
         if not self.mask or not self.fmask or not self.deforestation_cal or not self.deforestation_hrp or not self.density :
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.mask, self.fmask, self.deforestation_cal, self.deforestation_hrp, self.density]
@@ -1866,7 +1866,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         self.mask = self.get_full_path(self.file_path2_directory, self.mask_entry.text())
 
         if not self.in_fn or not self.mask:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         NRT = self.nrt_entry.text()
@@ -1952,7 +1952,7 @@ class RMT_FIT_HRP_SCREEN(QDialog):
         self.fmask_2 = self.get_full_path(self.file_path6_directory, self.fmask_entry_2.text())
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.in_fn_2, self.mask_2, self.fmask_2]
@@ -2126,7 +2126,7 @@ class AT_FIT_HRP_Screen(QDialog):
         self.deforestation_hrp = self.get_full_path(self.file_path3_directory, self.deforestation_hrp_entry.text())
 
         if not self.risk30_hrp or not self.municipality or not self.deforestation_hrp:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.risk30_hrp, self.municipality, self.deforestation_hrp]
@@ -2369,7 +2369,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         self.mask = self.get_full_path(self.file_path2_directory, self.mask_entry.text())
 
         if not self.in_fn or not self.mask:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         NRT = self.nrt_entry.text()
@@ -2455,7 +2455,7 @@ class RMT_PRE_VP_SCREEN(QDialog):
         self.fmask_2 = self.get_full_path(self.file_path6_directory, self.fmask_entry_2.text())
 
         if not self.in_fn_2 or not self.mask_2 or not self.fmask_2:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.in_fn_2, self.mask_2, self.fmask_2]
@@ -2632,7 +2632,7 @@ class AT_PRE_VP_Screen(QDialog):
         self.risk30_vp = self.get_full_path(self.file_path2_directory, self.risk30_vp_entry.text())
 
         if not self.csv or not self.municipality or not self.risk30_vp:
-            QMessageBox.critical(self, "Error", "Please select all input files!")
+            QMessageBox.critical(self, "Error", "Please select or enter all input files!")
             return
 
         images = [self.municipality, self.risk30_vp]
