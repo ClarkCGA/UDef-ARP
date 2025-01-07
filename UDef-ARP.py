@@ -292,14 +292,13 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
     def process_data2(self):
         directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
         if not self.file_path_directory:
             self.file_path_directory = directory
         if not self.file_path2_directory:
             self.file_path2_directory = directory
-        if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
-            return
-
         self.in_fn = self.get_full_path(self.file_path_directory, self.in_fn_entry.text())
         self.mask = self.get_full_path(self.file_path2_directory, self.mask_entry.text())
 
@@ -1043,15 +1042,13 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             return f"{base_dir}\\{user_input}"
     def process_data2(self):
         directory = self.folder_entry.text()
+        if not directory:
+            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            return
         if not self.file_path_directory:
             self.file_path_directory = directory
         if not self.file_path2_directory:
             self.file_path2_directory = directory
-
-        if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
-            return
-
         self.in_fn = self.get_full_path(self.file_path_directory, self.in_fn_entry.text())
         self.mask = self.get_full_path(self.file_path2_directory, self.mask_entry.text())
 
@@ -1334,7 +1331,6 @@ class AT_PRE_CNF_Screen(QDialog):
         self.csv = self.get_full_path(self.file_path1_directory, self.csv_entry.text())
         self.risk30_vp = self.get_full_path(self.file_path2_directory, self.risk30_vp_entry.text())
         self.deforestation_cnf = self.get_full_path(self.file_path3_directory, self.deforestation_cnf_entry.text())
-
 
         if not self.municipality or not self.csv or not self.deforestation_cnf or not self.risk30_vp:
             QMessageBox.critical(self, "Error", "Please select all input files!")
@@ -2280,9 +2276,6 @@ class RMT_PRE_VP_SCREEN(QDialog):
         self.file_path4_directory = None
         self.file_path5_directory = None
         self.file_path6_directory = None
-        self.file_path_directory = None
-        self.file_path1_directory = None
-        self.file_path3_directory = None
         self.out_fn_entry_2.setPlaceholderText('e.g., Acre_Vulnerability_VP.tif')
 
         self.setWindowTitle("JNR Integrated Risk/Allocation Tool")
