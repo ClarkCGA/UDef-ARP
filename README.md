@@ -3,7 +3,7 @@
 
 UDef-ARP was developed by Clark Labs, in collaboration with TerraCarbon, to facilitate implementation of the Verra tool, [VT0007 Unplanned Deforestation Allocation (UDef-A)](https://verra.org/wp-content/uploads/2024/02/VT0007-Unplanned-Deforestation-Allocation-v1.0.pdf). It is used in conjunction with a raster-capable GIS for input data preparation and output display. Tools are provided for the development of models using the Calibration Period (CAL) and subsequent testing during the Confirmation Period (CNF). Based on these evaluations, the selected procedure uses the full Historical Reference Period (HRP) to build a model and prediction for the Validity Period (VP). The final output is a map expressed in hectares/pixel/year of expected forest loss.
 <p align="center">
-  <img src="data/stage.PNG" alt="">
+  <img src="data/stage.PNG" alt="Fitting and Prediction Phases and Chronology of the Testing and Application Stages, sourced from the VT0007 report">
 Fitting and Prediction Phases and Chronology of the Testing and Application
 Stages (VT0007)
 </p>
