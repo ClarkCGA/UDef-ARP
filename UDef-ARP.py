@@ -2,7 +2,7 @@ import sys
 import os
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt,QUrl
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QProgressDialog, QApplication, QWidget
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QProgressDialog, QApplication, QWidget, QPushButton,QTextEdit,QSizePolicy
 from PyQt5.QtGui import QFontDatabase, QIcon, QFont, QDesktopServices
 from PyQt5.uic import loadUi
 from allocation_tool import AllocationTool
@@ -11,6 +11,7 @@ from model_evaluation import ModelEvaluation
 from osgeo import gdal
 from pathlib import Path, PureWindowsPath
 import numpy as np
+import traceback
 
 # GDAL exceptions
 gdal.UseExceptions()
@@ -279,16 +280,38 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             NRT = self.vulnerability_map.nrt_calculation(self.in_fn, self.deforestation_hrp, self.mask)
             # Update the central data store
             central_data_store.NRT = NRT
-
             QMessageBox.information(self, "Processing Completed", f"Processing completed!\nNRT is: {NRT}")
-
             self.nrt_entry.setText(str(NRT))
-
             self.progressDialog.close()
 
-        except Exception as e:
+        except Exception:
             self.progressDialog.close()
-            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def process_data2(self):
         directory = self.folder_entry.text()
@@ -369,9 +392,34 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
             self.progressDialog.close()
 
-        except Exception as e:
+        except Exception:
             self.progressDialog.close()
-            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
 
     def process_data2_2(self):
@@ -457,9 +505,34 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
             self.progressDialog.close()
 
-        except Exception as e:
+        except Exception:
             self.progressDialog.close()
-            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
@@ -648,9 +721,34 @@ class AT_FIT_CAL_Screen(QDialog):
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
-        except Exception as e:
-             self.progressDialog.close()
-             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+        except Exception:
+            self.progressDialog.close()
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
@@ -883,9 +981,34 @@ class MCT_FIT_CAL_Screen(QDialog):
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
-        except Exception as e:
-             self.progressDialog.close()
-             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+        except Exception:
+            self.progressDialog.close()
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
@@ -1117,9 +1240,34 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
-        except Exception as e:
+        except Exception:
             self.progressDialog.close()
-            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def process_data2_2(self):
         directory_2 = self.folder_entry_2.text()
@@ -1205,9 +1353,34 @@ class RMT_PRE_CNF_SCREEN(QDialog):
 
             self.progressDialog.close()
 
-        except Exception as e:
+        except Exception:
             self.progressDialog.close()
-            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
@@ -1417,9 +1590,34 @@ class AT_PRE_CNF_Screen(QDialog):
                 QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
-        except Exception as e:
-             self.progressDialog.close()
-             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+        except Exception:
+            self.progressDialog.close()
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
@@ -1702,9 +1900,34 @@ class MCT_PRE_CNF_Screen(QDialog):
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
-        except Exception as e:
-             self.progressDialog.close()
-             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+        except Exception:
+            self.progressDialog.close()
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
@@ -1930,9 +2153,34 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
-        except Exception as e:
+        except Exception:
             self.progressDialog.close()
-            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def process_data2_2(self):
         directory_2 = self.folder_entry_2.text()
@@ -2019,9 +2267,34 @@ class RMT_FIT_HRP_SCREEN(QDialog):
 
             self.progressDialog.close()
 
-        except Exception as e:
+        except Exception:
             self.progressDialog.close()
-            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
@@ -2202,9 +2475,34 @@ class AT_FIT_HRP_Screen(QDialog):
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
-        except Exception as e:
-             self.progressDialog.close()
-             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+        except Exception:
+            self.progressDialog.close()
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
@@ -2433,9 +2731,34 @@ class RMT_PRE_VP_SCREEN(QDialog):
             QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
-        except Exception as e:
+        except Exception:
             self.progressDialog.close()
-            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def process_data2_2(self):
         directory_2 = self.folder_entry_2.text()
@@ -2522,9 +2845,34 @@ class RMT_PRE_VP_SCREEN(QDialog):
 
             self.progressDialog.close()
 
-        except Exception as e:
+        except Exception:
             self.progressDialog.close()
-            QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
@@ -2733,9 +3081,34 @@ class AT_PRE_VP_Screen(QDialog):
                 QMessageBox.information(self, "Processing Completed", "Processing completed!")
             self.progressDialog.close()
 
-        except Exception as e:
-             self.progressDialog.close()
-             QMessageBox.critical(self, "Error", f"An error occurred during processing: {str(e)}")
+        except Exception:
+            self.progressDialog.close()
+            tb = traceback.format_exc()
+
+            error_box = QMessageBox(self)
+            error_box.setIcon(QMessageBox.Critical)
+            error_box.setWindowTitle("Error")
+            error_box.setText(f"<b>An Error Occurred During Processing</b>")
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            error_box.setDetailedText(tb)
+
+            details_frame = error_box.findChild(QTextEdit)
+            if details_frame:
+                details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                details_frame.setMaximumHeight(800)
+                details_frame.setMaximumWidth(1000)
+                details_frame.setMinimumHeight(400)
+                details_frame.setMinimumWidth(600)
+
+            error_box_layout = error_box.layout()
+            error_box_layout.setContentsMargins(10, 10, 10, 10)
+
+            copy_button = QPushButton("Copy Error Message")
+            error_box.addButton(copy_button, QMessageBox.ActionRole)
+            def copy_error_txt():
+                QApplication.clipboard().setText(tb)
+            copy_button.clicked.connect(copy_error_txt)
+            error_box.exec_()
 
     def update_progress(self, value):
         # Update QProgressDialog with the new value
