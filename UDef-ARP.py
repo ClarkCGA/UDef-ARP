@@ -215,8 +215,10 @@ class RMT_FIT_CAL_SCREEN(QDialog):
             return f"{base_dir}\\{user_input}"
     def process_data2_nrt(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
+        self.folder_entry_2.setText(directory)
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
 
         if not self.file_path_directory:
@@ -315,8 +317,10 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
     def process_data2(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
+        self.folder_entry_2.setText(directory)
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
         if not self.file_path_directory:
             self.file_path_directory = directory
@@ -424,8 +428,10 @@ class RMT_FIT_CAL_SCREEN(QDialog):
 
     def process_data2_2(self):
         directory_2 = self.folder_entry_2.text()
+        central_data_store.directory = directory_2
+        self.folder_entry.setText(directory_2)
         if not directory_2 :
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
         if not self.file_path4_directory:
             self.file_path4_directory = directory_2
@@ -630,8 +636,9 @@ class AT_FIT_CAL_Screen(QDialog):
             return f"{base_dir}\\{user_input}"
     def process_data3(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
         if not self.file_path_directory:
             self.file_path_directory = directory
@@ -850,8 +857,9 @@ class MCT_FIT_CAL_Screen(QDialog):
             return f"{base_dir}\\{user_input}"
     def process_data4(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
         if not self.file_path_directory:
             self.file_path_directory = directory
@@ -1165,8 +1173,10 @@ class RMT_PRE_CNF_SCREEN(QDialog):
             return f"{base_dir}\\{user_input}"
     def process_data2(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
+        self.folder_entry_2.setText(directory)
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
         if not self.file_path_directory:
             self.file_path_directory = directory
@@ -1271,8 +1281,10 @@ class RMT_PRE_CNF_SCREEN(QDialog):
 
     def process_data2_2(self):
         directory_2 = self.folder_entry_2.text()
+        central_data_store.directory = directory_2
+        self.folder_entry.setText(directory_2)
         if not directory_2 :
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
         if not self.file_path4_directory:
             self.file_path4_directory = directory_2
@@ -1487,8 +1499,9 @@ class AT_PRE_CNF_Screen(QDialog):
 
     def process_data3(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
 
         if not self.file_path_directory:
@@ -1738,8 +1751,9 @@ class MCT_PRE_CNF_Screen(QDialog):
 
     def process_data4(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
 
         if not self.file_path_directory:
@@ -2078,8 +2092,10 @@ class RMT_FIT_HRP_SCREEN(QDialog):
             return f"{base_dir}\\{user_input}"
     def process_data2(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
+        self.folder_entry_2.setText(directory)
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
         if not self.file_path_directory:
             self.file_path_directory = directory
@@ -2184,8 +2200,10 @@ class RMT_FIT_HRP_SCREEN(QDialog):
 
     def process_data2_2(self):
         directory_2 = self.folder_entry_2.text()
+        central_data_store.directory = directory_2
+        self.folder_entry.setText(directory_2)
         if not directory_2 :
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
 
         if not self.file_path4_directory:
@@ -2384,8 +2402,9 @@ class AT_FIT_HRP_Screen(QDialog):
             return f"{base_dir}\\{user_input}"
     def process_data3(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
         if not self.file_path_directory:
             self.file_path_directory = directory
@@ -2654,8 +2673,10 @@ class RMT_PRE_VP_SCREEN(QDialog):
             return f"{base_dir}\\{user_input}"
     def process_data2(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
+        self.folder_entry_2.setText(directory)
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
 
         if not self.file_path_directory:
@@ -2762,8 +2783,10 @@ class RMT_PRE_VP_SCREEN(QDialog):
 
     def process_data2_2(self):
         directory_2 = self.folder_entry_2.text()
+        central_data_store.directory = directory_2
+        self.folder_entry.setText(directory_2)
         if not directory_2 :
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
 
         if not self.file_path4_directory:
@@ -2965,8 +2988,9 @@ class AT_PRE_VP_Screen(QDialog):
             return f"{base_dir}\\{user_input}"
     def process_data3(self):
         directory = self.folder_entry.text()
+        central_data_store.directory = directory
         if not directory:
-            QMessageBox.critical(self, "Error", "Please select the working directory!")
+            QMessageBox.critical(self, "Error", "Please select or enter the working directory!")
             return
         if not self.file_path_directory:
             self.file_path_directory = directory
