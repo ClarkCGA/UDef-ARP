@@ -577,8 +577,5 @@ class AllocationTool(QObject):
         # Drop column 'v_zone'
         df_new=df_new.drop(['v_zone'], axis=1)
 
-        # Copy the original csv file copy and rename it to csv_orig
-        shutil.copyfile(csv, csv.split('.')[0] + '_orig' + '.csv')
-
         # Save the new result to csv
-        df_new.to_csv(csv, index=False)
+        df_new.to_csv(csv.split('.')[0] + '_adjusted_for_prediction' + '.csv', index=False)
