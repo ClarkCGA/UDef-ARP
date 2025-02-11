@@ -439,11 +439,11 @@ class AllocationTool(QObject):
         self.progress_updated.emit(30)
 
         # Check modeling region IDs present in the prediction stage but absent in the fitting stage
-        id_difference = self.check_modeling_region_ids(csv, out_fn1)
+        id_difference, pre_model_region_id = self.check_modeling_region_ids(csv, out_fn1)
 
         # If there are missing bins, calculate the relative frequency and create a new csv file
         if id_difference.size > 0:
-            self.calculate_missing_bins_rf(id_difference, csv)
+            self.calculate_missing_bins_rf(id_difference, csv,pre_model_region_id)
 
         self.progress_updated.emit(40)
 
@@ -486,11 +486,11 @@ class AllocationTool(QObject):
         self.progress_updated.emit(30)
 
         # Check modeling region IDs present in the prediction stage but absent in the fitting stage
-        id_difference = self.check_modeling_region_ids(csv, out_fn1)
+        id_difference, pre_model_region_id = self.check_modeling_region_ids(csv, out_fn1)
 
         # If there are missing bins, calculate the relative frequency and create a new csv file
         if id_difference.size > 0:
-            self.calculate_missing_bins_rf(id_difference, csv)
+            self.calculate_missing_bins_rf(id_difference, csv,pre_model_region_id)
 
         self.progress_updated.emit(40)
 
@@ -532,14 +532,15 @@ class AllocationTool(QObject):
         pre_model_region_id = np.unique(pre_model_region_arr[pre_model_region_arr != 0])
         id_difference = np.setdiff1d(pre_model_region_id, fit_model_region_id)
 
-        return id_difference
+        return id_difference, pre_model_region_id
 
-    def calculate_missing_bins_rf (self, id_difference, csv):
+    def calculate_missing_bins_rf (self, id_difference, csv, pre_model_region_id):
         '''
         If one or more empty bins are found, compute the jurisdiction-wide weighted average of relative frequencies for
         missing bins and create a new csv file
         :param csv: csv file of relative frequency in the fitting stage
         :param id_difference: A set of modeling region IDs np array that exist only in the prediction stage
+        :param pre_model_region_id: Prediction modeling region ID np array
         :return
         '''
         # Convert modeling region ids to vulnerability zone id
@@ -577,5 +578,10 @@ class AllocationTool(QObject):
         # Drop column 'v_zone'
         df_new=df_new.drop(['v_zone'], axis=1)
 
+        # Read CNF Modeling Region ID
+        mr_cnf_df=pd.DataFrame(pre_model_region_id, columns=['ID'])
+        df_new_cnf=pd.merge(df_new, mr_cnf_df, on='ID', how='inner')
+
+
         # Save the new result to csv
-        df_new.to_csv(csv.split('.')[0] + '_adjusted_for_prediction' + '.csv', index=False)
+        df_new_cnf.to_csv(csv.split('.')[0] + '_adjusted_for_prediction' + '.csv', index=False)
