@@ -2927,7 +2927,6 @@ class AT_PRE_VP_Screen(QDialog):
         self.risk30_vp = None
         self.expected_deforestation = None
         self.max_iterations = None
-        self.time = None
         self.image1 = None
         self.image2 = None
         self.file_path_directory = None
@@ -3024,12 +3023,12 @@ class AT_PRE_VP_Screen(QDialog):
 
         expected_deforestation = self.expected_entry.text()
         if not expected_deforestation:
-            QMessageBox.critical(self, "Error", "Please enter the expected deforestation value!")
+            QMessageBox.critical(self, "Error", "Please enter the expected annual jurisdictional activity!")
             return
         try:
             self.expected_deforestation = float(expected_deforestation)
         except ValueError:
-            QMessageBox.critical(self, "Error", "Expected deforestation value should be a valid number!")
+            QMessageBox.critical(self, "Error", "Expected annual jurisdictional activity should be a valid number!")
             return
 
         out_fn1 = self.image1_entry.text()
@@ -3062,16 +3061,6 @@ class AT_PRE_VP_Screen(QDialog):
             QMessageBox.critical(self, "Error", "Max iteration value should be a valid number!")
             return
 
-        time = self.year_entry.text()
-        if not time:
-            QMessageBox.critical(self, "Error", "Please enter the number of years in the VP! ")
-            return
-        try:
-            self.time = int(time)
-        except ValueError:
-            QMessageBox.critical(self, "Error", "The number of years in the VP should be a valid number!")
-            return
-
         # Show "Processing" message
         processing_message = "Processing data..."
         self.progressDialog = QProgressDialog(processing_message, None, 0, 100, self)
@@ -3093,8 +3082,7 @@ class AT_PRE_VP_Screen(QDialog):
                                                                            self.csv,
                                                                            self.municipality,
                                                                            self.expected_deforestation,
-                                                                           self.risk30_vp, out_fn1,out_fn2,
-                                                                           self.time)
+                                                                           self.risk30_vp, out_fn1,out_fn2)
 
             if id_difference.size > 0:
                 QMessageBox.warning(self, " Warning ", f"Modeling Region ID {','.join(map(str, id_difference))} do not exist in the Historical Reference Period. A new CSV has been created for the HRP where relative frequencies for missing bins have been estimated from corresponding vulnerability zones over the entire jurisdiction.")
