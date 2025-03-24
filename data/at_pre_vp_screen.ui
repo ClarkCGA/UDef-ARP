@@ -338,7 +338,7 @@ color: rgb(125, 169, 172);
           <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
          </property>
          <property name="text">
-          <string>Expected Annual Jurisdictional Activity (ha/year)</string>
+          <string>Expected Annual Jurisdictional Deforestation Rate (ha/year)</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_10">
