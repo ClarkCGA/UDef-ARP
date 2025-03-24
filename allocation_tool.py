@@ -325,37 +325,6 @@ class AllocationTool(QObject):
 
         return
 
-    def adjusted_prediction_density_map_annual (self, prediction_density_arr, risk30_vp, AR, out_fn2, time):
-        '''
-        Create adjusted prediction density map for annual
-        :param prediction_density_arr:modeled deforestation (MD)
-        :param risk30_vp: risk30_vp image
-        :param AR:Adjustment Ratio
-        :param out_fn2: user input
-        :return:
-        '''
-
-        # Calculate the maximum density
-        # Calculate areal_resolution_of_map_pixels
-        in_ds4 = gdal.Open(risk30_vp)
-        P1 = in_ds4.GetGeoTransform()[1]
-        P2 = abs(in_ds4.GetGeoTransform()[5])
-        maximum_density = P1 * P2 / 10000
-
-        # Adjusted_Prediction_Density_Map = AR x Prediction_Density _Map
-        adjusted_prediction_density_arr=AR*prediction_density_arr
-
-        # Reclassify all pixels greater than the maximum (e.g., 0.09) to be the maximum
-        adjusted_prediction_density_arr[adjusted_prediction_density_arr > maximum_density] = maximum_density
-
-        # Convert the result back to an annual rate by dividing by the number of years in the VP
-        adjusted_prediction_density_arr_annual=adjusted_prediction_density_arr/time
-
-        # Create imagery
-        self.array_to_image(risk30_vp, out_fn2, adjusted_prediction_density_arr_annual, gdal.GDT_Float32, -1)
-
-        return
-
     def replace_ref_system(self, in_fn, out_fn):
         '''
          RST raster format: correct reference system name in rdc file
@@ -473,7 +442,7 @@ class AllocationTool(QObject):
 
         return id_difference , iteration_count
 
-    def execute_workflow_vp(self, directory,max_iterations, csv, municipality, expected_deforestation, risk30_vp, out_fn1, out_fn2, time):
+    def execute_workflow_vp(self, directory,max_iterations, csv, municipality, expected_deforestation, risk30_vp, out_fn1, out_fn2):
         '''
         Create workflow function for VP
         :param max_iterations: maximum number of iterations
@@ -511,7 +480,7 @@ class AllocationTool(QObject):
             # Emitting progress based on the current iteration_count and max_iterations
         if iteration_count <= int(max_iterations):
             selected_density_arr = new_prediction_density_arr if new_prediction_density_arr is not None else prediction_density_arr
-            self.adjusted_prediction_density_map_annual(selected_density_arr, risk30_vp, AR, out_fn2, time)
+            self.adjusted_prediction_density_map(selected_density_arr, risk30_vp, AR, out_fn2)
             self.replace_ref_system(municipality, out_fn2)
         else:
             print("Maximum number of iterations reached. Please reset the maximum number of iterations.")

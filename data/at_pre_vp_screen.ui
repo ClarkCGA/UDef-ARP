@@ -338,7 +338,7 @@ color: rgb(125, 169, 172);
           <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
          </property>
          <property name="text">
-          <string>Expected Jurisdictional Activity (ha)</string>
+          <string>Expected Annual Jurisdictional Deforestation Rate (ha/year)</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_10">
@@ -364,31 +364,6 @@ color: rgb(125, 169, 172);
          </property>
          <property name="text">
           <string>Maximum Iterations for Solution Convergence</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_11">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>230</y>
-           <width>531</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>AvenirNext LT Pro Cn</family>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <italic>false</italic>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">font: 10pt&quot;AvenirNext LT Pro Cn&quot;;</string>
-         </property>
-         <property name="text">
-          <string>Length of the VP in years</string>
          </property>
         </widget>
         <widget class="QLineEdit" name="municipality_entry">
@@ -463,22 +438,6 @@ font: 9pt;</string>
           <string>3</string>
          </property>
         </widget>
-        <widget class="QLineEdit" name="year_entry">
-         <property name="geometry">
-          <rect>
-           <x>570</x>
-           <y>230</y>
-           <width>531</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255); font: 9pt;</string>
-         </property>
-         <property name="text">
-          <string>6</string>
-         </property>
-        </widget>
         <widget class="QPushButton" name="municipality_button">
          <property name="geometry">
           <rect>
@@ -533,7 +492,7 @@ font: 9pt;</string>
            <x>0</x>
            <y>0</y>
            <width>1281</width>
-           <height>281</height>
+           <height>251</height>
           </rect>
          </property>
          <property name="font">
@@ -564,7 +523,7 @@ color: rgb(125, 169, 172);
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>290</y>
+           <y>260</y>
            <width>1291</width>
            <height>111</height>
           </rect>
@@ -725,13 +684,11 @@ color: rgb(125, 169, 172);
         <zorder>label_5</zorder>
         <zorder>label_7</zorder>
         <zorder>label_10</zorder>
-        <zorder>label_11</zorder>
         <zorder>municipality_entry</zorder>
         <zorder>csv_entry</zorder>
         <zorder>risk30_vp_entry</zorder>
         <zorder>expected_entry</zorder>
         <zorder>iteration_entry</zorder>
-        <zorder>year_entry</zorder>
         <zorder>municipality_button</zorder>
         <zorder>csv_button</zorder>
         <zorder>risk30_vp_button</zorder>
