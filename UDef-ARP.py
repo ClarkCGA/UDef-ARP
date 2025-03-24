@@ -3023,7 +3023,7 @@ class AT_PRE_VP_Screen(QDialog):
 
         expected_deforestation = self.expected_entry.text()
         if not expected_deforestation:
-            QMessageBox.critical(self, "Error", "Please enter the expected annual jurisdictional activity!")
+            QMessageBox.critical(self, "Error", "Please enter the expected annual jurisdictional deforestation rate (ha/year)!")
             return
         try:
             self.expected_deforestation = float(expected_deforestation)
