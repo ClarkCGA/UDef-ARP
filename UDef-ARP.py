@@ -3028,7 +3028,7 @@ class AT_PRE_VP_Screen(QDialog):
         try:
             self.expected_deforestation = float(expected_deforestation)
         except ValueError:
-            QMessageBox.critical(self, "Error", "Expected annual jurisdictional activity should be a valid number!")
+            QMessageBox.critical(self, "Error", "Expected annual jurisdictional deforestation rate should be a valid number!")
             return
 
         out_fn1 = self.image1_entry.text()
