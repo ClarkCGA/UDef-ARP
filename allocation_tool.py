@@ -412,7 +412,7 @@ class AllocationTool(QObject):
 
         # If there are missing bins, calculate the relative frequency and create a new csv file
         if id_difference.size > 0:
-            self.calculate_missing_bins_rf(id_difference, csv,pre_model_region_id)
+            csv = self.calculate_missing_bins_rf(id_difference, csv,pre_model_region_id)
 
         self.progress_updated.emit(40)
 
@@ -459,7 +459,7 @@ class AllocationTool(QObject):
 
         # If there are missing bins, calculate the relative frequency and create a new csv file
         if id_difference.size > 0:
-            self.calculate_missing_bins_rf(id_difference, csv,pre_model_region_id)
+            csv=self.calculate_missing_bins_rf(id_difference, csv,pre_model_region_id)
 
         self.progress_updated.emit(40)
 
@@ -553,4 +553,7 @@ class AllocationTool(QObject):
 
 
         # Save the new result to csv
-        df_new_cnf.to_csv(csv.split('.')[0] + '_adjusted_for_prediction' + '.csv', index=False)
+        base, ext = os.path.splitext(csv)
+        new_csv = f"{base}_adjusted_for_prediction{ext}"
+        df_new_cnf.to_csv(new_csv, index=False)
+        return new_csv
