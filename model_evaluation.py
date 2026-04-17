@@ -14,6 +14,8 @@ import pandas as pd
 from PyQt5.QtCore import QObject, pyqtSignal
 import shutil
 from geopandas import GeoDataFrame
+import plotly.graph_objects as go
+import plotly.io as pio
 
 # GDAL exceptions
 gdal.UseExceptions()
@@ -327,7 +329,7 @@ class ModelEvaluation(QObject):
          :param area_percentile_threshold: area percentile threshold
          :return  thiessen_gdf: result dataframe
         '''
-        thiessen_gdf = gpd.overlay(full_voronoi_grid, area_mask, how="intersection")
+        thiessen_gdf = gpd.overlay(full_voronoi_grid, area_mask, how="intersection", keep_geom_type=False)
         # get area of each polygon
         thiessen_gdf["area"] = thiessen_gdf.area
 
@@ -474,7 +476,7 @@ class ModelEvaluation(QObject):
 
         deforestation_arr[arr_def_cnf == 1] = 3
         deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 1)] = 2
-        deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 0) & (fmask == 1)] = 1
+        deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 0) & (arr_fmask == 1)] = 1
 
         #write deforestation_map
         self.array_to_image(fmask, out_fn_def, deforestation_arr, gdal.GDT_Int16, -1)
@@ -499,6 +501,7 @@ class ModelEvaluation(QObject):
         # prepare the X/Y data
         X = np.array(clipped_gdf['ActualDef'], dtype=np.float32)
         Y = np.array(clipped_gdf['PredDef'], dtype=np.float32)
+        ids = np.asarray(clipped_gdf["ID"])
 
         # Set a proportion to extend the limits
         extension_f = 0.1
@@ -541,6 +544,26 @@ class ModelEvaluation(QObject):
 
         ## Calculate MedAE percent
         MedAE_percent = (MedAE / int(grid_area)) * 100
+
+        ## Calculate MAE
+        MAE=np.sum(distance_arr)/len(X)
+        MAE_percent = (MAE / int(grid_area)) * 100
+
+        ## Calculate the IoU
+        # agreement=intersection: Minimum of actual and predicted deforestation for each dot and add them all
+        agree_arr = [min(X[i],Y[i]) for i in range(len(X))]
+        agree = np.sum(agree_arr)   
+
+        # union
+        union_arr = [max(X[i],Y[i]) for i in range(len(X))]
+        union = np.sum(union_arr)
+
+        # IoU
+        iou = 0 if union == 0 else agree / union * 100
+
+        ## Calculate the Difference
+        # Absolute value of predicted deforestation minus actual deforestation of each point and add them all
+        difference=np.sum(distance_arr)
 
         # Set the figure size
         plt.figure(figsize=(8, 6))
@@ -591,13 +614,121 @@ class ModelEvaluation(QObject):
         plt.text(text_x_pos, text_y_start_pos - 3 * text_y_gap, f'R^2 = {r_squared:.4f}', fontsize=11, color='black')
         plt.text(text_x_pos, text_y_start_pos - 4 * text_y_gap, f'MedAE = {MedAE:.2f} ({MedAE_percent:.2f}%)',
                  fontsize=11, color='black')
+        plt.text(text_x_pos, text_y_start_pos - 5 * text_y_gap, f'IoU = {iou:.2f}%',fontsize=11, color='black')
 
+        ## Save metrics to txt file
+        base, ext = os.path.splitext(out_fn)
+        txt_out = base + ".txt"
+        lines_to_write = [
+        f"OLS: {equation}\n",
+        f"Theil Sen: {ts_equation}\n",
+        f"Samples = {len(X)}\n",
+        f"R^2 = {r_squared:.4f}\n",
+        f"MedAE = {MedAE:.2f} ({MedAE_percent:.2f}%)\n",
+        f"MAE = {MAE:.2f} ({MAE_percent:.2f}%)\n",
+        f"IoU : {iou:.2f}%\n",
+        f"Agreement : {agree:.2f}\n",
+        f"Difference : {difference:.2f}\n",
+        ]
+
+        with open(txt_out, "w") as file:
+            file.writelines(lines_to_write)
+      
         # x, yticks
         plt.yticks(fontsize=10, color='dimgrey')
         plt.xticks(fontsize=10, color='dimgrey')
 
         # Save the plot
         plt.savefig(out_fn)
+
+        ## html
+        # Build Plotly figure
+        fig = go.Figure()
+
+        # Hover 
+        fig.add_trace(go.Scatter(
+            x=X, y=Y, mode="markers",
+            name="Cells",
+            customdata=np.stack([ids, X, Y, agree_arr,diff_arr], axis=-1),
+            hovertemplate="ID: %{customdata[0]}<br>Actual: %{x:.2f} ha<br>Predicted: %{y:.2f} ha<br>Agreement: %{customdata[3]}<br>Difference: %{customdata[4]}<br><extra></extra>",
+            marker=dict(size=8, line=dict(width=0.5), color="steelblue", opacity=0.5), showlegend=False
+        ))
+
+        # OLS line trace
+        fig.add_trace(go.Scatter(
+        x=X_extended, y=trend_line, mode="lines",
+        name="OLS Line",
+        line=dict(color="mediumseagreen", dash="solid")
+        , hoverinfo="skip", hovertemplate=None
+        ))
+
+        # Theil–Sen line trace
+        fig.add_trace(go.Scatter(
+        x=X_extended, y=y_pred, mode="lines",
+        name="Theil–Sen Line",
+        line=dict(color="orange", dash="solid")
+        , hoverinfo="skip", hovertemplate=None
+        ))
+
+        # 1:1 line trace
+        fig.add_trace(go.Scatter(
+        x=X_extended, y=one_to_one_line, mode="lines",
+        name="1:1 Line",
+        line=dict(color="crimson", dash="dash")
+        , hoverinfo="skip", hovertemplate=None
+        ))
+
+        # Layout setting
+        fig.update_layout(
+        title=dict(
+            text=f"<b>{title}</b>",
+            font=dict(color="firebrick", size=20),
+            x=0.5, xanchor="center"
+        ),
+        xaxis=dict(
+            title=dict(text="<b>Actual Deforestation (ha)</b>",
+                    font=dict(color="black"),
+                    standoff=10),                 
+            tickfont=dict(size=10, color="dimgrey"),
+            range=[0, xmax],
+            constrain="domain"
+        ),
+        yaxis=dict(
+            title=dict(text="<b>Predicted Deforestation (ha)</b>",
+                    font=dict(color="black"),
+                    standoff=10),
+            tickfont=dict(size=10, color="dimgrey"),
+            range=[0, ymax]
+        ),
+        hovermode="closest",
+        legend=dict(                    
+            x=0.99, y=0.01, xanchor="right", yanchor="bottom", orientation="v"
+        ),
+        margin=dict(l=60, r=30, t=80, b=60),
+        paper_bgcolor= 'rgb(255,255,255)',
+        plot_bgcolor=  'rgb(234,234,242)',
+        )
+
+        # Annotations 
+        stats_text = (
+            f"Theil–Sen: {ts_equation}<br>"
+            f"OLS: {equation}<br>"
+            f"Samples = {len(X)}<br>"
+            f"R² = {r_squared:.4f}<br>"
+            f"MedAE = {MedAE:.2f} ({MedAE_percent:.2f}%)<br>"
+            f"IoU = {iou:.2f}%<br>"
+        )
+        
+        fig.add_annotation(
+            x=0.02, y=0.98, xref="paper", yref="paper", xanchor="left", yanchor="top",
+            text=stats_text, showarrow=False, align="left"
+        )
+
+        # Save a HTML
+        html_out = base + ".html"
+        
+        pio.write_html(fig, file=html_out, include_plotlyjs=True, full_html=True)
+
         return
 
     def remove_temp_files(self):

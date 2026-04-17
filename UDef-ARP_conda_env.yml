@@ -5,6 +5,8 @@ channels:
   - defaults
 dependencies:
   - Python>=3.9,<=3.10.12
+  - plotly=5.18.0
+  - kaleido=0.2.1
   - affine=2.4.0=pyhd8ed1ab_0
   - anyio=3.7.1=pyhd8ed1ab_0
   - argon2-cffi=21.3.0=pyhd8ed1ab_0
