@@ -563,8 +563,7 @@ class ModelEvaluation(QObject):
 
         ## Calculate the Difference
         # Absolute value of predicted deforestation minus actual deforestation of each point and add them all
-        diff_arr=[abs(X[i] - Y[i]) for i in range(len(X))]
-        difference=np.sum(diff_arr)
+        difference=np.sum(distance_arr)
 
         # Set the figure size
         plt.figure(figsize=(8, 6))
