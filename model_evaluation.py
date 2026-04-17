@@ -559,7 +559,7 @@ class ModelEvaluation(QObject):
         union = np.sum(union_arr)
 
         # IoU
-        iou = agree/union * 100
+        iou = 0 if union == 0 else agree / union * 100
 
         ## Calculate the Difference
         # Absolute value of predicted deforestation minus actual deforestation of each point and add them all
