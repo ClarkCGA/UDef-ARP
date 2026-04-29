@@ -649,7 +649,7 @@ class ModelEvaluation(QObject):
         fig.add_trace(go.Scatter(
             x=X, y=Y, mode="markers",
             name="Cells",
-            customdata=np.stack([ids, X, Y, agree_arr,diff_arr], axis=-1),
+            customdata=np.stack([ids, X, Y, agree_arr,distance_arr], axis=-1),
             hovertemplate="ID: %{customdata[0]}<br>Actual: %{x:.2f} ha<br>Predicted: %{y:.2f} ha<br>Agreement: %{customdata[3]}<br>Difference: %{customdata[4]}<br><extra></extra>",
             marker=dict(size=8, line=dict(width=0.5), color="steelblue", opacity=0.5), showlegend=False
         ))
