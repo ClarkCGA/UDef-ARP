@@ -146,12 +146,16 @@ class AllocationTool(QObject):
         # Insert index=0 row into first row of merged_df DataFrame
         new_row = pd.DataFrame({'ID': [0], 'Total Deforestation(pixel)': [0], 'Area of the Bin(pixel)': [0],
                                 'Average Deforestation(pixel)': [0]})
-        merged_df = pd.concat([new_row, merged_df]).reset_index(drop=True)
-
+        merged_df = pd.concat([new_row, merged_df]).reset_index(drop=True)      
+        
         # Using numpy.searchsorted() to assign values to 'id'
+        # Map bin IDs to relative frequencies using a flattened lookup, then reshape to raster shape.
         df_sorted = merged_df.sort_values('ID')
-        sorted_indices = df_sorted['ID'].searchsorted(tabulation_bin_id_masked)
-        relative_frequency_arr = tabulation_bin_id_masked[:] = df_sorted['Average Deforestation(pixel)'].values[sorted_indices]
+        id_values = df_sorted['ID'].to_numpy()
+        rf_values = df_sorted['Average Deforestation(pixel)'].to_numpy(dtype=np.float32)
+        bin_ids_flat = tabulation_bin_id_masked.ravel()
+        sorted_indices = np.searchsorted(id_values, bin_ids_flat)
+        relative_frequency_arr = rf_values[sorted_indices].reshape(tabulation_bin_id_masked.shape)
 
         # Calculate areal_resolution_of_map_pixels
         in_ds4 = gdal.Open(risk30_hrp)
@@ -214,9 +218,13 @@ class AllocationTool(QObject):
         merged_df = pd.concat([new_row, merged_df]).reset_index(drop=True)
 
         # Using numpy.searchsorted() to assign values to 'id'
+        # Map bin IDs to relative frequencies using a flattened lookup, then reshape to raster shape.
         df_sorted = merged_df.sort_values('ID')
-        sorted_indices = df_sorted['ID'].searchsorted(tabulation_bin_id_VP_masked)
-        relative_frequency_arr = tabulation_bin_id_VP_masked[:] = df_sorted['Average Deforestation(pixel)'].values[sorted_indices]
+        id_values = df_sorted['ID'].to_numpy()
+        rf_values = df_sorted['Average Deforestation(pixel)'].to_numpy(dtype=np.float32)
+        bin_ids_flat = tabulation_bin_id_VP_masked.ravel()
+        sorted_indices = np.searchsorted(id_values, bin_ids_flat)
+        relative_frequency_arr = rf_values[sorted_indices].reshape(tabulation_bin_id_VP_masked.shape)
 
         # Calculate areal_resolution_of_map_pixels
         in_ds4 = gdal.Open(risk30_vp)
