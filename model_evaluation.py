@@ -134,11 +134,20 @@ class ModelEvaluation(QObject):
             with open(base_name + '.rdc', 'r') as read_file, open(temp_file_path, 'w') as write_file:
                 for line in read_file:
                     if line.startswith("legend cats :"):
+                        """
                         write_file.write("legend cats : " + '3'+'\n')
                         # Write the three new lines
                         write_file.write("code 1      : "+"Forest at the start of HRP"+"\n")
                         write_file.write("code 2      : "+"Deforestation within CAL"+"\n")
                         write_file.write("code 3      : "+"Deforestation within CNF"+"\n")
+                        """
+                        # 6/25/26 - to match new wording on legend categories (per Rishi's specifications on 11/4/24 in TerrSet's UDef-A))
+                        write_file.write("legend cats : " + '4'+'\n')
+                        # Write the four new lines of legend categories
+                        write_file.write("code 1      : "+"Stable Forest (HRP)"+"\n")
+                        write_file.write("code 2      : "+"Forest Loss within CAL"+"\n")
+                        write_file.write("code 3      : "+"Forest Loss within CNF"+"\n")
+                        write_file.write("code 4      : "+"Stable Nonforest (HRP)"+"\n") 
                     else:
                         write_file.write(line)
             shutil.move(temp_file_path, base_name + '.rdc')
@@ -466,18 +475,23 @@ class ModelEvaluation(QObject):
 
         return clipped_gdf
 
-    def create_deforestation_map (self, fmask, deforestation_cal, deforestation_cnf, out_fn_def):
+    def create_deforestation_map (self, juris_mask, fmask, deforestation_cal, deforestation_cnf, out_fn_def):
         self.progress_updated.emit(80)
         arr_fmask = self.image_to_array(fmask)
         arr_def_cal = self.image_to_array(deforestation_cal)
         arr_def_cnf = self.image_to_array(deforestation_cnf)
+        arr_juris_mask = self.image_to_array(juris_mask)
 
         deforestation_arr=np.copy(arr_fmask)
 
         deforestation_arr[arr_def_cnf == 1] = 3
         deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 1)] = 2
         deforestation_arr[(arr_def_cnf == 0) & (arr_def_cal == 0) & (arr_fmask == 1)] = 1
-
+        deforestation_arr[(arr_fmask == 0)] = 4  #tw 6/25/26
+        #ToDo: mask out the background
+        deforestation_arr[(arr_juris_mask == 0)] = 0  #tw 6/25/26
+        #ToDo: fix the legend
+        #        
         #write deforestation_map
         self.array_to_image(fmask, out_fn_def, deforestation_arr, gdal.GDT_Int16, -1)
 
