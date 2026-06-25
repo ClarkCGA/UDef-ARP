@@ -71,7 +71,7 @@ UDef-ARP accepts raster map data is either a Geotiff “.tif” or TerrSet “.r
   <img src="data/intro_screen.png" alt="GUI Image">
 </p>
 
-### Step 3: Tutorial
+### Step 4: Tutorial
 Try this [tutorial](doc/UDEF-ARP_Tutorial.pdf) to step through the UDef_ARP process with a detailed explanation and context for each step.
 Here is the [tutorial](doc/UDEF-ARP_Tutorial.pdf).
 
