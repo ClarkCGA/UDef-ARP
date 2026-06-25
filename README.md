@@ -71,5 +71,14 @@ UDef-ARP accepts raster map data is either a Geotiff “.tif” or TerrSet “.r
   <img src="data/intro_screen.png" alt="GUI Image">
 </p>
 
+### Step 4: Tutorial
+Try this [tutorial](doc/UDEF-ARP_Tutorial.pdf) to step through the UDef_ARP process with a detailed explanation and context for each step.
+Here is the [tutorial](doc/UDEF-ARP_Tutorial.pdf).
+
+Note: the data is sizeable (14.5 Gb). 
+
+The download link for the UDef-ARP tutorial data is https://zenodo.org/records/20073844/files/TerrSet-liberaGIS-Tutorial-UDefA.zip?download=1 at the time of this writing.  However, if that data gets updated, the link may change.  In that case, use the permanent link to the complete TerrSet tutorial (https://doi.org/10.5281/zenodo.14202000) and scroll down to the UDef-A section.
+
+
 ## COPYRIGHT AND LICENSE
 ©2023-2024 Clark Labs. This software is free to use and distribute under the terms of the GNU-GLP license.
