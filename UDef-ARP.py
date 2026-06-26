@@ -1904,7 +1904,7 @@ class MCT_PRE_CNF_Screen(QDialog):
             clipped_gdf = self.model_evaluation.create_thiessen_polygon(self.grid_area, self.mask, self.density,
                                                                              self.deforestation_hrp, out_fn, raster_fn)
             self.model_evaluation.replace_ref_system(self.mask, raster_fn)
-            self.model_evaluation.create_deforestation_map(self.fmask, self.deforestation_cal, self.deforestation_hrp,
+            self.model_evaluation.create_deforestation_map(self.mask, self.fmask, self.deforestation_cal, self.deforestation_hrp,
                                                            out_fn_def)
             self.model_evaluation.replace_ref_system(self.fmask, out_fn_def)
             self.model_evaluation.replace_legend(out_fn_def)
