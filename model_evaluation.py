@@ -141,7 +141,6 @@ class ModelEvaluation(QObject):
                         write_file.write("code 2      : "+"Deforestation within CAL"+"\n")
                         write_file.write("code 3      : "+"Deforestation within CNF"+"\n")
                         """
-                        # 6/25/26 - to match new wording on legend categories (per Rishi's specifications on 11/4/24 in TerrSet's UDef-A))
                         write_file.write("legend cats : " + '4'+'\n')
                         # Write the four new lines of legend categories
                         write_file.write("code 1      : "+"Stable Forest (HRP)"+"\n")
